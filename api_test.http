@@ -1,0 +1,23 @@
+POST http://127.0.0.1:5000/analyze
+Content-Type: application/json
+
+{
+  "microbes": {
+    "Fusobacterium": 0.18,
+    "Porphyromonas": 0.15,
+    "Prevotella": 0.10,
+    "Streptococcus": 0.09,
+    "Lactobacillus": 0.02
+  },
+  "clinical": {
+    "age": 52,
+    "bmi": 24.5,
+    "smoking": 1,
+    "family_history": 1
+  },
+  "metabolites": {
+    "bile_acids": 0.8,
+    "scfa": 0.3,
+    "tryptophan_metabolism": 0.7
+  }
+}
