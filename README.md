@@ -7,7 +7,7 @@ A research-oriented framework for modeling disease risk based on the gut–oral 
 Install dependencies before running the project:
 
 ```bash 
-pip install -r requirements-research.txt```
+pip install -r requirements-research.txt
 
 ## Data Preparation
 
