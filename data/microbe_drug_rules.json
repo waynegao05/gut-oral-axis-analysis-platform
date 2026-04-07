@@ -1,0 +1,25 @@
+{
+  "rules": [
+    {
+      "marker": "Fusobacterium",
+      "direction": "increase",
+      "suggestion": "Consider anti-inflammatory strategy and closer colon surveillance.",
+      "priority": 0.9,
+      "rationale": "High Fusobacterium abundance is treated as a high-risk inflammatory marker in the prototype rule base."
+    },
+    {
+      "marker": "Porphyromonas",
+      "direction": "increase",
+      "suggestion": "Consider microbiota-modulating intervention and response monitoring.",
+      "priority": 0.85,
+      "rationale": "Porphyromonas elevation is treated as a marker of ecological disturbance in the prototype rule base."
+    },
+    {
+      "marker": "Lactobacillus",
+      "direction": "decrease",
+      "suggestion": "Consider supportive microbiome regulation strategy.",
+      "priority": 0.65,
+      "rationale": "Reduced Lactobacillus is treated as a protective signal loss in the prototype rule base."
+    }
+  ]
+}
