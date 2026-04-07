@@ -6,7 +6,7 @@ A research-oriented framework for modeling disease risk based on the gut–oral 
 
 Install dependencies before running the project:
 
-'pip install -r requirements-research.txt'
+`pip install -r requirements-research.txt`
 
 ## Data Preparation
 
@@ -34,19 +34,19 @@ Time represents follow-up duration. Event is binary, where 1 indicates occurrenc
 
 Before training, normalize all input tables:
 
-'''
+```
 python research/preprocess_tables.py \
   --clinical_csv your_clinical.csv \
   --metabolite_csv your_metabolite.csv \
   --graph_csv your_graph.csv \
   --output_dir outputs/preprocessed
-'''
+```
 
 ## Training
 
 Train the model with:
 
-'python research/train.py --config research_config.yaml'
+`python research/train.py --config research_config.yaml`
 
 The training pipeline includes graph representation learning, multi-modal feature fusion, Cox partial likelihood optimization, and early stopping. The best model is automatically saved.
 
@@ -61,12 +61,12 @@ test_metrics.json
 
 After training, generate predictions with:
 
-'''
+```
 python research/predict.py \
   --config research_config.yaml \
   --checkpoint outputs/research/best_model.pt \
   --split test
-'''
+```
 
 The output contains a risk score for each sample.
 
@@ -74,12 +74,12 @@ The output contains a risk score for each sample.
 
 To obtain model interpretability:
 
-'''
+```
 python research/explain.py \
   --config research_config.yaml \
   --checkpoint outputs/research/best_model.pt \
   --output outputs/research/explainability.json
-'''
+```
 
 This produces node-level importance scores and corresponding risk contributions.
 
@@ -103,7 +103,7 @@ This repository is a research framework. Meaningful performance requires real co
 
 ## 安装
 
-'pip install -r requirements-research.txt'
+`pip install -r requirements-research.txt`
 
 ## 数据准备
 
@@ -129,19 +129,19 @@ sample_id,time,event
 
 ## 数据预处理
 
-'''
+```
 python research/preprocess_tables.py \
   --clinical_csv your_clinical.csv \
   --metabolite_csv your_metabolite.csv \
   --graph_csv your_graph.csv \
   --output_dir outputs/preprocessed
-'''
+```
 
 该步骤完成标准化处理与数据格式统一。
 
 ## 模型训练
 
-'python research/train.py --config research_config.yaml'
+`python research/train.py --config research_config.yaml`
 
 训练过程包括图表示学习、多模态融合、Cox损失优化以及早停机制，并自动保存最优模型。
 
@@ -154,23 +154,23 @@ test_metrics.json
 
 ## 模型推理
 
-'''
+```
 python research/predict.py \
   --config research_config.yaml \
   --checkpoint outputs/research/best_model.pt \
   --split test
-'''
+```
 
 输出为每个样本对应的风险评分。
 
 ## 可解释性分析
 
-'''
+```
 python research/explain.py \
   --config research_config.yaml \
   --checkpoint outputs/research/best_model.pt \
   --output outputs/research/explainability.json
-'''
+```
 
 可获得节点重要性以及风险贡献信息。
 
