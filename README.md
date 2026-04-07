@@ -7,7 +7,7 @@ A research-oriented framework for modeling disease risk based on the gut–oral 
 Install dependencies before running the project:
 
 ```bash 
-pip install -r requirements-research.txt`
+pip install -r requirements-research.txt```
 
 ## Data Preparation
 
@@ -48,7 +48,7 @@ python research/preprocess_tables.py \
 Train the model with:
 
 ```bash 
-python research/train.py --config research_config.yaml`
+python research/train.py --config research_config.yaml```
 
 The training pipeline includes graph representation learning, multi-modal feature fusion, Cox partial likelihood optimization, and early stopping. The best model is automatically saved.
 
@@ -106,7 +106,7 @@ This repository is a research framework. Meaningful performance requires real co
 ## 安装
 
 ```bash 
-pip install -r requirements-research.txt`
+pip install -r requirements-research.txt```
 
 ## 数据准备
 
@@ -145,7 +145,7 @@ python research/preprocess_tables.py \
 ## 模型训练
 
 ```bash 
-python research/train.py --config research_config.yaml`
+python research/train.py --config research_config.yaml```
 
 训练过程包括图表示学习、多模态融合、Cox损失优化以及早停机制，并自动保存最优模型。
 
