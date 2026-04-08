@@ -1,0 +1,32 @@
+{
+  "sample_id": "CASE_001",
+  "demographics": {
+    "age": 57,
+    "sex": "female",
+    "bmi": 24.8
+  },
+  "history": {
+    "smoking": "no",
+    "family_history_colorectal_or_ibd": "yes",
+    "recent_antibiotics": "no",
+    "recent_probiotics": "yes"
+  },
+  "clinical_context": {
+    "chief_complaint": "intermittent abdominal discomfort and altered bowel habit",
+    "suspected_condition": "colonic disease risk screening"
+  },
+  "oral_microbiome": {
+    "taxa": [
+      {"taxon": "Fusobacterium", "abundance": 0.18},
+      {"taxon": "Porphyromonas", "abundance": 0.14},
+      {"taxon": "Prevotella", "abundance": 0.10},
+      {"taxon": "Streptococcus", "abundance": 0.08},
+      {"taxon": "Lactobacillus", "abundance": 0.03}
+    ]
+  },
+  "metabolites": {
+    "bile_acids": 0.74,
+    "scfa": 0.35,
+    "tryptophan_metabolism": 0.68
+  }
+}
