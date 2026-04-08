@@ -19,9 +19,9 @@ class CoxStyleRiskModel:
         metabolites: Dict[str, float],
     ) -> Dict[str, float | str]:
         score = 0.0
-        score += 0.7 * float(gnn_features.get("gnn_signal", 0.0))
-        score += 0.5 * float(gnn_features.get("centrality_signal", 0.0))
-        score += 0.4 * float(gnn_features.get("module_signal", 0.0))
+        score += 0.25 * float(gnn_features.get("gnn_signal", 0.0))
+        score += 0.10 * float(gnn_features.get("centrality_signal", 0.0))
+        score += 0.10 * float(gnn_features.get("module_signal", 0.0))
 
         for name, weight in DEFAULT_MICROBE_WEIGHTS.items():
             score += weight * float(microbes.get(name, 0.0))
