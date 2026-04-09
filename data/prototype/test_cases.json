@@ -1,4 +1,26 @@
 [
+  {"case_id": "self",
+    "expected_risk": "high",
+    "input": {
+   "microbes": {
+    "Fusobacterium": 4.85,
+    "Porphyromonas": 3.81,
+    "Prevotella": 2.25,
+    "Streptococcus": 0.02,
+    "Lactobacillus": 0.07
+  },
+  "clinical": {
+    "age": 20,
+    "bmi": 16.8,
+    "smoking": 1,
+    "family_history": 1
+  },
+  "metabolites": {
+    "bile_acids": 6.42,
+    "scfa": 0.42,
+    "tryptophan_metabolism": 6.24
+  }
+},
   {
     "case_id": "LOW_001",
     "expected_risk": "low",
