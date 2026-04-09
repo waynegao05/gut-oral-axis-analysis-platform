@@ -1,0 +1,32 @@
+seed: 42
+train:
+  batch_size: 8
+  epochs: 80
+  lr: 0.0005
+  weight_decay: 0.001
+  hidden_dim: 32
+  heads: 2
+  dropout: 0.35
+  early_stop_patience: 10
+  val_ratio: 0.2
+  test_ratio: 0.2
+  min_delta: 0.0005
+paths:
+  graph_csv: data/research/sample_graph_table.csv
+  clinical_csv: data/research/sample_clinical_table.csv
+  metabolite_csv: data/research/sample_metabolite_table.csv
+  label_csv: data/research/sample_label_table.csv
+  output_dir: outputs/research_small_sample
+model:
+  node_feature_columns:
+    - abundance
+    - function_score
+  clinical_columns:
+    - age
+    - bmi
+    - smoking
+    - family_history
+  metabolite_columns:
+    - bile_acids
+    - scfa
+    - tryptophan_metabolism
