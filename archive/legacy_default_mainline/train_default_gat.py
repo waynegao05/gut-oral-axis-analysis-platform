@@ -11,46 +11,32 @@ from torch_geometric.loader import DataLoader
 from research.data import build_dataset_from_csv, set_seed
 from research.losses import cox_ph_loss
 from research.metrics import concordance_index
-from research.model import StructureAwareGATCoxModel
+from research.model import GATCoxModel
 
 
 def evaluate(model, loader, device):
     model.eval()
     all_time, all_event, all_risk = [], [], []
     losses = []
-    aux_losses = []
     with torch.no_grad():
         for batch in loader:
             batch = batch.to(device)
             output = model(batch)
             loss = cox_ph_loss(output["risk"], batch.time, batch.event)
             losses.append(float(loss.item()))
-            aux_losses.append(float(output["aux_loss"].item()))
             all_time.extend(batch.time.cpu().numpy().tolist())
             all_event.extend(batch.event.cpu().numpy().tolist())
             all_risk.extend(output["risk"].cpu().numpy().tolist())
     c_index = concordance_index(all_time, all_event, all_risk)
     return {
         "loss": sum(losses) / max(len(losses), 1),
-        "aux_loss": sum(aux_losses) / max(len(aux_losses), 1),
         "c_index": c_index,
     }
 
 
-def resolve_device(device_arg: str) -> torch.device:
-    if device_arg == "cpu":
-        return torch.device("cpu")
-    if device_arg == "cuda":
-        if not torch.cuda.is_available():
-            raise RuntimeError("CUDA was requested but is not available in the current environment.")
-        return torch.device("cuda")
-    return torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--config", default="research_config_structure_aware.yaml")
-    parser.add_argument("--device", choices=["auto", "cpu", "cuda"], default="auto")
+    parser.add_argument("--config", default="research_config.yaml")
     args = parser.parse_args()
 
     config = yaml.safe_load(Path(args.config).read_text(encoding="utf-8"))
@@ -73,15 +59,14 @@ def main() -> None:
     val_loader = DataLoader(dataset.val_set, batch_size=config["train"]["batch_size"], shuffle=False)
     test_loader = DataLoader(dataset.test_set, batch_size=config["train"]["batch_size"], shuffle=False)
 
-    device = resolve_device(args.device)
-    model = StructureAwareGATCoxModel(
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model = GATCoxModel(
         node_feature_dim=dataset.node_feature_dim,
         clinical_dim=dataset.clinical_dim,
         metabolite_dim=dataset.metabolite_dim,
         hidden_dim=config["train"]["hidden_dim"],
         heads=config["train"]["heads"],
         dropout=config["train"]["dropout"],
-        edge_hidden_dim=config["train"].get("edge_hidden_dim", 12),
     ).to(device)
 
     optimizer = torch.optim.Adam(
@@ -89,7 +74,6 @@ def main() -> None:
         lr=config["train"]["lr"],
         weight_decay=config["train"]["weight_decay"],
     )
-    aux_weight = float(config["train"].get("aux_loss_weight", 0.2))
 
     best_val = float("-inf")
     best_state = None
@@ -99,23 +83,18 @@ def main() -> None:
     for epoch in range(1, config["train"]["epochs"] + 1):
         model.train()
         epoch_losses = []
-        epoch_aux = []
         for batch in train_loader:
             batch = batch.to(device)
             optimizer.zero_grad()
             output = model(batch)
-            main_loss = cox_ph_loss(output["risk"], batch.time, batch.event)
-            aux_loss = output["aux_loss"]
-            loss = main_loss + aux_weight * aux_loss
+            loss = cox_ph_loss(output["risk"], batch.time, batch.event)
             loss.backward()
             optimizer.step()
-            epoch_losses.append(float(main_loss.item()))
-            epoch_aux.append(float(aux_loss.item()))
+            epoch_losses.append(float(loss.item()))
 
         train_loss = sum(epoch_losses) / max(len(epoch_losses), 1)
-        train_aux = sum(epoch_aux) / max(len(epoch_aux), 1)
         val_metrics = evaluate(model, val_loader, device)
-        history.append({"epoch": epoch, "train_loss": train_loss, "train_aux_loss": train_aux, **val_metrics})
+        history.append({"epoch": epoch, "train_loss": train_loss, **val_metrics})
 
         if val_metrics["c_index"] > best_val + config["train"]["min_delta"]:
             best_val = val_metrics["c_index"]
@@ -137,7 +116,7 @@ def main() -> None:
     (output_dir / "history.json").write_text(json.dumps(history, indent=2), encoding="utf-8")
     (output_dir / "test_metrics.json").write_text(json.dumps(test_metrics, indent=2), encoding="utf-8")
 
-    print(json.dumps({"device": str(device), "best_val_c_index": best_val, "test_metrics": test_metrics}, indent=2))
+    print(json.dumps({"best_val_c_index": best_val, "test_metrics": test_metrics}, indent=2))
 
 
 if __name__ == "__main__":
