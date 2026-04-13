@@ -14,13 +14,13 @@ def run_repeated_training(base_config_path: str, seeds: list[int], device: str) 
     base_config = yaml.safe_load(Path(base_config_path).read_text(encoding="utf-8"))
     summary = []
 
-    temp_dir = Path("outputs/repeat_runs_structure_aware")
+    temp_dir = Path("outputs/repeat_runs")
     temp_dir.mkdir(parents=True, exist_ok=True)
 
     for seed in seeds:
         config = copy.deepcopy(base_config)
         config["seed"] = seed
-        config["paths"]["output_dir"] = f"outputs/research_structure_aware_seed{seed}"
+        config["paths"]["output_dir"] = f"outputs/research_seed{seed}"
 
         temp_config_path = temp_dir / f"temp_config_seed{seed}.yaml"
         temp_config_path.write_text(
@@ -31,7 +31,7 @@ def run_repeated_training(base_config_path: str, seeds: list[int], device: str) 
         cmd = [
             "python",
             "-m",
-            "research.train_structure_aware",
+            "research.train",
             "--config",
             str(temp_config_path),
             "--device",
@@ -62,14 +62,14 @@ def run_repeated_training(base_config_path: str, seeds: list[int], device: str) 
         "max_test_c_index": max(c_indices),
     }
 
-    out_path = Path("outputs/research_structure_aware_summary.json")
+    out_path = Path("outputs/research_summary.json")
     out_path.write_text(json.dumps(result, indent=2), encoding="utf-8")
     return result
 
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--config", default="research_config_structure_aware.yaml")
+    parser.add_argument("--config", default="research_config.yaml")
     parser.add_argument("--seeds", nargs="+", type=int, default=[7, 21, 42, 123, 2026])
     parser.add_argument("--device", choices=["auto", "cpu", "cuda"], default="auto")
     args = parser.parse_args()

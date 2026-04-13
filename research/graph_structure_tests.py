@@ -65,7 +65,7 @@ def run_graph_structure_tests(config_path: str, seeds: List[int], variants: List
     base_config = yaml.safe_load(Path(config_path).read_text(encoding="utf-8"))
     base_graph_df = pd.read_csv(base_config["paths"]["graph_csv"])
 
-    temp_root = Path("outputs/graph_structure_tests_structure_aware")
+    temp_root = Path("outputs/graph_structure_tests")
     temp_root.mkdir(parents=True, exist_ok=True)
 
     summary: Dict[str, List[dict]] = {variant: [] for variant in variants}
@@ -79,7 +79,7 @@ def run_graph_structure_tests(config_path: str, seeds: List[int], variants: List
             config = copy.deepcopy(base_config)
             config["seed"] = seed
             config["paths"]["graph_csv"] = str(graph_variant_path).replace('\\', '/')
-            config["paths"]["output_dir"] = f"outputs/graph_structure_tests_structure_aware/{variant}_seed{seed}"
+            config["paths"]["output_dir"] = f"outputs/graph_structure_tests/{variant}_seed{seed}"
 
             temp_config_path = temp_root / f"config_{variant}_seed{seed}.yaml"
             temp_config_path.write_text(
@@ -90,7 +90,7 @@ def run_graph_structure_tests(config_path: str, seeds: List[int], variants: List
             cmd = [
                 "python",
                 "-m",
-                "research.train_structure_aware",
+                "research.train",
                 "--config",
                 str(temp_config_path),
                 "--device",
@@ -123,14 +123,14 @@ def run_graph_structure_tests(config_path: str, seeds: List[int], variants: List
             "mean_test_loss": float(np.mean(losses)),
         }
 
-    out_path = temp_root / "graph_structure_tests_structure_aware_summary.json"
+    out_path = temp_root / "graph_structure_tests_summary.json"
     out_path.write_text(json.dumps(aggregate, indent=2), encoding="utf-8")
     return aggregate
 
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--config", default="research_config_structure_aware.yaml")
+    parser.add_argument("--config", default="research_config.yaml")
     parser.add_argument("--seeds", nargs="+", type=int, default=[7, 21, 42, 123, 2026])
     parser.add_argument(
         "--variants",

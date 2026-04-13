@@ -49,7 +49,7 @@ def resolve_device(device_arg: str) -> torch.device:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--config", default="research_config_structure_aware.yaml")
+    parser.add_argument("--config", default="research_config.yaml")
     parser.add_argument("--device", choices=["auto", "cpu", "cuda"], default="auto")
     args = parser.parse_args()
 
