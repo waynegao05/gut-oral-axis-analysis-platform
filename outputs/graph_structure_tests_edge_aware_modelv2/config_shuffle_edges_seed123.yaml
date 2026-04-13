@@ -1,0 +1,33 @@
+seed: 123
+train:
+  batch_size: 16
+  epochs: 120
+  lr: 0.0003
+  weight_decay: 0.002
+  hidden_dim: 48
+  heads: 4
+  dropout: 0.3
+  edge_hidden_dim: 8
+  early_stop_patience: 12
+  val_ratio: 0.2
+  test_ratio: 0.2
+  min_delta: 0.0005
+paths:
+  graph_csv: outputs/graph_structure_tests_edge_aware/graph_shuffle_edges_seed123.csv
+  clinical_csv: data/research/topology_v6_sample_clinical_table.csv
+  metabolite_csv: data/research/topology_v6_sample_metabolite_table.csv
+  label_csv: data/research/topology_v6_sample_label_table.csv
+  output_dir: outputs/graph_structure_tests_edge_aware/shuffle_edges_seed123
+model:
+  node_feature_columns:
+  - abundance
+  - function_score
+  clinical_columns:
+  - age
+  - bmi
+  - smoking
+  - family_history
+  metabolite_columns:
+  - bile_acids
+  - scfa
+  - tryptophan_metabolism

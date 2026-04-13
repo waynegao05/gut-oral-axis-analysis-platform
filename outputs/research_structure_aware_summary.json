@@ -1,0 +1,51 @@
+{
+  "base_config_path": "research_config_structure_aware.yaml",
+  "seeds": [
+    7,
+    21,
+    42,
+    123,
+    2026
+  ],
+  "runs": [
+    {
+      "seed": 7,
+      "test_loss": 1.9254175715976292,
+      "test_c_index": 0.7579497801395562,
+      "test_aux_loss": 0.006094621608240737,
+      "output_dir": "outputs/research_structure_aware_seed7"
+    },
+    {
+      "seed": 21,
+      "test_loss": 1.9940566195382012,
+      "test_c_index": 0.7154688957366675,
+      "test_aux_loss": 0.004820769911424981,
+      "output_dir": "outputs/research_structure_aware_seed21"
+    },
+    {
+      "seed": 42,
+      "test_loss": 1.9721525059805975,
+      "test_c_index": 0.7480997354592356,
+      "test_aux_loss": 0.006536549050360918,
+      "output_dir": "outputs/research_structure_aware_seed42"
+    },
+    {
+      "seed": 123,
+      "test_loss": 1.991520282957289,
+      "test_c_index": 0.7209685747142622,
+      "test_aux_loss": 0.005396806200345357,
+      "output_dir": "outputs/research_structure_aware_seed123"
+    },
+    {
+      "seed": 2026,
+      "test_loss": 1.9118666172027587,
+      "test_c_index": 0.7349828242503017,
+      "test_aux_loss": 0.005276476716001829,
+      "output_dir": "outputs/research_structure_aware_seed2026"
+    }
+  ],
+  "mean_test_c_index": 0.7354939620600046,
+  "std_test_c_index": 0.017856516382493845,
+  "min_test_c_index": 0.7154688957366675,
+  "max_test_c_index": 0.7579497801395562
+}

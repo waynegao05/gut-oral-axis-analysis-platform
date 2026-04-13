@@ -1,0 +1,142 @@
+{
+  "base_config_path": "research_config_structure_aware.yaml",
+  "seeds": [
+    7,
+    21,
+    42
+  ],
+  "ablations": {
+    "full": {
+      "overrides": {
+        "aux_loss_weight": 0.2
+      },
+      "runs": [
+        {
+          "seed": 7,
+          "test_loss": 1.9254175715976292,
+          "test_c_index": 0.7579497801395562,
+          "test_aux_loss": 0.006094621608240737,
+          "output_dir": "outputs/ablate_structure_aware_v1/full_seed7"
+        },
+        {
+          "seed": 21,
+          "test_loss": 1.9940566195382012,
+          "test_c_index": 0.7154688957366675,
+          "test_aux_loss": 0.004820769911424981,
+          "output_dir": "outputs/ablate_structure_aware_v1/full_seed21"
+        },
+        {
+          "seed": 42,
+          "test_loss": 1.9721525059805975,
+          "test_c_index": 0.7480997354592356,
+          "test_aux_loss": 0.006536549050360918,
+          "output_dir": "outputs/ablate_structure_aware_v1/full_seed42"
+        }
+      ],
+      "mean_test_c_index": 0.7405061371118198,
+      "std_test_c_index": 0.022235184658763344,
+      "min_test_c_index": 0.7154688957366675,
+      "max_test_c_index": 0.7579497801395562,
+      "mean_test_loss": 1.963875565705476
+    },
+    "no_aux": {
+      "overrides": {
+        "aux_loss_weight": 0.0
+      },
+      "runs": [
+        {
+          "seed": 7,
+          "test_loss": 1.963861314455668,
+          "test_c_index": 0.7480574749721284,
+          "test_aux_loss": 0.3540792875819736,
+          "output_dir": "outputs/ablate_structure_aware_v1/no_aux_seed7"
+        },
+        {
+          "seed": 21,
+          "test_loss": 1.99767943488227,
+          "test_c_index": 0.7138750162339579,
+          "test_aux_loss": 0.35187416540251837,
+          "output_dir": "outputs/ablate_structure_aware_v1/no_aux_seed21"
+        },
+        {
+          "seed": 42,
+          "test_loss": 1.9721267249849108,
+          "test_c_index": 0.7463461055050813,
+          "test_aux_loss": 0.3523476779460907,
+          "output_dir": "outputs/ablate_structure_aware_v1/no_aux_seed42"
+        }
+      ],
+      "mean_test_c_index": 0.7360928655703892,
+      "std_test_c_index": 0.01926023930836416,
+      "min_test_c_index": 0.7138750162339579,
+      "max_test_c_index": 0.7480574749721284,
+      "mean_test_loss": 1.9778891581076163
+    },
+    "weak_aux": {
+      "overrides": {
+        "aux_loss_weight": 0.1
+      },
+      "runs": [
+        {
+          "seed": 7,
+          "test_loss": 1.955502356423272,
+          "test_c_index": 0.7513398187919843,
+          "test_aux_loss": 0.00623732375808888,
+          "output_dir": "outputs/ablate_structure_aware_v1/weak_aux_seed7"
+        },
+        {
+          "seed": 21,
+          "test_loss": 1.9877752330568101,
+          "test_c_index": 0.7174464869715109,
+          "test_aux_loss": 0.005927833790580431,
+          "output_dir": "outputs/ablate_structure_aware_v1/weak_aux_seed21"
+        },
+        {
+          "seed": 42,
+          "test_loss": 1.9495499902301365,
+          "test_c_index": 0.7462982248237392,
+          "test_aux_loss": 0.003931478757618202,
+          "output_dir": "outputs/ablate_structure_aware_v1/weak_aux_seed42"
+        }
+      ],
+      "mean_test_c_index": 0.7383615101957448,
+      "std_test_c_index": 0.01828751116986244,
+      "min_test_c_index": 0.7174464869715109,
+      "max_test_c_index": 0.7513398187919843,
+      "mean_test_loss": 1.9642758599034063
+    },
+    "strong_aux": {
+      "overrides": {
+        "aux_loss_weight": 0.3
+      },
+      "runs": [
+        {
+          "seed": 7,
+          "test_loss": 1.9606599357393053,
+          "test_c_index": 0.7562406976678381,
+          "test_aux_loss": 0.005229582161539131,
+          "output_dir": "outputs/ablate_structure_aware_v1/strong_aux_seed7"
+        },
+        {
+          "seed": 21,
+          "test_loss": 1.9909551567501491,
+          "test_c_index": 0.7155456380830942,
+          "test_aux_loss": 0.0067663167085912496,
+          "output_dir": "outputs/ablate_structure_aware_v1/strong_aux_seed21"
+        },
+        {
+          "seed": 42,
+          "test_loss": 1.9985971901151869,
+          "test_c_index": 0.7291270154774302,
+          "test_aux_loss": 0.009499033623271518,
+          "output_dir": "outputs/ablate_structure_aware_v1/strong_aux_seed42"
+        }
+      ],
+      "mean_test_c_index": 0.7336377837427875,
+      "std_test_c_index": 0.020719127428762023,
+      "min_test_c_index": 0.7155456380830942,
+      "max_test_c_index": 0.7562406976678381,
+      "mean_test_loss": 1.9834040942015472
+    }
+  }
+}

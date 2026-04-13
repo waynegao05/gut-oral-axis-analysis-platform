@@ -1,0 +1,46 @@
+{
+  "base_config_path": "research_config_edge_aware.yaml",
+  "seeds": [
+    7,
+    21,
+    42,
+    123,
+    2026
+  ],
+  "runs": [
+    {
+      "seed": 7,
+      "test_loss": 1.9580326159795125,
+      "test_c_index": 0.6854359755667471,
+      "output_dir": "outputs/research_edge_aware_seed7"
+    },
+    {
+      "seed": 21,
+      "test_loss": 1.8551691744062635,
+      "test_c_index": 0.7165167903177182,
+      "output_dir": "outputs/research_edge_aware_seed21"
+    },
+    {
+      "seed": 42,
+      "test_loss": 1.9322878148820666,
+      "test_c_index": 0.6974709277529783,
+      "output_dir": "outputs/research_edge_aware_seed42"
+    },
+    {
+      "seed": 123,
+      "test_loss": 2.0062729093763565,
+      "test_c_index": 0.6834767250491725,
+      "output_dir": "outputs/research_edge_aware_seed123"
+    },
+    {
+      "seed": 2026,
+      "test_loss": 1.9492898146311441,
+      "test_c_index": 0.6798996695242686,
+      "output_dir": "outputs/research_edge_aware_seed2026"
+    }
+  ],
+  "mean_test_c_index": 0.6925600176421769,
+  "std_test_c_index": 0.014929723619621875,
+  "min_test_c_index": 0.6798996695242686,
+  "max_test_c_index": 0.7165167903177182
+}

@@ -13,10 +13,10 @@ train:
   test_ratio: 0.2
   min_delta: 0.0005
 paths:
-  graph_csv: data/research/expanded_v5_noisy_sample_graph_table.csv
-  clinical_csv: data/research/expanded_v5_noisy_sample_clinical_table.csv
-  metabolite_csv: data/research/expanded_v5_noisy_sample_metabolite_table.csv
-  label_csv: data/research/expanded_v5_noisy_sample_label_table.csv
+  graph_csv: data/research/topology_v6_sample_graph_table.csv
+  clinical_csv: data/research/topology_v6_sample_clinical_table.csv
+  metabolite_csv: data/research/topology_v6_sample_metabolite_table.csv
+  label_csv: data/research/topology_v6_sample_label_table.csv
   output_dir: outputs/research_edge_aware
 model:
   node_feature_columns:

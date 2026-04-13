@@ -1,0 +1,46 @@
+{
+  "base_config_path": "research_config_small_sample.yaml",
+  "seeds": [
+    7,
+    21,
+    42,
+    123,
+    2026
+  ],
+  "runs": [
+    {
+      "seed": 7,
+      "test_loss": 0.9066088186370002,
+      "test_c_index": 0.897592671383623,
+      "output_dir": "outputs/research_small_sample_seed7"
+    },
+    {
+      "seed": 21,
+      "test_loss": 0.9378594759437773,
+      "test_c_index": 0.9053553156388999,
+      "output_dir": "outputs/research_small_sample_seed21"
+    },
+    {
+      "seed": 42,
+      "test_loss": 0.9283586257033878,
+      "test_c_index": 0.88581612080316,
+      "output_dir": "outputs/research_small_sample_seed42"
+    },
+    {
+      "seed": 123,
+      "test_loss": 0.8956881682078044,
+      "test_c_index": 0.9007446527594402,
+      "output_dir": "outputs/research_small_sample_seed123"
+    },
+    {
+      "seed": 2026,
+      "test_loss": 0.8842557662063175,
+      "test_c_index": 0.8939045745928407,
+      "output_dir": "outputs/research_small_sample_seed2026"
+    }
+  ],
+  "mean_test_c_index": 0.8966826670355927,
+  "std_test_c_index": 0.007388205031885202,
+  "min_test_c_index": 0.88581612080316,
+  "max_test_c_index": 0.9053553156388999
+}

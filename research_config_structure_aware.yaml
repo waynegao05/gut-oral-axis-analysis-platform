@@ -6,9 +6,9 @@ train:
   weight_decay: 0.002
   hidden_dim: 64
   heads: 4
-  dropout: 0.25
+  dropout: 0.2
   edge_hidden_dim: 12
-  aux_loss_weight: 0.2
+  aux_loss_weight: 0.1
   early_stop_patience: 14
   val_ratio: 0.2
   test_ratio: 0.2

@@ -1,0 +1,176 @@
+{
+  "base_config_path": "research_config_balanced_scaled_small.yaml",
+  "seeds": [
+    7,
+    21,
+    42,
+    123,
+    2026
+  ],
+  "runs": [
+    {
+      "seed": 7,
+      "test_loss": 1.7226414680480957,
+      "test_c_index": 0.6927083333333334,
+      "split_summary": {
+        "train": {
+          "name": "train",
+          "size": 72,
+          "events": 40,
+          "censored": 32,
+          "min_time": 28.0,
+          "max_time": 65.0
+        },
+        "val": {
+          "name": "val",
+          "size": 24,
+          "events": 13,
+          "censored": 11,
+          "min_time": 25.0,
+          "max_time": 38.0
+        },
+        "test": {
+          "name": "test",
+          "size": 24,
+          "events": 13,
+          "censored": 11,
+          "min_time": 12.0,
+          "max_time": 33.0
+        }
+      },
+      "output_dir": "outputs/research_balanced_scaled_small_seed7"
+    },
+    {
+      "seed": 21,
+      "test_loss": 1.6415598392486572,
+      "test_c_index": 0.6666666666666666,
+      "split_summary": {
+        "train": {
+          "name": "train",
+          "size": 72,
+          "events": 40,
+          "censored": 32,
+          "min_time": 28.0,
+          "max_time": 65.0
+        },
+        "val": {
+          "name": "val",
+          "size": 24,
+          "events": 13,
+          "censored": 11,
+          "min_time": 25.0,
+          "max_time": 38.0
+        },
+        "test": {
+          "name": "test",
+          "size": 24,
+          "events": 13,
+          "censored": 11,
+          "min_time": 12.0,
+          "max_time": 33.0
+        }
+      },
+      "output_dir": "outputs/research_balanced_scaled_small_seed21"
+    },
+    {
+      "seed": 42,
+      "test_loss": 1.7483322620391846,
+      "test_c_index": 0.6770833333333334,
+      "split_summary": {
+        "train": {
+          "name": "train",
+          "size": 72,
+          "events": 40,
+          "censored": 32,
+          "min_time": 28.0,
+          "max_time": 65.0
+        },
+        "val": {
+          "name": "val",
+          "size": 24,
+          "events": 13,
+          "censored": 11,
+          "min_time": 25.0,
+          "max_time": 38.0
+        },
+        "test": {
+          "name": "test",
+          "size": 24,
+          "events": 13,
+          "censored": 11,
+          "min_time": 12.0,
+          "max_time": 33.0
+        }
+      },
+      "output_dir": "outputs/research_balanced_scaled_small_seed42"
+    },
+    {
+      "seed": 123,
+      "test_loss": 1.6718114614486694,
+      "test_c_index": 0.6910994764397905,
+      "split_summary": {
+        "train": {
+          "name": "train",
+          "size": 72,
+          "events": 40,
+          "censored": 32,
+          "min_time": 28.0,
+          "max_time": 65.0
+        },
+        "val": {
+          "name": "val",
+          "size": 24,
+          "events": 13,
+          "censored": 11,
+          "min_time": 25.0,
+          "max_time": 38.0
+        },
+        "test": {
+          "name": "test",
+          "size": 24,
+          "events": 13,
+          "censored": 11,
+          "min_time": 12.0,
+          "max_time": 33.0
+        }
+      },
+      "output_dir": "outputs/research_balanced_scaled_small_seed123"
+    },
+    {
+      "seed": 2026,
+      "test_loss": 1.7511610984802246,
+      "test_c_index": 0.6614583333333334,
+      "split_summary": {
+        "train": {
+          "name": "train",
+          "size": 72,
+          "events": 40,
+          "censored": 32,
+          "min_time": 28.0,
+          "max_time": 65.0
+        },
+        "val": {
+          "name": "val",
+          "size": 24,
+          "events": 13,
+          "censored": 11,
+          "min_time": 25.0,
+          "max_time": 38.0
+        },
+        "test": {
+          "name": "test",
+          "size": 24,
+          "events": 13,
+          "censored": 11,
+          "min_time": 12.0,
+          "max_time": 32.0
+        }
+      },
+      "output_dir": "outputs/research_balanced_scaled_small_seed2026"
+    }
+  ],
+  "mean_test_c_index": 0.6778032286212915,
+  "std_test_c_index": 0.014059242652940193,
+  "min_test_c_index": 0.6614583333333334,
+  "max_test_c_index": 0.6927083333333334
+}

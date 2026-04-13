@@ -1,0 +1,1008 @@
+{
+  "base_config_path": "research_config_structure_aware.yaml",
+  "seeds": [
+    7,
+    21,
+    42
+  ],
+  "search_space": {
+    "hidden_dim": [
+      56,
+      64,
+      72
+    ],
+    "dropout": [
+      0.2,
+      0.25,
+      0.3
+    ],
+    "aux_loss_weight": [
+      0.1,
+      0.15,
+      0.2
+    ]
+  },
+  "num_combinations": 27,
+  "results": [
+    {
+      "combo_id": 10,
+      "combo_name": "hd64_do02_aux01",
+      "hidden_dim": 64,
+      "dropout": 0.2,
+      "aux_loss_weight": 0.1,
+      "runs": [
+        {
+          "seed": 7,
+          "test_loss": 1.921124596065945,
+          "test_c_index": 0.759766387667442,
+          "test_aux_loss": 0.002556341977065636,
+          "output_dir": "outputs/tune_structure_aware_v1/hd64_do02_aux01_seed7"
+        },
+        {
+          "seed": 21,
+          "test_loss": 1.9901897536383735,
+          "test_c_index": 0.7171631306154737,
+          "test_aux_loss": 0.0034923537634313105,
+          "output_dir": "outputs/tune_structure_aware_v1/hd64_do02_aux01_seed21"
+        },
+        {
+          "seed": 42,
+          "test_loss": 1.9769310368431938,
+          "test_c_index": 0.7476149435606468,
+          "test_aux_loss": 0.004627366001821226,
+          "output_dir": "outputs/tune_structure_aware_v1/hd64_do02_aux01_seed42"
+        }
+      ],
+      "mean_test_c_index": 0.7415148206145208,
+      "std_test_c_index": 0.021946936069242376,
+      "min_test_c_index": 0.7171631306154737,
+      "max_test_c_index": 0.759766387667442,
+      "mean_test_loss": 1.9627484621825042
+    },
+    {
+      "combo_id": 1,
+      "combo_name": "hd56_do02_aux01",
+      "hidden_dim": 56,
+      "dropout": 0.2,
+      "aux_loss_weight": 0.1,
+      "runs": [
+        {
+          "seed": 7,
+          "test_loss": 1.9122182157304553,
+          "test_c_index": 0.7619282072177609,
+          "test_aux_loss": 0.004638791694823239,
+          "output_dir": "outputs/tune_structure_aware_v1/hd56_do02_aux01_seed7"
+        },
+        {
+          "seed": 21,
+          "test_loss": 2.0017269558376736,
+          "test_c_index": 0.7122280074144913,
+          "test_aux_loss": 0.0038479493827455573,
+          "output_dir": "outputs/tune_structure_aware_v1/hd56_do02_aux01_seed21"
+        },
+        {
+          "seed": 42,
+          "test_loss": 1.9601153744591606,
+          "test_c_index": 0.7481715564812488,
+          "test_aux_loss": 0.0029299289143333834,
+          "output_dir": "outputs/tune_structure_aware_v1/hd56_do02_aux01_seed42"
+        }
+      ],
+      "mean_test_c_index": 0.7407759237045003,
+      "std_test_c_index": 0.025662209632991775,
+      "min_test_c_index": 0.7122280074144913,
+      "max_test_c_index": 0.7619282072177609,
+      "mean_test_loss": 1.9580201820090966
+    },
+    {
+      "combo_id": 22,
+      "combo_name": "hd72_do025_aux01",
+      "hidden_dim": 72,
+      "dropout": 0.25,
+      "aux_loss_weight": 0.1,
+      "runs": [
+        {
+          "seed": 7,
+          "test_loss": 1.9219887812932333,
+          "test_c_index": 0.7565519544093762,
+          "test_aux_loss": 0.008221237495955493,
+          "output_dir": "outputs/tune_structure_aware_v1/hd72_do025_aux01_seed7"
+        },
+        {
+          "seed": 21,
+          "test_loss": 2.0006082402335275,
+          "test_c_index": 0.7177475530998004,
+          "test_aux_loss": 0.004435501708131697,
+          "output_dir": "outputs/tune_structure_aware_v1/hd72_do025_aux01_seed21"
+        },
+        {
+          "seed": 42,
+          "test_loss": 1.982918005519443,
+          "test_c_index": 0.7479022276486994,
+          "test_aux_loss": 0.0035446958771596353,
+          "output_dir": "outputs/tune_structure_aware_v1/hd72_do025_aux01_seed42"
+        }
+      ],
+      "mean_test_c_index": 0.740733911719292,
+      "std_test_c_index": 0.020371154979443307,
+      "min_test_c_index": 0.7177475530998004,
+      "max_test_c_index": 0.7565519544093762,
+      "mean_test_loss": 1.9685050090154013
+    },
+    {
+      "combo_id": 20,
+      "combo_name": "hd72_do02_aux015",
+      "hidden_dim": 72,
+      "dropout": 0.2,
+      "aux_loss_weight": 0.15,
+      "runs": [
+        {
+          "seed": 7,
+          "test_loss": 1.9354865895377265,
+          "test_c_index": 0.757847914296871,
+          "test_aux_loss": 0.004665228269166417,
+          "output_dir": "outputs/tune_structure_aware_v1/hd72_do02_aux015_seed7"
+        },
+        {
+          "seed": 21,
+          "test_loss": 1.9970791021982828,
+          "test_c_index": 0.7173638413676667,
+          "test_aux_loss": 0.001401034081613438,
+          "output_dir": "outputs/tune_structure_aware_v1/hd72_do02_aux015_seed21"
+        },
+        {
+          "seed": 42,
+          "test_loss": 1.974796133571201,
+          "test_c_index": 0.7463700458457524,
+          "test_aux_loss": 0.003245661552581522,
+          "output_dir": "outputs/tune_structure_aware_v1/hd72_do02_aux015_seed42"
+        }
+      ],
+      "mean_test_c_index": 0.7405272671700968,
+      "std_test_c_index": 0.02086488886200465,
+      "min_test_c_index": 0.7173638413676667,
+      "max_test_c_index": 0.757847914296871,
+      "mean_test_loss": 1.9691206084357367
+    },
+    {
+      "combo_id": 15,
+      "combo_name": "hd64_do025_aux02",
+      "hidden_dim": 64,
+      "dropout": 0.25,
+      "aux_loss_weight": 0.2,
+      "runs": [
+        {
+          "seed": 7,
+          "test_loss": 1.9254175715976292,
+          "test_c_index": 0.7579497801395562,
+          "test_aux_loss": 0.006094621608240737,
+          "output_dir": "outputs/tune_structure_aware_v1/hd64_do025_aux02_seed7"
+        },
+        {
+          "seed": 21,
+          "test_loss": 1.9940566195382012,
+          "test_c_index": 0.7154688957366675,
+          "test_aux_loss": 0.004820769911424981,
+          "output_dir": "outputs/tune_structure_aware_v1/hd64_do025_aux02_seed21"
+        },
+        {
+          "seed": 42,
+          "test_loss": 1.9721525059805975,
+          "test_c_index": 0.7480997354592356,
+          "test_aux_loss": 0.006536549050360918,
+          "output_dir": "outputs/tune_structure_aware_v1/hd64_do025_aux02_seed42"
+        }
+      ],
+      "mean_test_c_index": 0.7405061371118198,
+      "std_test_c_index": 0.022235184658763344,
+      "min_test_c_index": 0.7154688957366675,
+      "max_test_c_index": 0.7579497801395562,
+      "mean_test_loss": 1.963875565705476
+    },
+    {
+      "combo_id": 25,
+      "combo_name": "hd72_do03_aux01",
+      "hidden_dim": 72,
+      "dropout": 0.3,
+      "aux_loss_weight": 0.1,
+      "runs": [
+        {
+          "seed": 7,
+          "test_loss": 1.9480371766620213,
+          "test_c_index": 0.7610566883414543,
+          "test_aux_loss": 0.003586984762094087,
+          "output_dir": "outputs/tune_structure_aware_v1/hd72_do03_aux01_seed7"
+        },
+        {
+          "seed": 21,
+          "test_loss": 2.000950739118788,
+          "test_c_index": 0.7165609983588944,
+          "test_aux_loss": 0.005159405117026634,
+          "output_dir": "outputs/tune_structure_aware_v1/hd72_do03_aux01_seed21"
+        },
+        {
+          "seed": 42,
+          "test_loss": 1.976774017016093,
+          "test_c_index": 0.7424378448905328,
+          "test_aux_loss": 0.010583729938500458,
+          "output_dir": "outputs/tune_structure_aware_v1/hd72_do03_aux01_seed42"
+        }
+      ],
+      "mean_test_c_index": 0.7400185105302939,
+      "std_test_c_index": 0.02234628583939612,
+      "min_test_c_index": 0.7165609983588944,
+      "max_test_c_index": 0.7610566883414543,
+      "mean_test_loss": 1.9752539775989675
+    },
+    {
+      "combo_id": 11,
+      "combo_name": "hd64_do02_aux015",
+      "hidden_dim": 64,
+      "dropout": 0.2,
+      "aux_loss_weight": 0.15,
+      "runs": [
+        {
+          "seed": 7,
+          "test_loss": 1.93302280637953,
+          "test_c_index": 0.7565802504767888,
+          "test_aux_loss": 0.0026091129570785495,
+          "output_dir": "outputs/tune_structure_aware_v1/hd64_do02_aux015_seed7"
+        },
+        {
+          "seed": 21,
+          "test_loss": 1.9882643540700278,
+          "test_c_index": 0.7156518967166082,
+          "test_aux_loss": 0.002759884147801333,
+          "output_dir": "outputs/tune_structure_aware_v1/hd64_do02_aux015_seed21"
+        },
+        {
+          "seed": 42,
+          "test_loss": 1.964108649889628,
+          "test_c_index": 0.7469625692773608,
+          "test_aux_loss": 0.006991533510800865,
+          "output_dir": "outputs/tune_structure_aware_v1/hd64_do02_aux015_seed42"
+        }
+      ],
+      "mean_test_c_index": 0.7397315721569193,
+      "std_test_c_index": 0.021400888413720048,
+      "min_test_c_index": 0.7156518967166082,
+      "max_test_c_index": 0.7565802504767888,
+      "mean_test_loss": 1.9617986034463952
+    },
+    {
+      "combo_id": 24,
+      "combo_name": "hd72_do025_aux02",
+      "hidden_dim": 72,
+      "dropout": 0.25,
+      "aux_loss_weight": 0.2,
+      "runs": [
+        {
+          "seed": 7,
+          "test_loss": 1.9116406891081068,
+          "test_c_index": 0.758136534184479,
+          "test_aux_loss": 0.005192649799088637,
+          "output_dir": "outputs/tune_structure_aware_v1/hd72_do025_aux02_seed7"
+        },
+        {
+          "seed": 21,
+          "test_loss": 1.9940158314175076,
+          "test_c_index": 0.714849053707836,
+          "test_aux_loss": 0.004541424899879429,
+          "output_dir": "outputs/tune_structure_aware_v1/hd72_do025_aux02_seed21"
+        },
+        {
+          "seed": 42,
+          "test_loss": 1.9451928748024834,
+          "test_c_index": 0.7459091942878348,
+          "test_aux_loss": 0.007316208579060104,
+          "output_dir": "outputs/tune_structure_aware_v1/hd72_do025_aux02_seed42"
+        }
+      ],
+      "mean_test_c_index": 0.73963159406005,
+      "std_test_c_index": 0.022316085901628226,
+      "min_test_c_index": 0.714849053707836,
+      "max_test_c_index": 0.758136534184479,
+      "mean_test_loss": 1.9502831317760325
+    },
+    {
+      "combo_id": 21,
+      "combo_name": "hd72_do02_aux02",
+      "hidden_dim": 72,
+      "dropout": 0.2,
+      "aux_loss_weight": 0.2,
+      "runs": [
+        {
+          "seed": 7,
+          "test_loss": 1.9298712571461996,
+          "test_c_index": 0.7559633962071951,
+          "test_aux_loss": 0.005036255220572153,
+          "output_dir": "outputs/tune_structure_aware_v1/hd72_do02_aux02_seed7"
+        },
+        {
+          "seed": 21,
+          "test_loss": 1.9968678845299614,
+          "test_c_index": 0.7158821237558884,
+          "test_aux_loss": 0.003534436557028029,
+          "output_dir": "outputs/tune_structure_aware_v1/hd72_do02_aux02_seed21"
+        },
+        {
+          "seed": 42,
+          "test_loss": 1.9559552510579428,
+          "test_c_index": 0.7462323888868939,
+          "test_aux_loss": 0.00553141509493192,
+          "output_dir": "outputs/tune_structure_aware_v1/hd72_do02_aux02_seed42"
+        }
+      ],
+      "mean_test_c_index": 0.7393593029499925,
+      "std_test_c_index": 0.020905898283761756,
+      "min_test_c_index": 0.7158821237558884,
+      "max_test_c_index": 0.7559633962071951,
+      "mean_test_loss": 1.960898130911368
+    },
+    {
+      "combo_id": 7,
+      "combo_name": "hd56_do03_aux01",
+      "hidden_dim": 56,
+      "dropout": 0.3,
+      "aux_loss_weight": 0.1,
+      "runs": [
+        {
+          "seed": 7,
+          "test_loss": 1.9457999732759264,
+          "test_c_index": 0.7549051232859657,
+          "test_aux_loss": 0.010629545690284835,
+          "output_dir": "outputs/tune_structure_aware_v1/hd56_do03_aux01_seed7"
+        },
+        {
+          "seed": 21,
+          "test_loss": 1.9960382726457384,
+          "test_c_index": 0.7152977012715617,
+          "test_aux_loss": 0.006445619122435649,
+          "output_dir": "outputs/tune_structure_aware_v1/hd56_do03_aux01_seed21"
+        },
+        {
+          "seed": 42,
+          "test_loss": 1.9629791551166111,
+          "test_c_index": 0.7466693001041405,
+          "test_aux_loss": 0.006610928682817353,
+          "output_dir": "outputs/tune_structure_aware_v1/hd56_do03_aux01_seed42"
+        }
+      ],
+      "mean_test_c_index": 0.7389573748872226,
+      "std_test_c_index": 0.020899576851464586,
+      "min_test_c_index": 0.7152977012715617,
+      "max_test_c_index": 0.7549051232859657,
+      "mean_test_loss": 1.9682724670127587
+    },
+    {
+      "combo_id": 23,
+      "combo_name": "hd72_do025_aux015",
+      "hidden_dim": 72,
+      "dropout": 0.25,
+      "aux_loss_weight": 0.15,
+      "runs": [
+        {
+          "seed": 7,
+          "test_loss": 1.948748728964064,
+          "test_c_index": 0.7551937431735737,
+          "test_aux_loss": 0.007798874305768145,
+          "output_dir": "outputs/tune_structure_aware_v1/hd72_do025_aux015_seed7"
+        },
+        {
+          "seed": 21,
+          "test_loss": 1.9934970484839545,
+          "test_c_index": 0.7155928641424338,
+          "test_aux_loss": 0.003978799273156457,
+          "output_dir": "outputs/tune_structure_aware_v1/hd72_do025_aux015_seed21"
+        },
+        {
+          "seed": 42,
+          "test_loss": 1.961626280678643,
+          "test_c_index": 0.7459331346285057,
+          "test_aux_loss": 0.0071686842685772315,
+          "output_dir": "outputs/tune_structure_aware_v1/hd72_do025_aux015_seed42"
+        }
+      ],
+      "mean_test_c_index": 0.738906580648171,
+      "std_test_c_index": 0.020714409251500764,
+      "min_test_c_index": 0.7155928641424338,
+      "max_test_c_index": 0.7551937431735737,
+      "mean_test_loss": 1.9679573527088872
+    },
+    {
+      "combo_id": 12,
+      "combo_name": "hd64_do02_aux02",
+      "hidden_dim": 64,
+      "dropout": 0.2,
+      "aux_loss_weight": 0.2,
+      "runs": [
+        {
+          "seed": 7,
+          "test_loss": 1.9561792453130087,
+          "test_c_index": 0.756484043847586,
+          "test_aux_loss": 0.0028084055831034977,
+          "output_dir": "outputs/tune_structure_aware_v1/hd64_do02_aux02_seed7"
+        },
+        {
+          "seed": 21,
+          "test_loss": 1.9971025466918946,
+          "test_c_index": 0.7148342955642923,
+          "test_aux_loss": 0.005635718090666665,
+          "output_dir": "outputs/tune_structure_aware_v1/hd64_do02_aux02_seed21"
+        },
+        {
+          "seed": 42,
+          "test_loss": 1.9834851715299817,
+          "test_c_index": 0.745023401683006,
+          "test_aux_loss": 0.007029356735034122,
+          "output_dir": "outputs/tune_structure_aware_v1/hd64_do02_aux02_seed42"
+        }
+      ],
+      "mean_test_c_index": 0.7387805803649614,
+      "std_test_c_index": 0.02151522708507175,
+      "min_test_c_index": 0.7148342955642923,
+      "max_test_c_index": 0.756484043847586,
+      "mean_test_loss": 1.978922321178295
+    },
+    {
+      "combo_id": 13,
+      "combo_name": "hd64_do025_aux01",
+      "hidden_dim": 64,
+      "dropout": 0.25,
+      "aux_loss_weight": 0.1,
+      "runs": [
+        {
+          "seed": 7,
+          "test_loss": 1.955502356423272,
+          "test_c_index": 0.7513398187919843,
+          "test_aux_loss": 0.00623732375808888,
+          "output_dir": "outputs/tune_structure_aware_v1/hd64_do025_aux01_seed7"
+        },
+        {
+          "seed": 21,
+          "test_loss": 1.9877752330568101,
+          "test_c_index": 0.7174464869715109,
+          "test_aux_loss": 0.005927833790580431,
+          "output_dir": "outputs/tune_structure_aware_v1/hd64_do025_aux01_seed21"
+        },
+        {
+          "seed": 42,
+          "test_loss": 1.9495499902301365,
+          "test_c_index": 0.7462982248237392,
+          "test_aux_loss": 0.003931478757618202,
+          "output_dir": "outputs/tune_structure_aware_v1/hd64_do025_aux01_seed42"
+        }
+      ],
+      "mean_test_c_index": 0.7383615101957448,
+      "std_test_c_index": 0.01828751116986244,
+      "min_test_c_index": 0.7174464869715109,
+      "max_test_c_index": 0.7513398187919843,
+      "mean_test_loss": 1.9642758599034063
+    },
+    {
+      "combo_id": 2,
+      "combo_name": "hd56_do02_aux015",
+      "hidden_dim": 56,
+      "dropout": 0.2,
+      "aux_loss_weight": 0.15,
+      "runs": [
+        {
+          "seed": 7,
+          "test_loss": 1.9574599001142714,
+          "test_c_index": 0.7550975365443711,
+          "test_aux_loss": 0.0042895323027753165,
+          "output_dir": "outputs/tune_structure_aware_v1/hd56_do02_aux015_seed7"
+        },
+        {
+          "seed": 21,
+          "test_loss": 1.9993603626887004,
+          "test_c_index": 0.712676654978217,
+          "test_aux_loss": 0.003543139233564337,
+          "output_dir": "outputs/tune_structure_aware_v1/hd56_do02_aux015_seed21"
+        },
+        {
+          "seed": 42,
+          "test_loss": 1.9467604372236464,
+          "test_c_index": 0.7458194180103183,
+          "test_aux_loss": 0.0038868354271269505,
+          "output_dir": "outputs/tune_structure_aware_v1/hd56_do02_aux015_seed42"
+        }
+      ],
+      "mean_test_c_index": 0.7378645365109687,
+      "std_test_c_index": 0.02230118613356558,
+      "min_test_c_index": 0.712676654978217,
+      "max_test_c_index": 0.7550975365443711,
+      "mean_test_loss": 1.9678602333422062
+    },
+    {
+      "combo_id": 3,
+      "combo_name": "hd56_do02_aux02",
+      "hidden_dim": 56,
+      "dropout": 0.2,
+      "aux_loss_weight": 0.2,
+      "runs": [
+        {
+          "seed": 7,
+          "test_loss": 1.9187552796469793,
+          "test_c_index": 0.7587194331731776,
+          "test_aux_loss": 0.006465587392449379,
+          "output_dir": "outputs/tune_structure_aware_v1/hd56_do02_aux02_seed7"
+        },
+        {
+          "seed": 21,
+          "test_loss": 2.0138923433091906,
+          "test_c_index": 0.707251561411587,
+          "test_aux_loss": 0.005618114717718628,
+          "output_dir": "outputs/tune_structure_aware_v1/hd56_do02_aux02_seed21"
+        },
+        {
+          "seed": 42,
+          "test_loss": 1.9495665126376682,
+          "test_c_index": 0.7454423576447493,
+          "test_aux_loss": 0.005847760817656914,
+          "output_dir": "outputs/tune_structure_aware_v1/hd56_do02_aux02_seed42"
+        }
+      ],
+      "mean_test_c_index": 0.7371377840765047,
+      "std_test_c_index": 0.02672002830330978,
+      "min_test_c_index": 0.707251561411587,
+      "max_test_c_index": 0.7587194331731776,
+      "mean_test_loss": 1.9607380451979461
+    },
+    {
+      "combo_id": 14,
+      "combo_name": "hd64_do025_aux015",
+      "hidden_dim": 64,
+      "dropout": 0.25,
+      "aux_loss_weight": 0.15,
+      "runs": [
+        {
+          "seed": 7,
+          "test_loss": 1.9409179237153795,
+          "test_c_index": 0.7490761333989802,
+          "test_aux_loss": 0.008236780234922966,
+          "output_dir": "outputs/tune_structure_aware_v1/hd64_do025_aux015_seed7"
+        },
+        {
+          "seed": 21,
+          "test_loss": 1.9876287274890476,
+          "test_c_index": 0.7171985501599782,
+          "test_aux_loss": 0.004518060055043962,
+          "output_dir": "outputs/tune_structure_aware_v1/hd64_do025_aux015_seed21"
+        },
+        {
+          "seed": 42,
+          "test_loss": 1.9635817686716714,
+          "test_c_index": 0.7449515806609928,
+          "test_aux_loss": 0.006748079291234414,
+          "output_dir": "outputs/tune_structure_aware_v1/hd64_do025_aux015_seed42"
+        }
+      ],
+      "mean_test_c_index": 0.7370754214066504,
+      "std_test_c_index": 0.017336968931727835,
+      "min_test_c_index": 0.7171985501599782,
+      "max_test_c_index": 0.7490761333989802,
+      "mean_test_loss": 1.9640428066253661
+    },
+    {
+      "combo_id": 27,
+      "combo_name": "hd72_do03_aux02",
+      "hidden_dim": 72,
+      "dropout": 0.3,
+      "aux_loss_weight": 0.2,
+      "runs": [
+        {
+          "seed": 7,
+          "test_loss": 1.9732699182298448,
+          "test_c_index": 0.7525056167693814,
+          "test_aux_loss": 0.006341156280703015,
+          "output_dir": "outputs/tune_structure_aware_v1/hd72_do03_aux02_seed7"
+        },
+        {
+          "seed": 21,
+          "test_loss": 2.002646650208367,
+          "test_c_index": 0.715008441658107,
+          "test_aux_loss": 0.006094090971681807,
+          "output_dir": "outputs/tune_structure_aware_v1/hd72_do03_aux02_seed21"
+        },
+        {
+          "seed": 42,
+          "test_loss": 1.9961735063129,
+          "test_c_index": 0.7436767575202595,
+          "test_aux_loss": 0.00596791532718473,
+          "output_dir": "outputs/tune_structure_aware_v1/hd72_do03_aux02_seed42"
+        }
+      ],
+      "mean_test_c_index": 0.737063605315916,
+      "std_test_c_index": 0.01960382288967527,
+      "min_test_c_index": 0.715008441658107,
+      "max_test_c_index": 0.7525056167693814,
+      "mean_test_loss": 1.9906966915837039
+    },
+    {
+      "combo_id": 8,
+      "combo_name": "hd56_do03_aux015",
+      "hidden_dim": 56,
+      "dropout": 0.3,
+      "aux_loss_weight": 0.15,
+      "runs": [
+        {
+          "seed": 7,
+          "test_loss": 1.990948494275411,
+          "test_c_index": 0.7560426251959502,
+          "test_aux_loss": 0.007352385411245955,
+          "output_dir": "outputs/tune_structure_aware_v1/hd56_do03_aux015_seed7"
+        },
+        {
+          "seed": 21,
+          "test_loss": 2.009373105896844,
+          "test_c_index": 0.7107935158620526,
+          "test_aux_loss": 0.007427905758635865,
+          "output_dir": "outputs/tune_structure_aware_v1/hd56_do03_aux015_seed21"
+        },
+        {
+          "seed": 42,
+          "test_loss": 1.977320925394694,
+          "test_c_index": 0.7439520714379766,
+          "test_aux_loss": 0.007636032832993402,
+          "output_dir": "outputs/tune_structure_aware_v1/hd56_do03_aux015_seed42"
+        }
+      ],
+      "mean_test_c_index": 0.7369294041653265,
+      "std_test_c_index": 0.023427737099312805,
+      "min_test_c_index": 0.7107935158620526,
+      "max_test_c_index": 0.7560426251959502,
+      "mean_test_loss": 1.9925475085223163
+    },
+    {
+      "combo_id": 5,
+      "combo_name": "hd56_do025_aux015",
+      "hidden_dim": 56,
+      "dropout": 0.25,
+      "aux_loss_weight": 0.15,
+      "runs": [
+        {
+          "seed": 7,
+          "test_loss": 1.9297725942399766,
+          "test_c_index": 0.7576837971058782,
+          "test_aux_loss": 0.008861340209841728,
+          "output_dir": "outputs/tune_structure_aware_v1/hd56_do025_aux015_seed7"
+        },
+        {
+          "seed": 21,
+          "test_loss": 2.002642642127143,
+          "test_c_index": 0.7129363983045844,
+          "test_aux_loss": 0.005928670521825552,
+          "output_dir": "outputs/tune_structure_aware_v1/hd56_do025_aux015_seed21"
+        },
+        {
+          "seed": 42,
+          "test_loss": 1.9717202610439724,
+          "test_c_index": 0.7399719898014149,
+          "test_aux_loss": 0.007119546478821172,
+          "output_dir": "outputs/tune_structure_aware_v1/hd56_do025_aux015_seed42"
+        }
+      ],
+      "mean_test_c_index": 0.7368640617372925,
+      "std_test_c_index": 0.02253501359017398,
+      "min_test_c_index": 0.7129363983045844,
+      "max_test_c_index": 0.7576837971058782,
+      "mean_test_loss": 1.9680451658036973
+    },
+    {
+      "combo_id": 16,
+      "combo_name": "hd64_do03_aux01",
+      "hidden_dim": 64,
+      "dropout": 0.3,
+      "aux_loss_weight": 0.1,
+      "runs": [
+        {
+          "seed": 7,
+          "test_loss": 1.966508968671163,
+          "test_c_index": 0.7497212837359863,
+          "test_aux_loss": 0.007927118179698786,
+          "output_dir": "outputs/tune_structure_aware_v1/hd64_do03_aux01_seed7"
+        },
+        {
+          "seed": 21,
+          "test_loss": 2.0035902871025932,
+          "test_c_index": 0.7160592214784118,
+          "test_aux_loss": 0.005556353026380142,
+          "output_dir": "outputs/tune_structure_aware_v1/hd64_do03_aux01_seed21"
+        },
+        {
+          "seed": 42,
+          "test_loss": 1.9636887179480658,
+          "test_c_index": 0.7437186531164338,
+          "test_aux_loss": 0.006974382377747033,
+          "output_dir": "outputs/tune_structure_aware_v1/hd64_do03_aux01_seed42"
+        }
+      ],
+      "mean_test_c_index": 0.7364997194436107,
+      "std_test_c_index": 0.01795461949994125,
+      "min_test_c_index": 0.7160592214784118,
+      "max_test_c_index": 0.7497212837359863,
+      "mean_test_loss": 1.9779293245739407
+    },
+    {
+      "combo_id": 19,
+      "combo_name": "hd72_do02_aux01",
+      "hidden_dim": 72,
+      "dropout": 0.2,
+      "aux_loss_weight": 0.1,
+      "runs": [
+        {
+          "seed": 7,
+          "test_loss": 1.9425396018558079,
+          "test_c_index": 0.7558671895779925,
+          "test_aux_loss": 0.003601885540410876,
+          "output_dir": "outputs/tune_structure_aware_v1/hd72_do02_aux01_seed7"
+        },
+        {
+          "seed": 21,
+          "test_loss": 2.0116486814286976,
+          "test_c_index": 0.7119151347713668,
+          "test_aux_loss": 0.00423370099419521,
+          "output_dir": "outputs/tune_structure_aware_v1/hd72_do02_aux01_seed21"
+        },
+        {
+          "seed": 42,
+          "test_loss": 1.9774192333221436,
+          "test_c_index": 0.7411809770053028,
+          "test_aux_loss": 0.0036193881494303542,
+          "output_dir": "outputs/tune_structure_aware_v1/hd72_do02_aux01_seed42"
+        }
+      ],
+      "mean_test_c_index": 0.7363211004515541,
+      "std_test_c_index": 0.02237542358301658,
+      "min_test_c_index": 0.7119151347713668,
+      "max_test_c_index": 0.7558671895779925,
+      "mean_test_loss": 1.9772025055355498
+    },
+    {
+      "combo_id": 17,
+      "combo_name": "hd64_do03_aux015",
+      "hidden_dim": 64,
+      "dropout": 0.3,
+      "aux_loss_weight": 0.15,
+      "runs": [
+        {
+          "seed": 7,
+          "test_loss": 1.9626480102539063,
+          "test_c_index": 0.7537449845220511,
+          "test_aux_loss": 0.008897465032835802,
+          "output_dir": "outputs/tune_structure_aware_v1/hd64_do03_aux015_seed7"
+        },
+        {
+          "seed": 21,
+          "test_loss": 1.9933039400312635,
+          "test_c_index": 0.7182552332377006,
+          "test_aux_loss": 0.005575050620569123,
+          "output_dir": "outputs/tune_structure_aware_v1/hd64_do03_aux015_seed21"
+        },
+        {
+          "seed": 42,
+          "test_loss": 1.973290671242608,
+          "test_c_index": 0.7367280736404879,
+          "test_aux_loss": 0.0062048684909111924,
+          "output_dir": "outputs/tune_structure_aware_v1/hd64_do03_aux015_seed42"
+        }
+      ],
+      "mean_test_c_index": 0.7362427638000798,
+      "std_test_c_index": 0.017749852275079987,
+      "min_test_c_index": 0.7182552332377006,
+      "max_test_c_index": 0.7537449845220511,
+      "mean_test_loss": 1.9764142071759259
+    },
+    {
+      "combo_id": 26,
+      "combo_name": "hd72_do03_aux015",
+      "hidden_dim": 72,
+      "dropout": 0.3,
+      "aux_loss_weight": 0.15,
+      "runs": [
+        {
+          "seed": 7,
+          "test_loss": 1.9514942751990425,
+          "test_c_index": 0.7562180608139081,
+          "test_aux_loss": 0.006790969562199381,
+          "output_dir": "outputs/tune_structure_aware_v1/hd72_do03_aux015_seed7"
+        },
+        {
+          "seed": 21,
+          "test_loss": 2.0170597235361734,
+          "test_c_index": 0.7108466451788097,
+          "test_aux_loss": 0.005204095396523675,
+          "output_dir": "outputs/tune_structure_aware_v1/hd72_do03_aux015_seed21"
+        },
+        {
+          "seed": 42,
+          "test_loss": 2.0116867886649237,
+          "test_c_index": 0.7406602745957075,
+          "test_aux_loss": 0.005960313903374805,
+          "output_dir": "outputs/tune_structure_aware_v1/hd72_do03_aux015_seed42"
+        }
+      ],
+      "mean_test_c_index": 0.7359083268628084,
+      "std_test_c_index": 0.0230559557300357,
+      "min_test_c_index": 0.7108466451788097,
+      "max_test_c_index": 0.7562180608139081,
+      "mean_test_loss": 1.9934135958000465
+    },
+    {
+      "combo_id": 6,
+      "combo_name": "hd56_do025_aux02",
+      "hidden_dim": 56,
+      "dropout": 0.25,
+      "aux_loss_weight": 0.2,
+      "runs": [
+        {
+          "seed": 7,
+          "test_loss": 1.9564903895060222,
+          "test_c_index": 0.7577234116002558,
+          "test_aux_loss": 0.006935329155789482,
+          "output_dir": "outputs/tune_structure_aware_v1/hd56_do025_aux02_seed7"
+        },
+        {
+          "seed": 21,
+          "test_loss": 2.0021570867962306,
+          "test_c_index": 0.7137746608578613,
+          "test_aux_loss": 0.0067617962240344946,
+          "output_dir": "outputs/tune_structure_aware_v1/hd56_do025_aux02_seed21"
+        },
+        {
+          "seed": 42,
+          "test_loss": 2.0055708620283337,
+          "test_c_index": 0.7362193414012281,
+          "test_aux_loss": 0.007952713542100457,
+          "output_dir": "outputs/tune_structure_aware_v1/hd56_do025_aux02_seed42"
+        }
+      ],
+      "mean_test_c_index": 0.7359058046197817,
+      "std_test_c_index": 0.021976052919923297,
+      "min_test_c_index": 0.7137746608578613,
+      "max_test_c_index": 0.7577234116002558,
+      "mean_test_loss": 1.988072779443529
+    },
+    {
+      "combo_id": 4,
+      "combo_name": "hd56_do025_aux01",
+      "hidden_dim": 56,
+      "dropout": 0.25,
+      "aux_loss_weight": 0.1,
+      "runs": [
+        {
+          "seed": 7,
+          "test_loss": 1.940325133005778,
+          "test_c_index": 0.7526980300277868,
+          "test_aux_loss": 0.006291695963591337,
+          "output_dir": "outputs/tune_structure_aware_v1/hd56_do025_aux01_seed7"
+        },
+        {
+          "seed": 21,
+          "test_loss": 2.013558597034878,
+          "test_c_index": 0.7123814921073448,
+          "test_aux_loss": 0.005595462231172456,
+          "output_dir": "outputs/tune_structure_aware_v1/hd56_do025_aux01_seed21"
+        },
+        {
+          "seed": 42,
+          "test_loss": 1.983242278628879,
+          "test_c_index": 0.7406064088291976,
+          "test_aux_loss": 0.007607703893962834,
+          "output_dir": "outputs/tune_structure_aware_v1/hd56_do025_aux01_seed42"
+        }
+      ],
+      "mean_test_c_index": 0.7352286436547764,
+      "std_test_c_index": 0.020689274423624,
+      "min_test_c_index": 0.7123814921073448,
+      "max_test_c_index": 0.7526980300277868,
+      "mean_test_loss": 1.979042002889845
+    },
+    {
+      "combo_id": 9,
+      "combo_name": "hd56_do03_aux02",
+      "hidden_dim": 56,
+      "dropout": 0.3,
+      "aux_loss_weight": 0.2,
+      "runs": [
+        {
+          "seed": 7,
+          "test_loss": 1.9989584366480508,
+          "test_c_index": 0.7492685466573855,
+          "test_aux_loss": 0.009001660916126437,
+          "output_dir": "outputs/tune_structure_aware_v1/hd56_do03_aux02_seed7"
+        },
+        {
+          "seed": 21,
+          "test_loss": 2.020462316936917,
+          "test_c_index": 0.7107285800304608,
+          "test_aux_loss": 0.004766749875206086,
+          "output_dir": "outputs/tune_structure_aware_v1/hd56_do03_aux02_seed21"
+        },
+        {
+          "seed": 42,
+          "test_loss": 1.9914698680241902,
+          "test_c_index": 0.7453525813672328,
+          "test_aux_loss": 0.008341059264623456,
+          "output_dir": "outputs/tune_structure_aware_v1/hd56_do03_aux02_seed42"
+        }
+      ],
+      "mean_test_c_index": 0.735116569351693,
+      "std_test_c_index": 0.021211181329379644,
+      "min_test_c_index": 0.7107285800304608,
+      "max_test_c_index": 0.7492685466573855,
+      "mean_test_loss": 2.0036302072030527
+    },
+    {
+      "combo_id": 18,
+      "combo_name": "hd64_do03_aux02",
+      "hidden_dim": 64,
+      "dropout": 0.3,
+      "aux_loss_weight": 0.2,
+      "runs": [
+        {
+          "seed": 7,
+          "test_loss": 1.9498283810085721,
+          "test_c_index": 0.7535525712636458,
+          "test_aux_loss": 0.00993324913498428,
+          "output_dir": "outputs/tune_structure_aware_v1/hd64_do03_aux02_seed7"
+        },
+        {
+          "seed": 21,
+          "test_loss": 1.9999665525224475,
+          "test_c_index": 0.7135208207889113,
+          "test_aux_loss": 0.005338162080281311,
+          "output_dir": "outputs/tune_structure_aware_v1/hd64_do03_aux02_seed21"
+        },
+        {
+          "seed": 42,
+          "test_loss": 2.0055129342608984,
+          "test_c_index": 0.7376258364156522,
+          "test_aux_loss": 0.011959462612867355,
+          "output_dir": "outputs/tune_structure_aware_v1/hd64_do03_aux02_seed42"
+        }
+      ],
+      "mean_test_c_index": 0.7348997428227364,
+      "std_test_c_index": 0.02015462605026086,
+      "min_test_c_index": 0.7135208207889113,
+      "max_test_c_index": 0.7535525712636458,
+      "mean_test_loss": 1.985102622597306
+    }
+  ],
+  "best": {
+    "combo_id": 10,
+    "combo_name": "hd64_do02_aux01",
+    "hidden_dim": 64,
+    "dropout": 0.2,
+    "aux_loss_weight": 0.1,
+    "runs": [
+      {
+        "seed": 7,
+        "test_loss": 1.921124596065945,
+        "test_c_index": 0.759766387667442,
+        "test_aux_loss": 0.002556341977065636,
+        "output_dir": "outputs/tune_structure_aware_v1/hd64_do02_aux01_seed7"
+      },
+      {
+        "seed": 21,
+        "test_loss": 1.9901897536383735,
+        "test_c_index": 0.7171631306154737,
+        "test_aux_loss": 0.0034923537634313105,
+        "output_dir": "outputs/tune_structure_aware_v1/hd64_do02_aux01_seed21"
+      },
+      {
+        "seed": 42,
+        "test_loss": 1.9769310368431938,
+        "test_c_index": 0.7476149435606468,
+        "test_aux_loss": 0.004627366001821226,
+        "output_dir": "outputs/tune_structure_aware_v1/hd64_do02_aux01_seed42"
+      }
+    ],
+    "mean_test_c_index": 0.7415148206145208,
+    "std_test_c_index": 0.021946936069242376,
+    "min_test_c_index": 0.7171631306154737,
+    "max_test_c_index": 0.759766387667442,
+    "mean_test_loss": 1.9627484621825042
+  }
+}
