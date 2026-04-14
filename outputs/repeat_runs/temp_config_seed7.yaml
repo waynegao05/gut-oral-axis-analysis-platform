@@ -1,0 +1,34 @@
+seed: 7
+train:
+  batch_size: 16
+  epochs: 140
+  lr: 0.00025
+  weight_decay: 0.002
+  hidden_dim: 64
+  heads: 4
+  dropout: 0.2
+  edge_hidden_dim: 12
+  aux_loss_weight: 0.1
+  early_stop_patience: 14
+  val_ratio: 0.2
+  test_ratio: 0.2
+  min_delta: 0.0005
+paths:
+  graph_csv: data/research/topology_v6_sample_graph_table.csv
+  clinical_csv: data/research/topology_v6_sample_clinical_table.csv
+  metabolite_csv: data/research/topology_v6_sample_metabolite_table.csv
+  label_csv: data/research/topology_v6_sample_label_table.csv
+  output_dir: outputs/research_seed7
+model:
+  node_feature_columns:
+  - abundance
+  - function_score
+  clinical_columns:
+  - age
+  - bmi
+  - smoking
+  - family_history
+  metabolite_columns:
+  - bile_acids
+  - scfa
+  - tryptophan_metabolism
