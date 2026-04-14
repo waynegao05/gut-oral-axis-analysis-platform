@@ -11,16 +11,16 @@ import yaml
 
 
 ABLATIONS = {
-    "full": {"aux_loss_weight": 0.2},
+    "full": {"aux_loss_weight": 0.1},
     "no_aux": {"aux_loss_weight": 0.0},
-    "weak_aux": {"aux_loss_weight": 0.1},
+    "mid_aux": {"aux_loss_weight": 0.2},
     "strong_aux": {"aux_loss_weight": 0.3},
 }
 
 
 def run_ablation(base_config_path: str, seeds: list[int], device: str) -> dict:
     base_config = yaml.safe_load(Path(base_config_path).read_text(encoding="utf-8"))
-    temp_root = Path("outputs/ablate_structure_aware_v1")
+    temp_root = Path("outputs/current_mainline/ablate_structure_aware_v1")
     temp_root.mkdir(parents=True, exist_ok=True)
     summary = {"base_config_path": base_config_path, "seeds": seeds, "ablations": {}}
 
@@ -31,7 +31,7 @@ def run_ablation(base_config_path: str, seeds: list[int], device: str) -> dict:
             config["seed"] = seed
             for k, v in overrides.items():
                 config["train"][k] = v
-            config["paths"]["output_dir"] = f"outputs/ablate_structure_aware_v1/{ablation_name}_seed{seed}"
+            config["paths"]["output_dir"] = f"outputs/current_mainline/ablate_structure_aware_v1/{ablation_name}_seed{seed}"
 
             temp_config_path = temp_root / f"{ablation_name}_seed{seed}.yaml"
             temp_config_path.write_text(
@@ -42,7 +42,7 @@ def run_ablation(base_config_path: str, seeds: list[int], device: str) -> dict:
             cmd = [
                 "python",
                 "-m",
-                "research.train_structure_aware",
+                "research.train",
                 "--config",
                 str(temp_config_path),
                 "--device",
@@ -74,14 +74,14 @@ def run_ablation(base_config_path: str, seeds: list[int], device: str) -> dict:
             "mean_test_loss": statistics.mean(losses),
         }
 
-    out_path = Path("outputs/ablate_structure_aware_v1_summary.json")
+    out_path = Path("outputs/current_mainline/ablate_structure_aware_v1_summary.json")
     out_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
     return summary
 
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--config", default="research_config_structure_aware.yaml")
+    parser.add_argument("--config", default="research_config.yaml")
     parser.add_argument("--seeds", nargs="+", type=int, default=[7, 21, 42])
     parser.add_argument("--device", choices=["auto", "cpu", "cuda"], default="cpu")
     args = parser.parse_args()
