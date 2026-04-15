@@ -1,0 +1,200 @@
+{
+  "base_config_path": "research_config.yaml",
+  "seeds": [
+    7,
+    21,
+    42,
+    123,
+    2026
+  ],
+  "ablations": {
+    "full": {
+      "overrides": {
+        "aux_loss_weight": 0.1
+      },
+      "runs": [
+        {
+          "seed": 7,
+          "test_loss": 1.921124596065945,
+          "test_c_index": 0.759766387667442,
+          "test_aux_loss": 0.002556341977065636,
+          "output_dir": "outputs/current_mainline/ablate_structure_aware_v1/full_seed7"
+        },
+        {
+          "seed": 21,
+          "test_loss": 1.9901897536383735,
+          "test_c_index": 0.7171631306154737,
+          "test_aux_loss": 0.0034923537634313105,
+          "output_dir": "outputs/current_mainline/ablate_structure_aware_v1/full_seed21"
+        },
+        {
+          "seed": 42,
+          "test_loss": 1.9769310368431938,
+          "test_c_index": 0.7476149435606468,
+          "test_aux_loss": 0.004627366001821226,
+          "output_dir": "outputs/current_mainline/ablate_structure_aware_v1/full_seed42"
+        },
+        {
+          "seed": 123,
+          "test_loss": 1.9972815487119886,
+          "test_c_index": 0.7197481752681358,
+          "test_aux_loss": 0.0034316998647732867,
+          "output_dir": "outputs/current_mainline/ablate_structure_aware_v1/full_seed123"
+        },
+        {
+          "seed": 2026,
+          "test_loss": 1.9245231575436061,
+          "test_c_index": 0.7298707176678118,
+          "test_aux_loss": 0.001983854932607048,
+          "output_dir": "outputs/current_mainline/ablate_structure_aware_v1/full_seed2026"
+        }
+      ],
+      "mean_test_c_index": 0.734832670955902,
+      "std_test_c_index": 0.018367446531995055,
+      "min_test_c_index": 0.7171631306154737,
+      "max_test_c_index": 0.759766387667442,
+      "mean_test_loss": 1.9620100185606215
+    },
+    "no_aux": {
+      "overrides": {
+        "aux_loss_weight": 0.0
+      },
+      "runs": [
+        {
+          "seed": 7,
+          "test_loss": 1.9632177432378133,
+          "test_c_index": 0.7519453546346129,
+          "test_aux_loss": 0.3540792875819736,
+          "output_dir": "outputs/current_mainline/ablate_structure_aware_v1/no_aux_seed7"
+        },
+        {
+          "seed": 21,
+          "test_loss": 1.993780329492357,
+          "test_c_index": 0.7156518967166082,
+          "test_aux_loss": 0.35187416540251837,
+          "output_dir": "outputs/current_mainline/ablate_structure_aware_v1/no_aux_seed21"
+        },
+        {
+          "seed": 42,
+          "test_loss": 1.959309779273139,
+          "test_c_index": 0.7453286410265618,
+          "test_aux_loss": 0.3523476779460907,
+          "output_dir": "outputs/current_mainline/ablate_structure_aware_v1/no_aux_seed42"
+        },
+        {
+          "seed": 123,
+          "test_loss": 1.9974215984344483,
+          "test_c_index": 0.7112581848905161,
+          "test_aux_loss": 0.35224468310674034,
+          "output_dir": "outputs/current_mainline/ablate_structure_aware_v1/no_aux_seed123"
+        },
+        {
+          "seed": 2026,
+          "test_loss": 1.939541268348694,
+          "test_c_index": 0.730920991551388,
+          "test_aux_loss": 0.35323449704382154,
+          "output_dir": "outputs/current_mainline/ablate_structure_aware_v1/no_aux_seed2026"
+        }
+      ],
+      "mean_test_c_index": 0.7310210137639374,
+      "std_test_c_index": 0.017813796669267735,
+      "min_test_c_index": 0.7112581848905161,
+      "max_test_c_index": 0.7519453546346129,
+      "mean_test_loss": 1.9706541437572904
+    },
+    "mid_aux": {
+      "overrides": {
+        "aux_loss_weight": 0.2
+      },
+      "runs": [
+        {
+          "seed": 7,
+          "test_loss": 1.9561792453130087,
+          "test_c_index": 0.756484043847586,
+          "test_aux_loss": 0.0028084055831034977,
+          "output_dir": "outputs/current_mainline/ablate_structure_aware_v1/mid_aux_seed7"
+        },
+        {
+          "seed": 21,
+          "test_loss": 1.9971025466918946,
+          "test_c_index": 0.7148342955642923,
+          "test_aux_loss": 0.005635718090666665,
+          "output_dir": "outputs/current_mainline/ablate_structure_aware_v1/mid_aux_seed21"
+        },
+        {
+          "seed": 42,
+          "test_loss": 1.9834851715299817,
+          "test_c_index": 0.745023401683006,
+          "test_aux_loss": 0.007029356735034122,
+          "output_dir": "outputs/current_mainline/ablate_structure_aware_v1/mid_aux_seed42"
+        },
+        {
+          "seed": 123,
+          "test_loss": 1.988354958428277,
+          "test_c_index": 0.7199887347743434,
+          "test_aux_loss": 0.004930509600995316,
+          "output_dir": "outputs/current_mainline/ablate_structure_aware_v1/mid_aux_seed123"
+        },
+        {
+          "seed": 2026,
+          "test_loss": 1.922651433944702,
+          "test_c_index": 0.7332072230990623,
+          "test_aux_loss": 0.005970692417273919,
+          "output_dir": "outputs/current_mainline/ablate_structure_aware_v1/mid_aux_seed2026"
+        }
+      ],
+      "mean_test_c_index": 0.733907539793658,
+      "std_test_c_index": 0.017257412486461753,
+      "min_test_c_index": 0.7148342955642923,
+      "max_test_c_index": 0.756484043847586,
+      "mean_test_loss": 1.9695546711815728
+    },
+    "strong_aux": {
+      "overrides": {
+        "aux_loss_weight": 0.3
+      },
+      "runs": [
+        {
+          "seed": 7,
+          "test_loss": 1.936919453408983,
+          "test_c_index": 0.752256611376151,
+          "test_aux_loss": 0.0051821979901029,
+          "output_dir": "outputs/current_mainline/ablate_structure_aware_v1/strong_aux_seed7"
+        },
+        {
+          "seed": 21,
+          "test_loss": 1.9900195254219903,
+          "test_c_index": 0.717434680456676,
+          "test_aux_loss": 0.004398887956307994,
+          "output_dir": "outputs/current_mainline/ablate_structure_aware_v1/strong_aux_seed21"
+        },
+        {
+          "seed": 42,
+          "test_loss": 1.9926023854149713,
+          "test_c_index": 0.7423241282723453,
+          "test_aux_loss": 0.0067885461470319165,
+          "output_dir": "outputs/current_mainline/ablate_structure_aware_v1/strong_aux_seed42"
+        },
+        {
+          "seed": 123,
+          "test_loss": 1.9827854951222739,
+          "test_c_index": 0.7213851533713534,
+          "test_aux_loss": 0.005615616175863478,
+          "output_dir": "outputs/current_mainline/ablate_structure_aware_v1/strong_aux_seed123"
+        },
+        {
+          "seed": 2026,
+          "test_loss": 1.943119043774075,
+          "test_c_index": 0.7263891467830285,
+          "test_aux_loss": 0.0026215879272462593,
+          "output_dir": "outputs/current_mainline/ablate_structure_aware_v1/strong_aux_seed2026"
+        }
+      ],
+      "mean_test_c_index": 0.7319579440519108,
+      "std_test_c_index": 0.014775099506311487,
+      "min_test_c_index": 0.717434680456676,
+      "max_test_c_index": 0.752256611376151,
+      "mean_test_loss": 1.9690891806284587
+    }
+  }
+}

@@ -1,0 +1,188 @@
+{
+  "config_path": "research_config.yaml",
+  "seeds": [
+    7,
+    21,
+    42,
+    123,
+    2026
+  ],
+  "variants": {
+    "original": {
+      "runs": [
+        {
+          "seed": 7,
+          "test_loss": 1.921124596065945,
+          "test_c_index": 0.759766387667442,
+          "test_aux_loss": 0.002556341977065636,
+          "output_dir": "outputs/graph_structure_tests/original_seed7"
+        },
+        {
+          "seed": 21,
+          "test_loss": 1.9901897536383735,
+          "test_c_index": 0.7171631306154737,
+          "test_aux_loss": 0.0034923537634313105,
+          "output_dir": "outputs/graph_structure_tests/original_seed21"
+        },
+        {
+          "seed": 42,
+          "test_loss": 1.9769310368431938,
+          "test_c_index": 0.7476149435606468,
+          "test_aux_loss": 0.004627366001821226,
+          "output_dir": "outputs/graph_structure_tests/original_seed42"
+        },
+        {
+          "seed": 123,
+          "test_loss": 1.9972815487119886,
+          "test_c_index": 0.7197481752681358,
+          "test_aux_loss": 0.0034316998647732867,
+          "output_dir": "outputs/graph_structure_tests/original_seed123"
+        },
+        {
+          "seed": 2026,
+          "test_loss": 1.9245231575436061,
+          "test_c_index": 0.7298707176678118,
+          "test_aux_loss": 0.001983854932607048,
+          "output_dir": "outputs/graph_structure_tests/original_seed2026"
+        }
+      ],
+      "mean_test_c_index": 0.7348326709559021,
+      "std_test_c_index": 0.018367446531995055,
+      "min_test_c_index": 0.7171631306154737,
+      "max_test_c_index": 0.759766387667442,
+      "mean_test_loss": 1.9620100185606215
+    },
+    "shuffle_weights": {
+      "runs": [
+        {
+          "seed": 7,
+          "test_loss": 1.9712420596016778,
+          "test_c_index": 0.7357147303667736,
+          "test_aux_loss": 0.006400699509928624,
+          "output_dir": "outputs/graph_structure_tests/shuffle_weights_seed7"
+        },
+        {
+          "seed": 21,
+          "test_loss": 2.02236790921953,
+          "test_c_index": 0.7026765369130686,
+          "test_aux_loss": 0.005059242879764901,
+          "output_dir": "outputs/graph_structure_tests/shuffle_weights_seed21"
+        },
+        {
+          "seed": 42,
+          "test_loss": 2.0018860710991753,
+          "test_c_index": 0.7230820794579906,
+          "test_aux_loss": 0.006071099349194102,
+          "output_dir": "outputs/graph_structure_tests/shuffle_weights_seed42"
+        },
+        {
+          "seed": 123,
+          "test_loss": 2.0395400683085123,
+          "test_c_index": 0.7020171794691262,
+          "test_aux_loss": 0.005511045176535845,
+          "output_dir": "outputs/graph_structure_tests/shuffle_weights_seed123"
+        },
+        {
+          "seed": 2026,
+          "test_loss": 1.9832496775521173,
+          "test_c_index": 0.7136349921084393,
+          "test_aux_loss": 0.005837071531762679,
+          "output_dir": "outputs/graph_structure_tests/shuffle_weights_seed2026"
+        }
+      ],
+      "mean_test_c_index": 0.7154251036630798,
+      "std_test_c_index": 0.014281116157774993,
+      "min_test_c_index": 0.7020171794691262,
+      "max_test_c_index": 0.7357147303667736,
+      "mean_test_loss": 2.0036571571562023
+    },
+    "shuffle_edges": {
+      "runs": [
+        {
+          "seed": 7,
+          "test_loss": 1.9899355438020494,
+          "test_c_index": 0.7344017928388312,
+          "test_aux_loss": 0.005913258028320141,
+          "output_dir": "outputs/graph_structure_tests/shuffle_edges_seed7"
+        },
+        {
+          "seed": 21,
+          "test_loss": 2.0241535319222344,
+          "test_c_index": 0.7029894095561932,
+          "test_aux_loss": 0.008136402080870337,
+          "output_dir": "outputs/graph_structure_tests/shuffle_edges_seed21"
+        },
+        {
+          "seed": 42,
+          "test_loss": 2.003033820788066,
+          "test_c_index": 0.7205683436875306,
+          "test_aux_loss": 0.00814493874915772,
+          "output_dir": "outputs/graph_structure_tests/shuffle_edges_seed42"
+        },
+        {
+          "seed": 123,
+          "test_loss": 2.0390420304404366,
+          "test_c_index": 0.7009493299537657,
+          "test_aux_loss": 0.006627737565173043,
+          "output_dir": "outputs/graph_structure_tests/shuffle_edges_seed123"
+        },
+        {
+          "seed": 2026,
+          "test_loss": 1.9696230861875745,
+          "test_c_index": 0.7168554451768638,
+          "test_aux_loss": 0.009681884872002734,
+          "output_dir": "outputs/graph_structure_tests/shuffle_edges_seed2026"
+        }
+      ],
+      "mean_test_c_index": 0.7151528642426369,
+      "std_test_c_index": 0.013715296822903232,
+      "min_test_c_index": 0.7009493299537657,
+      "max_test_c_index": 0.7344017928388312,
+      "mean_test_loss": 2.005157602628072
+    },
+    "shuffle_edges_and_weights": {
+      "runs": [
+        {
+          "seed": 7,
+          "test_loss": 1.98899159166548,
+          "test_c_index": 0.7363938359846749,
+          "test_aux_loss": 0.008178563622964753,
+          "output_dir": "outputs/graph_structure_tests/shuffle_edges_and_weights_seed7"
+        },
+        {
+          "seed": 21,
+          "test_loss": 2.0382603221469457,
+          "test_c_index": 0.6968086990401303,
+          "test_aux_loss": 0.006242964370176196,
+          "output_dir": "outputs/graph_structure_tests/shuffle_edges_and_weights_seed21"
+        },
+        {
+          "seed": 42,
+          "test_loss": 2.010110526614719,
+          "test_c_index": 0.7215977783363857,
+          "test_aux_loss": 0.007274033739748928,
+          "output_dir": "outputs/graph_structure_tests/shuffle_edges_and_weights_seed42"
+        },
+        {
+          "seed": 123,
+          "test_loss": 2.0387771871354845,
+          "test_c_index": 0.7014773874064165,
+          "test_aux_loss": 0.005599198821518156,
+          "output_dir": "outputs/graph_structure_tests/shuffle_edges_and_weights_seed123"
+        },
+        {
+          "seed": 2026,
+          "test_loss": 1.9636209501160515,
+          "test_c_index": 0.7132810324018197,
+          "test_aux_loss": 0.005503286379906866,
+          "output_dir": "outputs/graph_structure_tests/shuffle_edges_and_weights_seed2026"
+        }
+      ],
+      "mean_test_c_index": 0.7139117466338855,
+      "std_test_c_index": 0.015906325406447937,
+      "min_test_c_index": 0.6968086990401303,
+      "max_test_c_index": 0.7363938359846749,
+      "mean_test_loss": 2.007952115535736
+    }
+  }
+}
