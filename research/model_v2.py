@@ -142,28 +142,62 @@ class DeepStructureAwareGATCoxModelV2(nn.Module):
         self.convs = nn.ModuleList()
         self.residuals = nn.ModuleList()
         self.norms = nn.ModuleList()
+        self.layer_pool_gates = nn.ModuleList()
+        self.layer_pool_projs = nn.ModuleList()
+        self.layer_dims: List[int] = []
+
         in_dim = hidden_dim
         for layer_idx in range(num_layers):
             out_dim = hidden_dim
             concat = layer_idx != num_layers - 1
             layer_heads = heads if concat else 1
-            conv = GATConv(in_dim, out_dim, heads=layer_heads, concat=concat, dropout=dropout, edge_dim=edge_hidden_dim)
+            conv = GATConv(
+                in_dim,
+                out_dim,
+                heads=layer_heads,
+                concat=concat,
+                dropout=dropout,
+                edge_dim=edge_hidden_dim,
+            )
             final_dim = out_dim * layer_heads if concat else out_dim
+
             self.convs.append(conv)
             self.residuals.append(nn.Linear(in_dim, final_dim))
             self.norms.append(nn.LayerNorm(final_dim))
+            self.layer_dims.append(final_dim)
+
+            self.layer_pool_gates.append(
+                GlobalAttention(
+                    gate_nn=nn.Sequential(
+                        nn.Linear(final_dim, max(16, final_dim // 2)),
+                        nn.GELU(),
+                        nn.Linear(max(16, final_dim // 2), 1),
+                    )
+                )
+            )
+
             in_dim = final_dim
 
         self.final_node_dim = in_dim
-        self.pool_gate = GlobalAttention(
-            gate_nn=nn.Sequential(
-                nn.Linear(self.final_node_dim, max(16, self.final_node_dim // 2)),
-                nn.GELU(),
-                nn.Linear(max(16, self.final_node_dim // 2), 1),
-            )
-        )
         self.graph_dim = self.final_node_dim * 3
-        self.layer_attention = nn.MultiheadAttention(self.graph_dim, num_heads=layer_attn_heads, dropout=dropout, batch_first=True)
+
+        for layer_dim in self.layer_dims:
+            pooled_dim = layer_dim * 3
+            self.layer_pool_projs.append(
+                nn.Sequential(
+                    nn.Linear(pooled_dim, self.graph_dim),
+                    nn.LayerNorm(self.graph_dim),
+                    nn.GELU(),
+                    nn.Dropout(dropout),
+                )
+            )
+
+        self.layer_attention = nn.MultiheadAttention(
+            self.graph_dim,
+            num_heads=layer_attn_heads,
+            dropout=dropout,
+            batch_first=True,
+        )
         self.jump_proj = nn.Sequential(
             nn.Linear(self.graph_dim * 2, self.graph_dim),
             nn.LayerNorm(self.graph_dim),
@@ -184,9 +218,21 @@ class DeepStructureAwareGATCoxModelV2(nn.Module):
         )
         self.risk_head = nn.Linear(hidden_dim, 1)
 
-        self.graph_structure_head = nn.Sequential(nn.Linear(self.graph_dim, hidden_dim), nn.GELU(), nn.Linear(hidden_dim, 1))
-        self.graph_cluster_head = nn.Sequential(nn.Linear(self.graph_dim, hidden_dim), nn.GELU(), nn.Linear(hidden_dim, 1))
-        self.node_target_head = nn.Sequential(nn.Linear(self.final_node_dim + self.structure_dim, hidden_dim), nn.GELU(), nn.Linear(hidden_dim, 4))
+        self.graph_structure_head = nn.Sequential(
+            nn.Linear(self.graph_dim, hidden_dim),
+            nn.GELU(),
+            nn.Linear(hidden_dim, 1),
+        )
+        self.graph_cluster_head = nn.Sequential(
+            nn.Linear(self.graph_dim, hidden_dim),
+            nn.GELU(),
+            nn.Linear(hidden_dim, 1),
+        )
+        self.node_target_head = nn.Sequential(
+            nn.Linear(self.final_node_dim + self.structure_dim, hidden_dim),
+            nn.GELU(),
+            nn.Linear(hidden_dim, 4),
+        )
         self.aux_loss_fn = nn.MSELoss()
 
     def _edge_features(self, edge_attr: torch.Tensor, augment: bool = False) -> torch.Tensor:
@@ -196,11 +242,18 @@ class DeepStructureAwareGATCoxModelV2(nn.Module):
             edge_feat = edge_feat + 0.03 * torch.randn_like(edge_feat)
         return self.edge_encoder(edge_feat)
 
-    def _pool_graph(self, node_repr: torch.Tensor, batch_index: torch.Tensor) -> torch.Tensor:
+    def _pool_graph(
+        self,
+        node_repr: torch.Tensor,
+        batch_index: torch.Tensor,
+        pool_gate: nn.Module,
+        pool_proj: nn.Module,
+    ) -> torch.Tensor:
         mean_pool = global_mean_pool(node_repr, batch_index)
         max_pool = global_max_pool(node_repr, batch_index)
-        att_pool = self.pool_gate(node_repr, batch_index)
-        return torch.cat([mean_pool, max_pool, att_pool], dim=1)
+        att_pool = pool_gate(node_repr, batch_index)
+        pooled = torch.cat([mean_pool, max_pool, att_pool], dim=1)
+        return pool_proj(pooled)
 
     def _encode(self, batch, augment: bool = False):
         node_struct, node_targets, graph_targets, graph_cluster_targets = _compute_structure_targets(batch)
@@ -213,14 +266,20 @@ class DeepStructureAwareGATCoxModelV2(nn.Module):
 
         pooled_layers = []
         layer_states = []
-        for conv, residual, norm in zip(self.convs, self.residuals, self.norms):
+        for conv, residual, norm, pool_gate, pool_proj in zip(
+            self.convs,
+            self.residuals,
+            self.norms,
+            self.layer_pool_gates,
+            self.layer_pool_projs,
+        ):
             h = conv(x, batch.edge_index, edge_emb)
             h = norm(h + residual(x))
             h = F.gelu(h)
             h = self.dropout(h)
             x = h
             layer_states.append(h)
-            pooled_layers.append(self._pool_graph(h, batch.batch))
+            pooled_layers.append(self._pool_graph(h, batch.batch, pool_gate, pool_proj))
 
         layer_stack = torch.stack(pooled_layers, dim=1)
         attn_layers, _ = self.layer_attention(layer_stack, layer_stack, layer_stack, need_weights=False)
@@ -238,14 +297,19 @@ class DeepStructureAwareGATCoxModelV2(nn.Module):
         return 0.5 * (F.cross_entropy(logits, labels) + F.cross_entropy(logits.t(), labels))
 
     def forward(self, batch, compute_contrastive: bool = False) -> Dict[str, torch.Tensor]:
-        graph_embedding, final_node, node_struct, node_targets, graph_targets, graph_cluster_targets = self._encode(batch, augment=False)
+        graph_embedding, final_node, node_struct, node_targets, graph_targets, graph_cluster_targets = self._encode(
+            batch,
+            augment=False,
+        )
         clinical = batch.clinical.view(graph_embedding.size(0), -1)
         metabolites = batch.metabolites.view(graph_embedding.size(0), -1)
         fused = torch.cat([graph_embedding, clinical, metabolites], dim=1)
         latent = self.fusion(fused)
         risk = self.risk_head(latent).squeeze(-1)
 
-        graph_aux_loss = self.aux_loss_fn(self.graph_structure_head(graph_embedding), graph_targets) + self.aux_loss_fn(self.graph_cluster_head(graph_embedding), graph_cluster_targets)
+        graph_aux_loss = self.aux_loss_fn(self.graph_structure_head(graph_embedding), graph_targets) + self.aux_loss_fn(
+            self.graph_cluster_head(graph_embedding), graph_cluster_targets
+        )
         node_aux_loss = self.aux_loss_fn(self.node_target_head(torch.cat([final_node, node_struct], dim=1)), node_targets)
 
         if compute_contrastive:
