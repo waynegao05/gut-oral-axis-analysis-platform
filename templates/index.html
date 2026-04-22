@@ -1,54 +1,192 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ app_name }}</title>
-    <style>
-      body { font-family: Arial, sans-serif; max-width: 920px; margin: 32px auto; padding: 0 16px; }
-      textarea { width: 100%; min-height: 260px; font-family: monospace; }
-      button { margin-top: 12px; padding: 10px 18px; }
-      pre { background: #f5f5f5; padding: 16px; overflow: auto; }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
   </head>
   <body>
-    <h1>{{ app_name }}</h1>
-    <p>Paste JSON payload and click Analyze.</p>
-    <textarea id="payload">{
-  "microbes": {
-    "Fusobacterium": 0.18,
-    "Porphyromonas": 0.15,
-    "Prevotella": 0.10,
-    "Streptococcus": 0.09,
-    "Lactobacillus": 0.02
-  },
-  "clinical": {
-    "age": 52,
-    "bmi": 24.5,
-    "smoking": 1,
-    "family_history": 1
-  },
-  "metabolites": {
-    "bile_acids": 0.8,
-    "scfa": 0.3,
-    "tryptophan_metabolism": 0.7
-  }
-}</textarea>
-    <br>
-    <button onclick="runAnalysis()">Analyze</button>
-    <h2>Output</h2>
-    <pre id="output"></pre>
-    <script>
-      async function runAnalysis() {
-        const payload = JSON.parse(document.getElementById('payload').value);
-        const res = await fetch('/analyze', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        const data = await res.json();
-        document.getElementById('output').textContent = JSON.stringify(data, null, 2);
-      }
-    </script>
+    <div class="page-shell">
+      <header class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Research Prototype</p>
+          <h1>{{ app_name }}</h1>
+          <p class="hero-text">
+            用于肠口轴风险演示的轻量可视化页面。支持上传 JSON 自动回填，也支持手动填写微生物、临床和代谢特征后直接生成风险值与建议内容。
+          </p>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat-label">当前输出</span>
+          <strong>风险值 + 风险分层 + 建议内容</strong>
+          <p>适合作为演示页、汇报页和研究原型交互层，不替代正式临床决策。</p>
+        </div>
+      </header>
+
+      <main class="layout">
+        <section class="panel panel-import">
+          <div class="panel-header">
+            <h2>JSON 导入</h2>
+            <p>支持标准 JSON 或原始临床 JSON。导入后会自动标准化并填入下方表单。</p>
+          </div>
+
+          <div class="import-actions">
+            <label class="file-trigger">
+              <input type="file" id="json-file-input" accept=".json,application/json">
+              <span>上传 JSON 文件</span>
+            </label>
+            <button type="button" class="ghost-button" id="load-canonical-example">载入标准示例</button>
+            <button type="button" class="ghost-button" id="load-raw-example">载入临床示例</button>
+          </div>
+
+          <label class="field-label" for="json-payload">JSON 内容</label>
+          <textarea id="json-payload" class="json-textarea" spellcheck="false"></textarea>
+
+          <div class="button-row">
+            <button type="button" class="primary-button" id="standardize-json">导入并回填表单</button>
+            <button type="button" class="secondary-button" id="clear-json">清空 JSON</button>
+          </div>
+
+          <div class="status-box" id="import-status">等待导入 JSON。</div>
+
+          <details class="details-panel">
+            <summary>标准化后预览</summary>
+            <pre id="standardized-preview" class="code-block"></pre>
+          </details>
+        </section>
+
+        <section class="panel panel-form">
+          <div class="panel-header">
+            <h2>输入表单</h2>
+            <p>可以在导入后继续手动调整。点击“运行分析”时，系统会以表单中的当前值为准。</p>
+          </div>
+
+          <div class="section-block">
+            <div class="section-title-row">
+              <h3>口腔微生物</h3>
+              <button type="button" class="ghost-button small-button" id="add-microbe-row">添加自定义菌种</button>
+            </div>
+            <div class="field-grid microbes-grid">
+              <label class="input-card">
+                <span>Fusobacterium</span>
+                <input type="number" id="microbe-Fusobacterium" step="0.0001" min="0">
+              </label>
+              <label class="input-card">
+                <span>Porphyromonas</span>
+                <input type="number" id="microbe-Porphyromonas" step="0.0001" min="0">
+              </label>
+              <label class="input-card">
+                <span>Prevotella</span>
+                <input type="number" id="microbe-Prevotella" step="0.0001" min="0">
+              </label>
+              <label class="input-card">
+                <span>Streptococcus</span>
+                <input type="number" id="microbe-Streptococcus" step="0.0001" min="0">
+              </label>
+              <label class="input-card">
+                <span>Lactobacillus</span>
+                <input type="number" id="microbe-Lactobacillus" step="0.0001" min="0">
+              </label>
+            </div>
+            <div id="extra-microbe-rows" class="extra-microbes"></div>
+          </div>
+
+          <div class="section-block">
+            <h3>临床特征</h3>
+            <div class="field-grid">
+              <label class="input-card">
+                <span>年龄</span>
+                <input type="number" id="clinical-age" step="1" min="0">
+              </label>
+              <label class="input-card">
+                <span>BMI</span>
+                <input type="number" id="clinical-bmi" step="0.1" min="0">
+              </label>
+              <label class="input-card">
+                <span>吸烟</span>
+                <select id="clinical-smoking">
+                  <option value="0">否</option>
+                  <option value="1">是</option>
+                </select>
+              </label>
+              <label class="input-card">
+                <span>家族史</span>
+                <select id="clinical-family-history">
+                  <option value="0">否</option>
+                  <option value="1">是</option>
+                </select>
+              </label>
+            </div>
+          </div>
+
+          <div class="section-block">
+            <h3>代谢特征</h3>
+            <div class="field-grid">
+              <label class="input-card">
+                <span>Bile Acids</span>
+                <input type="number" id="metabolite-bile-acids" step="0.0001">
+              </label>
+              <label class="input-card">
+                <span>SCFA</span>
+                <input type="number" id="metabolite-scfa" step="0.0001">
+              </label>
+              <label class="input-card">
+                <span>Tryptophan Metabolism</span>
+                <input type="number" id="metabolite-tryptophan" step="0.0001">
+              </label>
+            </div>
+          </div>
+
+          <div class="button-row">
+            <button type="button" class="primary-button" id="analyze-form">运行分析</button>
+            <button type="button" class="secondary-button" id="reset-form">重置为标准示例</button>
+          </div>
+        </section>
+
+        <section class="panel panel-result">
+          <div class="panel-header">
+            <h2>结果输出</h2>
+            <p>页面会展示风险值、风险等级、关键菌群和原型建议内容。</p>
+          </div>
+
+          <div class="risk-banner risk-banner-empty" id="risk-banner">
+            <span class="risk-kicker">尚未分析</span>
+            <strong id="risk-score">--</strong>
+            <span id="risk-level">等待输入</span>
+          </div>
+
+          <div class="summary-grid">
+            <article class="summary-card">
+              <span class="summary-label">建议条目数</span>
+              <strong id="recommendation-count">0</strong>
+              <p id="analysis-source">尚未生成结果。</p>
+            </article>
+            <article class="summary-card">
+              <span class="summary-label">报告保存位置</span>
+              <strong id="saved-path">--</strong>
+              <p>调用现有后端分析流程并保留导出能力。</p>
+            </article>
+          </div>
+
+          <div class="result-columns">
+            <div class="result-card">
+              <h3>建议内容</h3>
+              <ul id="recommendation-list" class="result-list"></ul>
+            </div>
+            <div class="result-card">
+              <h3>Top 微生物</h3>
+              <ul id="microbe-list" class="result-list compact-list"></ul>
+            </div>
+          </div>
+
+          <details class="details-panel" open>
+            <summary>原始返回 JSON</summary>
+            <pre id="result-json" class="code-block"></pre>
+          </details>
+        </section>
+      </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
   </body>
 </html>
