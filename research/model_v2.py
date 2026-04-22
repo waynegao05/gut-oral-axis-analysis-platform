@@ -5,7 +5,8 @@ from typing import Dict, List, Tuple
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torch_geometric.nn import GATConv, GlobalAttention, global_max_pool, global_mean_pool
+from torch_geometric.nn import GATConv, global_max_pool, global_mean_pool
+from torch_geometric.nn.aggr import AttentionalAggregation
 
 
 def _compute_structure_targets(batch) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
@@ -119,11 +120,17 @@ class DeepStructureAwareGATCoxModelV2(nn.Module):
         num_layers: int = 4,
         layer_attn_heads: int = 4,
         contrastive_temperature: float = 0.2,
+        survival_head_type: str = "cox",
+        num_time_bins: int = 12,
+        use_layer_attention: bool = False,
     ) -> None:
         super().__init__()
         self.structure_dim = 5
         self.num_layers = num_layers
         self.contrastive_temperature = contrastive_temperature
+        self.survival_head_type = survival_head_type
+        self.num_time_bins = num_time_bins
+        self.use_layer_attention = use_layer_attention
         self.dropout = nn.Dropout(dropout)
 
         self.node_proj = nn.Sequential(
@@ -167,7 +174,7 @@ class DeepStructureAwareGATCoxModelV2(nn.Module):
             self.layer_dims.append(final_dim)
 
             self.layer_pool_gates.append(
-                GlobalAttention(
+                AttentionalAggregation(
                     gate_nn=nn.Sequential(
                         nn.Linear(final_dim, max(16, final_dim // 2)),
                         nn.GELU(),
@@ -192,18 +199,22 @@ class DeepStructureAwareGATCoxModelV2(nn.Module):
                 )
             )
 
-        self.layer_attention = nn.MultiheadAttention(
-            self.graph_dim,
-            num_heads=layer_attn_heads,
-            dropout=dropout,
-            batch_first=True,
-        )
-        self.jump_proj = nn.Sequential(
-            nn.Linear(self.graph_dim * 2, self.graph_dim),
-            nn.LayerNorm(self.graph_dim),
-            nn.GELU(),
-            nn.Dropout(dropout),
-        )
+        if self.use_layer_attention:
+            self.layer_attention = nn.MultiheadAttention(
+                self.graph_dim,
+                num_heads=layer_attn_heads,
+                dropout=dropout,
+                batch_first=True,
+            )
+            self.jump_proj = nn.Sequential(
+                nn.Linear(self.graph_dim * 2, self.graph_dim),
+                nn.LayerNorm(self.graph_dim),
+                nn.GELU(),
+                nn.Dropout(dropout),
+            )
+        else:
+            self.layer_attention = None
+            self.jump_proj = None
 
         fusion_dim = self.graph_dim + clinical_dim + metabolite_dim
         self.fusion = nn.Sequential(
@@ -216,7 +227,20 @@ class DeepStructureAwareGATCoxModelV2(nn.Module):
             nn.GELU(),
             nn.Dropout(dropout),
         )
-        self.risk_head = nn.Linear(hidden_dim, 1)
+        if survival_head_type == "cox":
+            self.risk_head = nn.Linear(hidden_dim, 1)
+            self.time_head = None
+        elif survival_head_type == "discrete_time":
+            self.risk_head = None
+            self.time_head = nn.Sequential(
+                nn.Linear(hidden_dim, hidden_dim),
+                nn.LayerNorm(hidden_dim),
+                nn.GELU(),
+                nn.Dropout(dropout),
+                nn.Linear(hidden_dim, num_time_bins),
+            )
+        else:
+            raise ValueError(f"Unsupported survival_head_type: {survival_head_type}")
 
         self.graph_structure_head = nn.Sequential(
             nn.Linear(self.graph_dim, hidden_dim),
@@ -251,7 +275,7 @@ class DeepStructureAwareGATCoxModelV2(nn.Module):
     ) -> torch.Tensor:
         mean_pool = global_mean_pool(node_repr, batch_index)
         max_pool = global_max_pool(node_repr, batch_index)
-        att_pool = pool_gate(node_repr, batch_index)
+        att_pool = pool_gate(node_repr, index=batch_index)
         pooled = torch.cat([mean_pool, max_pool, att_pool], dim=1)
         return pool_proj(pooled)
 
@@ -281,10 +305,13 @@ class DeepStructureAwareGATCoxModelV2(nn.Module):
             layer_states.append(h)
             pooled_layers.append(self._pool_graph(h, batch.batch, pool_gate, pool_proj))
 
-        layer_stack = torch.stack(pooled_layers, dim=1)
-        attn_layers, _ = self.layer_attention(layer_stack, layer_stack, layer_stack, need_weights=False)
-        jump_embedding = attn_layers.mean(dim=1)
-        graph_embedding = self.jump_proj(torch.cat([pooled_layers[-1], jump_embedding], dim=1))
+        if self.use_layer_attention:
+            layer_stack = torch.stack(pooled_layers, dim=1)
+            attn_layers, _ = self.layer_attention(layer_stack, layer_stack, layer_stack, need_weights=False)
+            jump_embedding = attn_layers.mean(dim=1)
+            graph_embedding = self.jump_proj(torch.cat([pooled_layers[-1], jump_embedding], dim=1))
+        else:
+            graph_embedding = pooled_layers[-1]
         return graph_embedding, layer_states[-1], node_struct, node_targets, graph_targets, graph_cluster_targets
 
     def _contrastive_loss(self, z1: torch.Tensor, z2: torch.Tensor) -> torch.Tensor:
@@ -305,7 +332,14 @@ class DeepStructureAwareGATCoxModelV2(nn.Module):
         metabolites = batch.metabolites.view(graph_embedding.size(0), -1)
         fused = torch.cat([graph_embedding, clinical, metabolites], dim=1)
         latent = self.fusion(fused)
-        risk = self.risk_head(latent).squeeze(-1)
+        if self.survival_head_type == "cox":
+            risk = self.risk_head(latent).squeeze(-1)
+            time_logits = None
+        else:
+            time_logits = self.time_head(latent)
+            hazard = torch.sigmoid(time_logits).clamp(min=1e-6, max=1.0 - 1e-6)
+            survival = torch.cumprod(1.0 - hazard, dim=1)
+            risk = -survival.sum(dim=1)
 
         graph_aux_loss = self.aux_loss_fn(self.graph_structure_head(graph_embedding), graph_targets) + self.aux_loss_fn(
             self.graph_cluster_head(graph_embedding), graph_cluster_targets
@@ -322,6 +356,7 @@ class DeepStructureAwareGATCoxModelV2(nn.Module):
         aux_loss = graph_aux_loss + node_aux_loss
         return {
             "risk": risk,
+            "time_logits": time_logits,
             "graph_embedding": graph_embedding,
             "latent": latent,
             "graph_aux_loss": graph_aux_loss,

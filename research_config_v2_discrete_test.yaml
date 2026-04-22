@@ -10,7 +10,6 @@ train:
   edge_hidden_dim: 24
   num_layers: 4
   layer_attn_heads: 4
-  use_layer_attention: false
   contrastive_temperature: 0.2
   survival_head_type: discrete_time
   num_time_bins: 12
@@ -31,7 +30,7 @@ paths:
   clinical_csv: data/research/topology_v6_sample_clinical_table.csv
   metabolite_csv: data/research/topology_v6_sample_metabolite_table.csv
   label_csv: data/research/topology_v6_sample_label_table.csv
-  output_dir: outputs/current_mainline_v2/research
+  output_dir: outputs/current_mainline_v2/discrete_time_smoke/research
 graph_preprocess:
   keep_top_k_edges:
   min_edge_weight:
