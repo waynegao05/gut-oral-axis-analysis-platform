@@ -5,22 +5,33 @@ import copy
 import json
 import statistics
 import subprocess
+import sys
 from pathlib import Path
 
 import yaml
 
 
-def run_repeated_training(base_config_path: str, seeds: list[int], device: str) -> dict:
+def run_repeated_training(
+    base_config_path: str,
+    seeds: list[int],
+    device: str,
+    split_seed: int | None = None,
+    output_root: str = "outputs/current_mainline_v2",
+) -> dict:
     base_config = yaml.safe_load(Path(base_config_path).read_text(encoding="utf-8"))
     summary = []
 
-    temp_dir = Path("outputs/current_mainline_v2/repeat_runs")
+    output_root_path = Path(output_root)
+    temp_dir = output_root_path / "repeat_runs"
     temp_dir.mkdir(parents=True, exist_ok=True)
 
     for seed in seeds:
         config = copy.deepcopy(base_config)
         config["seed"] = seed
-        config["paths"]["output_dir"] = f"outputs/current_mainline_v2/research_seed{seed}"
+        if split_seed is not None:
+            config.setdefault("train", {})
+            config["train"]["split_seed"] = split_seed
+        config["paths"]["output_dir"] = str((output_root_path / f"research_seed{seed}").as_posix())
 
         temp_config_path = temp_dir / f"temp_config_seed{seed}.yaml"
         temp_config_path.write_text(
@@ -29,7 +40,7 @@ def run_repeated_training(base_config_path: str, seeds: list[int], device: str) 
         )
 
         cmd = [
-            "python",
+            sys.executable,
             "-m",
             "research.train_v2",
             "--config",
@@ -37,6 +48,8 @@ def run_repeated_training(base_config_path: str, seeds: list[int], device: str) 
             "--device",
             device,
         ]
+        if split_seed is not None:
+            cmd.extend(["--split-seed", str(split_seed)])
         subprocess.run(cmd, check=True)
 
         metrics_path = Path(config["paths"]["output_dir"]) / "test_metrics.json"
@@ -59,6 +72,8 @@ def run_repeated_training(base_config_path: str, seeds: list[int], device: str) 
     result = {
         "base_config_path": base_config_path,
         "seeds": seeds,
+        "split_seed": split_seed,
+        "output_root": output_root,
         "runs": summary,
         "mean_test_c_index": statistics.mean(c_indices),
         "std_test_c_index": statistics.stdev(c_indices) if len(c_indices) > 1 else 0.0,
@@ -67,7 +82,7 @@ def run_repeated_training(base_config_path: str, seeds: list[int], device: str) 
         "mean_test_loss": statistics.mean(losses),
     }
 
-    out_path = Path("outputs/current_mainline_v2/research_repeat_runs_summary.json")
+    out_path = output_root_path / "research_repeat_runs_summary.json"
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(json.dumps(result, indent=2), encoding="utf-8")
     print(json.dumps(result, indent=2))
@@ -79,9 +94,17 @@ def main() -> None:
     parser.add_argument("--config", default="research_config_v2.yaml")
     parser.add_argument("--seeds", nargs="+", type=int, default=[7, 21, 42, 123, 2026])
     parser.add_argument("--device", choices=["auto", "cpu", "cuda"], default="cpu")
+    parser.add_argument("--split-seed", type=int, default=None)
+    parser.add_argument("--output-root", default="outputs/current_mainline_v2")
     args = parser.parse_args()
 
-    run_repeated_training(args.config, args.seeds, args.device)
+    run_repeated_training(
+        args.config,
+        args.seeds,
+        args.device,
+        split_seed=args.split_seed,
+        output_root=args.output_root,
+    )
 
 
 if __name__ == "__main__":

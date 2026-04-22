@@ -4,6 +4,7 @@ import argparse
 import copy
 import json
 import subprocess
+import sys
 from pathlib import Path
 from typing import Dict, List
 
@@ -61,34 +62,44 @@ def perturb_graph_dataframe(graph_df: pd.DataFrame, variant: str, seed: int) -> 
     return pd.concat(out_groups, ignore_index=True)
 
 
-def run_graph_structure_tests(config_path: str, seeds: List[int], variants: List[str], device: str) -> dict:
+def run_graph_structure_tests(
+    config_path: str,
+    seeds: List[int],
+    variants: List[str],
+    device: str,
+    split_seed: int | None = None,
+    output_root: str = "outputs/current_mainline_v2/graph_structure_tests",
+) -> dict:
     base_config = yaml.safe_load(Path(config_path).read_text(encoding="utf-8"))
     base_graph_df = pd.read_csv(base_config["paths"]["graph_csv"])
 
-    temp_root = Path("outputs/current_mainline_v2/graph_structure_tests")
-    temp_root.mkdir(parents=True, exist_ok=True)
+    output_root_path = Path(output_root)
+    output_root_path.mkdir(parents=True, exist_ok=True)
 
     summary: Dict[str, List[dict]] = {variant: [] for variant in variants}
 
     for variant in variants:
         for seed in seeds:
-            graph_variant_path = temp_root / f"graph_{variant}_seed{seed}.csv"
+            graph_variant_path = output_root_path / f"graph_{variant}_seed{seed}.csv"
             perturbed_df = perturb_graph_dataframe(base_graph_df, variant=variant, seed=seed)
             perturbed_df.to_csv(graph_variant_path, index=False)
 
             config = copy.deepcopy(base_config)
             config["seed"] = seed
+            if split_seed is not None:
+                config.setdefault("train", {})
+                config["train"]["split_seed"] = split_seed
             config["paths"]["graph_csv"] = str(graph_variant_path).replace("\\", "/")
-            config["paths"]["output_dir"] = f"outputs/current_mainline_v2/graph_structure_tests/{variant}_seed{seed}"
+            config["paths"]["output_dir"] = str((output_root_path / f"{variant}_seed{seed}").as_posix())
 
-            temp_config_path = temp_root / f"config_{variant}_seed{seed}.yaml"
+            temp_config_path = output_root_path / f"config_{variant}_seed{seed}.yaml"
             temp_config_path.write_text(
                 yaml.safe_dump(config, allow_unicode=True, sort_keys=False),
                 encoding="utf-8",
             )
 
             cmd = [
-                "python",
+                sys.executable,
                 "-m",
                 "research.train_v2",
                 "--config",
@@ -96,6 +107,8 @@ def run_graph_structure_tests(config_path: str, seeds: List[int], variants: List
                 "--device",
                 device,
             ]
+            if split_seed is not None:
+                cmd.extend(["--split-seed", str(split_seed)])
             subprocess.run(cmd, check=True)
 
             metrics_path = Path(config["paths"]["output_dir"]) / "test_metrics.json"
@@ -111,7 +124,13 @@ def run_graph_structure_tests(config_path: str, seeds: List[int], variants: List
                 }
             )
 
-    aggregate = {"config_path": config_path, "seeds": seeds, "variants": {}}
+    aggregate = {
+        "config_path": config_path,
+        "seeds": seeds,
+        "split_seed": split_seed,
+        "output_root": output_root,
+        "variants": {},
+    }
     for variant, runs in summary.items():
         c_indices = [item["test_c_index"] for item in runs]
         losses = [item["test_loss"] for item in runs]
@@ -124,7 +143,7 @@ def run_graph_structure_tests(config_path: str, seeds: List[int], variants: List
             "mean_test_loss": float(np.mean(losses)),
         }
 
-    out_path = temp_root / "graph_structure_tests_summary.json"
+    out_path = output_root_path / "graph_structure_tests_summary.json"
     out_path.write_text(json.dumps(aggregate, indent=2), encoding="utf-8")
     print(json.dumps(aggregate, indent=2))
     return aggregate
@@ -140,9 +159,18 @@ def main() -> None:
         default=["original", "shuffle_weights", "shuffle_edges", "shuffle_edges_and_weights"],
     )
     parser.add_argument("--device", choices=["auto", "cpu", "cuda"], default="cpu")
+    parser.add_argument("--split-seed", type=int, default=None)
+    parser.add_argument("--output-root", default="outputs/current_mainline_v2/graph_structure_tests")
     args = parser.parse_args()
 
-    run_graph_structure_tests(args.config, args.seeds, args.variants, args.device)
+    run_graph_structure_tests(
+        args.config,
+        args.seeds,
+        args.variants,
+        args.device,
+        split_seed=args.split_seed,
+        output_root=args.output_root,
+    )
 
 
 if __name__ == "__main__":
