@@ -637,3 +637,9 @@ Clinical disclaimer:
 This repository is a research and demonstration platform. It is not a validated clinical decision system. Any medically meaningful conclusion requires real cohort design, external validation, and clinician review.
 
 本仓库是研究与演示平台，不是经过验证的临床决策系统。任何具有医学意义的结论都必须依赖真实队列设计、外部验证与临床审核。
+
+## Foud Support | 基金支持
+
+This research was supported by the Undergraduate Talented Innovation Education Program of Shenyang Pharmaceutical University, with the project number XH2025-06. We would like to express our gratitude.
+
+本研究受到沈阳药科大学本科生拔尖创新人才培养计划支持，项目编号XH2025-06，特此感谢。
