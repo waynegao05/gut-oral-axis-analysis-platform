@@ -1,0 +1,4344 @@
+{
+  "config_path": "research_config_v2.yaml",
+  "split": "test",
+  "split_seed": 42,
+  "num_models": 5,
+  "checkpoints": [
+    "outputs\\current_mainline_v2\\cox_fixed_split_repeat\\research_seed123\\best_model.pt",
+    "outputs\\current_mainline_v2\\cox_fixed_split_repeat\\research_seed2026\\best_model.pt",
+    "outputs\\current_mainline_v2\\cox_fixed_split_repeat\\research_seed21\\best_model.pt",
+    "outputs\\current_mainline_v2\\cox_fixed_split_repeat\\research_seed42\\best_model.pt",
+    "outputs\\current_mainline_v2\\cox_fixed_split_repeat\\research_seed7\\best_model.pt"
+  ],
+  "member_c_indices": {
+    "outputs\\current_mainline_v2\\cox_fixed_split_repeat\\research_seed123\\best_model.pt": 0.7373739679206632,
+    "outputs\\current_mainline_v2\\cox_fixed_split_repeat\\research_seed2026\\best_model.pt": 0.7351657318277005,
+    "outputs\\current_mainline_v2\\cox_fixed_split_repeat\\research_seed21\\best_model.pt": 0.7430343560452602,
+    "outputs\\current_mainline_v2\\cox_fixed_split_repeat\\research_seed42\\best_model.pt": 0.7387491226969011,
+    "outputs\\current_mainline_v2\\cox_fixed_split_repeat\\research_seed7\\best_model.pt": 0.7395479677951304
+  },
+  "mean_member_c_index": 0.7387742292571311,
+  "ensemble_c_index": 0.7409744768991116,
+  "predictions": [
+    {
+      "sample_id": "S1002",
+      "time": 37.0,
+      "event": 0.0,
+      "ensemble_risk": 0.2389935702085495
+    },
+    {
+      "sample_id": "S1005",
+      "time": 37.0,
+      "event": 0.0,
+      "ensemble_risk": 1.2066389322280884
+    },
+    {
+      "sample_id": "S1015",
+      "time": 71.0,
+      "event": 0.0,
+      "ensemble_risk": 0.5821065306663513
+    },
+    {
+      "sample_id": "S1019",
+      "time": 87.0,
+      "event": 0.0,
+      "ensemble_risk": -0.48638901114463806
+    },
+    {
+      "sample_id": "S1021",
+      "time": 74.0,
+      "event": 0.0,
+      "ensemble_risk": 0.16498735547065735
+    },
+    {
+      "sample_id": "S1032",
+      "time": 59.0,
+      "event": 0.0,
+      "ensemble_risk": -0.48961544036865234
+    },
+    {
+      "sample_id": "S1036",
+      "time": 38.0,
+      "event": 1.0,
+      "ensemble_risk": 0.6293386220932007
+    },
+    {
+      "sample_id": "S1040",
+      "time": 69.0,
+      "event": 0.0,
+      "ensemble_risk": 0.48336076736450195
+    },
+    {
+      "sample_id": "S1043",
+      "time": 69.0,
+      "event": 1.0,
+      "ensemble_risk": 0.017168771475553513
+    },
+    {
+      "sample_id": "S1051",
+      "time": 76.0,
+      "event": 0.0,
+      "ensemble_risk": -0.3078036904335022
+    },
+    {
+      "sample_id": "S1068",
+      "time": 65.0,
+      "event": 1.0,
+      "ensemble_risk": -0.45170289278030396
+    },
+    {
+      "sample_id": "S1077",
+      "time": 57.0,
+      "event": 0.0,
+      "ensemble_risk": 0.08669625967741013
+    },
+    {
+      "sample_id": "S1079",
+      "time": 34.0,
+      "event": 1.0,
+      "ensemble_risk": 1.818442940711975
+    },
+    {
+      "sample_id": "S1081",
+      "time": 18.0,
+      "event": 1.0,
+      "ensemble_risk": 1.8761119842529297
+    },
+    {
+      "sample_id": "S1092",
+      "time": 87.0,
+      "event": 0.0,
+      "ensemble_risk": -0.5691313147544861
+    },
+    {
+      "sample_id": "S1093",
+      "time": 82.0,
+      "event": 0.0,
+      "ensemble_risk": 0.34640660881996155
+    },
+    {
+      "sample_id": "S1094",
+      "time": 86.0,
+      "event": 0.0,
+      "ensemble_risk": 0.6915422677993774
+    },
+    {
+      "sample_id": "S1095",
+      "time": 74.0,
+      "event": 1.0,
+      "ensemble_risk": 0.45038095116615295
+    },
+    {
+      "sample_id": "S1099",
+      "time": 30.0,
+      "event": 1.0,
+      "ensemble_risk": 1.8969485759735107
+    },
+    {
+      "sample_id": "S1101",
+      "time": 37.0,
+      "event": 1.0,
+      "ensemble_risk": 1.0862131118774414
+    },
+    {
+      "sample_id": "S1110",
+      "time": 75.0,
+      "event": 1.0,
+      "ensemble_risk": -1.4667136669158936
+    },
+    {
+      "sample_id": "S1112",
+      "time": 43.0,
+      "event": 1.0,
+      "ensemble_risk": 1.6265065670013428
+    },
+    {
+      "sample_id": "S1114",
+      "time": 90.0,
+      "event": 0.0,
+      "ensemble_risk": -0.2466646134853363
+    },
+    {
+      "sample_id": "S1128",
+      "time": 96.0,
+      "event": 1.0,
+      "ensemble_risk": 0.3170554041862488
+    },
+    {
+      "sample_id": "S1131",
+      "time": 86.0,
+      "event": 1.0,
+      "ensemble_risk": -1.0521104335784912
+    },
+    {
+      "sample_id": "S1134",
+      "time": 92.0,
+      "event": 0.0,
+      "ensemble_risk": 0.3024352192878723
+    },
+    {
+      "sample_id": "S115",
+      "time": 53.0,
+      "event": 0.0,
+      "ensemble_risk": 0.41561803221702576
+    },
+    {
+      "sample_id": "S1151",
+      "time": 51.0,
+      "event": 1.0,
+      "ensemble_risk": -0.39287418127059937
+    },
+    {
+      "sample_id": "S1169",
+      "time": 23.0,
+      "event": 1.0,
+      "ensemble_risk": 2.099648952484131
+    },
+    {
+      "sample_id": "S1175",
+      "time": 70.0,
+      "event": 0.0,
+      "ensemble_risk": 2.1669983863830566
+    },
+    {
+      "sample_id": "S1176",
+      "time": 18.0,
+      "event": 1.0,
+      "ensemble_risk": 1.6388661861419678
+    },
+    {
+      "sample_id": "S1181",
+      "time": 27.0,
+      "event": 1.0,
+      "ensemble_risk": 0.8069184422492981
+    },
+    {
+      "sample_id": "S1192",
+      "time": 113.0,
+      "event": 0.0,
+      "ensemble_risk": -0.14289912581443787
+    },
+    {
+      "sample_id": "S1204",
+      "time": 31.0,
+      "event": 0.0,
+      "ensemble_risk": -1.2913330793380737
+    },
+    {
+      "sample_id": "S1212",
+      "time": 66.0,
+      "event": 0.0,
+      "ensemble_risk": 0.5192513465881348
+    },
+    {
+      "sample_id": "S1215",
+      "time": 86.0,
+      "event": 0.0,
+      "ensemble_risk": -0.02231830358505249
+    },
+    {
+      "sample_id": "S1217",
+      "time": 58.0,
+      "event": 0.0,
+      "ensemble_risk": 1.723247766494751
+    },
+    {
+      "sample_id": "S1219",
+      "time": 67.0,
+      "event": 0.0,
+      "ensemble_risk": 1.411015272140503
+    },
+    {
+      "sample_id": "S123",
+      "time": 46.0,
+      "event": 1.0,
+      "ensemble_risk": 0.5637287497520447
+    },
+    {
+      "sample_id": "S1234",
+      "time": 56.0,
+      "event": 1.0,
+      "ensemble_risk": 1.9800853729248047
+    },
+    {
+      "sample_id": "S1250",
+      "time": 62.0,
+      "event": 1.0,
+      "ensemble_risk": 1.367669939994812
+    },
+    {
+      "sample_id": "S1251",
+      "time": 46.0,
+      "event": 0.0,
+      "ensemble_risk": 1.1787145137786865
+    },
+    {
+      "sample_id": "S1265",
+      "time": 123.0,
+      "event": 0.0,
+      "ensemble_risk": -0.31484854221343994
+    },
+    {
+      "sample_id": "S1277",
+      "time": 6.0,
+      "event": 1.0,
+      "ensemble_risk": 2.1132407188415527
+    },
+    {
+      "sample_id": "S1279",
+      "time": 108.0,
+      "event": 0.0,
+      "ensemble_risk": -1.0141891241073608
+    },
+    {
+      "sample_id": "S1280",
+      "time": 77.0,
+      "event": 1.0,
+      "ensemble_risk": -0.5496578216552734
+    },
+    {
+      "sample_id": "S1285",
+      "time": 57.0,
+      "event": 1.0,
+      "ensemble_risk": 2.0579307079315186
+    },
+    {
+      "sample_id": "S1292",
+      "time": 58.0,
+      "event": 1.0,
+      "ensemble_risk": 0.49299320578575134
+    },
+    {
+      "sample_id": "S1295",
+      "time": 51.0,
+      "event": 0.0,
+      "ensemble_risk": 0.4031604826450348
+    },
+    {
+      "sample_id": "S1296",
+      "time": 22.0,
+      "event": 1.0,
+      "ensemble_risk": 0.8879316449165344
+    },
+    {
+      "sample_id": "S1312",
+      "time": 84.0,
+      "event": 0.0,
+      "ensemble_risk": 0.17860274016857147
+    },
+    {
+      "sample_id": "S1316",
+      "time": 42.0,
+      "event": 1.0,
+      "ensemble_risk": 1.3229342699050903
+    },
+    {
+      "sample_id": "S1317",
+      "time": 64.0,
+      "event": 1.0,
+      "ensemble_risk": -0.19397670030593872
+    },
+    {
+      "sample_id": "S1319",
+      "time": 64.0,
+      "event": 0.0,
+      "ensemble_risk": 0.6988188028335571
+    },
+    {
+      "sample_id": "S132",
+      "time": 67.0,
+      "event": 1.0,
+      "ensemble_risk": 1.433847188949585
+    },
+    {
+      "sample_id": "S1336",
+      "time": 98.0,
+      "event": 0.0,
+      "ensemble_risk": -0.5147613286972046
+    },
+    {
+      "sample_id": "S1338",
+      "time": 62.0,
+      "event": 1.0,
+      "ensemble_risk": -0.37988194823265076
+    },
+    {
+      "sample_id": "S1342",
+      "time": 22.0,
+      "event": 1.0,
+      "ensemble_risk": 1.7031545639038086
+    },
+    {
+      "sample_id": "S1345",
+      "time": 61.0,
+      "event": 0.0,
+      "ensemble_risk": 0.7492415308952332
+    },
+    {
+      "sample_id": "S1352",
+      "time": 73.0,
+      "event": 0.0,
+      "ensemble_risk": -0.22689926624298096
+    },
+    {
+      "sample_id": "S1354",
+      "time": 63.0,
+      "event": 1.0,
+      "ensemble_risk": 0.2847258448600769
+    },
+    {
+      "sample_id": "S1363",
+      "time": 45.0,
+      "event": 0.0,
+      "ensemble_risk": 1.725757360458374
+    },
+    {
+      "sample_id": "S1364",
+      "time": 119.0,
+      "event": 0.0,
+      "ensemble_risk": -0.17093154788017273
+    },
+    {
+      "sample_id": "S1365",
+      "time": 61.0,
+      "event": 0.0,
+      "ensemble_risk": 0.4362269341945648
+    },
+    {
+      "sample_id": "S1368",
+      "time": 63.0,
+      "event": 0.0,
+      "ensemble_risk": -0.27636629343032837
+    },
+    {
+      "sample_id": "S1369",
+      "time": 36.0,
+      "event": 1.0,
+      "ensemble_risk": -0.40603533387184143
+    },
+    {
+      "sample_id": "S1374",
+      "time": 89.0,
+      "event": 1.0,
+      "ensemble_risk": 0.5588321089744568
+    },
+    {
+      "sample_id": "S1375",
+      "time": 62.0,
+      "event": 0.0,
+      "ensemble_risk": -0.5604296922683716
+    },
+    {
+      "sample_id": "S1376",
+      "time": 69.0,
+      "event": 0.0,
+      "ensemble_risk": 0.755898654460907
+    },
+    {
+      "sample_id": "S1377",
+      "time": 33.0,
+      "event": 0.0,
+      "ensemble_risk": 0.12554344534873962
+    },
+    {
+      "sample_id": "S1378",
+      "time": 62.0,
+      "event": 0.0,
+      "ensemble_risk": -1.3325639963150024
+    },
+    {
+      "sample_id": "S138",
+      "time": 101.0,
+      "event": 0.0,
+      "ensemble_risk": 0.1629708856344223
+    },
+    {
+      "sample_id": "S1386",
+      "time": 66.0,
+      "event": 1.0,
+      "ensemble_risk": 0.8614059686660767
+    },
+    {
+      "sample_id": "S1391",
+      "time": 67.0,
+      "event": 1.0,
+      "ensemble_risk": -0.6823785305023193
+    },
+    {
+      "sample_id": "S1392",
+      "time": 70.0,
+      "event": 0.0,
+      "ensemble_risk": 0.3521184027194977
+    },
+    {
+      "sample_id": "S1397",
+      "time": 78.0,
+      "event": 1.0,
+      "ensemble_risk": 0.00036156177520751953
+    },
+    {
+      "sample_id": "S1399",
+      "time": 82.0,
+      "event": 0.0,
+      "ensemble_risk": -1.2560033798217773
+    },
+    {
+      "sample_id": "S1403",
+      "time": 53.0,
+      "event": 1.0,
+      "ensemble_risk": 0.12047209590673447
+    },
+    {
+      "sample_id": "S1417",
+      "time": 51.0,
+      "event": 1.0,
+      "ensemble_risk": -1.1396394968032837
+    },
+    {
+      "sample_id": "S1421",
+      "time": 53.0,
+      "event": 1.0,
+      "ensemble_risk": 0.2251795083284378
+    },
+    {
+      "sample_id": "S1423",
+      "time": 51.0,
+      "event": 1.0,
+      "ensemble_risk": 0.8303839564323425
+    },
+    {
+      "sample_id": "S1427",
+      "time": 53.0,
+      "event": 1.0,
+      "ensemble_risk": 1.3749393224716187
+    },
+    {
+      "sample_id": "S1441",
+      "time": 31.0,
+      "event": 1.0,
+      "ensemble_risk": 2.020432233810425
+    },
+    {
+      "sample_id": "S1447",
+      "time": 93.0,
+      "event": 0.0,
+      "ensemble_risk": -0.6324476599693298
+    },
+    {
+      "sample_id": "S1449",
+      "time": 34.0,
+      "event": 0.0,
+      "ensemble_risk": 0.39469826221466064
+    },
+    {
+      "sample_id": "S1458",
+      "time": 74.0,
+      "event": 0.0,
+      "ensemble_risk": -0.28943371772766113
+    },
+    {
+      "sample_id": "S1461",
+      "time": 36.0,
+      "event": 1.0,
+      "ensemble_risk": 1.5760458707809448
+    },
+    {
+      "sample_id": "S1462",
+      "time": 77.0,
+      "event": 0.0,
+      "ensemble_risk": 0.5971773266792297
+    },
+    {
+      "sample_id": "S1473",
+      "time": 50.0,
+      "event": 1.0,
+      "ensemble_risk": 0.4498986303806305
+    },
+    {
+      "sample_id": "S1483",
+      "time": 92.0,
+      "event": 0.0,
+      "ensemble_risk": -0.3266427516937256
+    },
+    {
+      "sample_id": "S1487",
+      "time": 72.0,
+      "event": 0.0,
+      "ensemble_risk": 1.3045940399169922
+    },
+    {
+      "sample_id": "S1493",
+      "time": 6.0,
+      "event": 1.0,
+      "ensemble_risk": 1.9390071630477905
+    },
+    {
+      "sample_id": "S1495",
+      "time": 6.0,
+      "event": 1.0,
+      "ensemble_risk": 1.5179150104522705
+    },
+    {
+      "sample_id": "S1496",
+      "time": 73.0,
+      "event": 0.0,
+      "ensemble_risk": -0.010052639059722424
+    },
+    {
+      "sample_id": "S1499",
+      "time": 15.0,
+      "event": 1.0,
+      "ensemble_risk": 2.0441718101501465
+    },
+    {
+      "sample_id": "S15",
+      "time": 74.0,
+      "event": 0.0,
+      "ensemble_risk": 0.37775278091430664
+    },
+    {
+      "sample_id": "S1505",
+      "time": 50.0,
+      "event": 0.0,
+      "ensemble_risk": -0.34853070974349976
+    },
+    {
+      "sample_id": "S1508",
+      "time": 53.0,
+      "event": 1.0,
+      "ensemble_risk": 0.008335446938872337
+    },
+    {
+      "sample_id": "S1520",
+      "time": 86.0,
+      "event": 0.0,
+      "ensemble_risk": -0.2746368944644928
+    },
+    {
+      "sample_id": "S1521",
+      "time": 31.0,
+      "event": 1.0,
+      "ensemble_risk": 2.0447006225585938
+    },
+    {
+      "sample_id": "S1528",
+      "time": 24.0,
+      "event": 1.0,
+      "ensemble_risk": 2.183077812194824
+    },
+    {
+      "sample_id": "S1533",
+      "time": 58.0,
+      "event": 1.0,
+      "ensemble_risk": 1.8522565364837646
+    },
+    {
+      "sample_id": "S154",
+      "time": 50.0,
+      "event": 1.0,
+      "ensemble_risk": 1.974220871925354
+    },
+    {
+      "sample_id": "S1540",
+      "time": 56.0,
+      "event": 0.0,
+      "ensemble_risk": -0.45763319730758667
+    },
+    {
+      "sample_id": "S1551",
+      "time": 71.0,
+      "event": 0.0,
+      "ensemble_risk": 1.0887634754180908
+    },
+    {
+      "sample_id": "S1579",
+      "time": 79.0,
+      "event": 0.0,
+      "ensemble_risk": -1.0602049827575684
+    },
+    {
+      "sample_id": "S1580",
+      "time": 59.0,
+      "event": 1.0,
+      "ensemble_risk": -0.05444694310426712
+    },
+    {
+      "sample_id": "S1585",
+      "time": 8.0,
+      "event": 1.0,
+      "ensemble_risk": 1.6094290018081665
+    },
+    {
+      "sample_id": "S1588",
+      "time": 94.0,
+      "event": 0.0,
+      "ensemble_risk": -0.7414029836654663
+    },
+    {
+      "sample_id": "S1589",
+      "time": 82.0,
+      "event": 0.0,
+      "ensemble_risk": -0.6971192359924316
+    },
+    {
+      "sample_id": "S1591",
+      "time": 59.0,
+      "event": 0.0,
+      "ensemble_risk": 0.33460336923599243
+    },
+    {
+      "sample_id": "S1594",
+      "time": 76.0,
+      "event": 0.0,
+      "ensemble_risk": 1.514110803604126
+    },
+    {
+      "sample_id": "S1597",
+      "time": 26.0,
+      "event": 1.0,
+      "ensemble_risk": 1.6607778072357178
+    },
+    {
+      "sample_id": "S1607",
+      "time": 38.0,
+      "event": 1.0,
+      "ensemble_risk": 0.09780950844287872
+    },
+    {
+      "sample_id": "S1619",
+      "time": 38.0,
+      "event": 0.0,
+      "ensemble_risk": 0.08321177959442139
+    },
+    {
+      "sample_id": "S1627",
+      "time": 99.0,
+      "event": 0.0,
+      "ensemble_risk": 0.5399433970451355
+    },
+    {
+      "sample_id": "S1629",
+      "time": 33.0,
+      "event": 1.0,
+      "ensemble_risk": 1.5179153680801392
+    },
+    {
+      "sample_id": "S1634",
+      "time": 48.0,
+      "event": 1.0,
+      "ensemble_risk": 1.9334427118301392
+    },
+    {
+      "sample_id": "S1636",
+      "time": 46.0,
+      "event": 1.0,
+      "ensemble_risk": 0.6598271131515503
+    },
+    {
+      "sample_id": "S1638",
+      "time": 40.0,
+      "event": 0.0,
+      "ensemble_risk": 1.478137731552124
+    },
+    {
+      "sample_id": "S164",
+      "time": 42.0,
+      "event": 1.0,
+      "ensemble_risk": 1.611931562423706
+    },
+    {
+      "sample_id": "S1642",
+      "time": 41.0,
+      "event": 1.0,
+      "ensemble_risk": 0.5182574391365051
+    },
+    {
+      "sample_id": "S1646",
+      "time": 54.0,
+      "event": 1.0,
+      "ensemble_risk": -0.0569513663649559
+    },
+    {
+      "sample_id": "S1648",
+      "time": 44.0,
+      "event": 1.0,
+      "ensemble_risk": 1.9883296489715576
+    },
+    {
+      "sample_id": "S1649",
+      "time": 64.0,
+      "event": 0.0,
+      "ensemble_risk": 0.10889580100774765
+    },
+    {
+      "sample_id": "S1650",
+      "time": 74.0,
+      "event": 0.0,
+      "ensemble_risk": -0.426065057516098
+    },
+    {
+      "sample_id": "S1652",
+      "time": 78.0,
+      "event": 1.0,
+      "ensemble_risk": -0.2112882137298584
+    },
+    {
+      "sample_id": "S1655",
+      "time": 69.0,
+      "event": 0.0,
+      "ensemble_risk": 1.862378478050232
+    },
+    {
+      "sample_id": "S1663",
+      "time": 25.0,
+      "event": 1.0,
+      "ensemble_risk": 0.8692251443862915
+    },
+    {
+      "sample_id": "S1675",
+      "time": 34.0,
+      "event": 0.0,
+      "ensemble_risk": 2.0326175689697266
+    },
+    {
+      "sample_id": "S1677",
+      "time": 80.0,
+      "event": 1.0,
+      "ensemble_risk": -1.3099807500839233
+    },
+    {
+      "sample_id": "S1680",
+      "time": 65.0,
+      "event": 0.0,
+      "ensemble_risk": 0.23938241600990295
+    },
+    {
+      "sample_id": "S1681",
+      "time": 39.0,
+      "event": 1.0,
+      "ensemble_risk": -0.10197154432535172
+    },
+    {
+      "sample_id": "S1682",
+      "time": 27.0,
+      "event": 1.0,
+      "ensemble_risk": 1.7672160863876343
+    },
+    {
+      "sample_id": "S1684",
+      "time": 100.0,
+      "event": 0.0,
+      "ensemble_risk": 0.3035493493080139
+    },
+    {
+      "sample_id": "S1686",
+      "time": 44.0,
+      "event": 0.0,
+      "ensemble_risk": -0.7923877835273743
+    },
+    {
+      "sample_id": "S1688",
+      "time": 81.0,
+      "event": 1.0,
+      "ensemble_risk": 0.6500686407089233
+    },
+    {
+      "sample_id": "S1690",
+      "time": 63.0,
+      "event": 1.0,
+      "ensemble_risk": 0.07931636273860931
+    },
+    {
+      "sample_id": "S1695",
+      "time": 81.0,
+      "event": 0.0,
+      "ensemble_risk": 0.3258596360683441
+    },
+    {
+      "sample_id": "S1699",
+      "time": 79.0,
+      "event": 0.0,
+      "ensemble_risk": -0.19960321485996246
+    },
+    {
+      "sample_id": "S1700",
+      "time": 49.0,
+      "event": 1.0,
+      "ensemble_risk": 2.1676383018493652
+    },
+    {
+      "sample_id": "S1704",
+      "time": 74.0,
+      "event": 0.0,
+      "ensemble_risk": 0.8135744333267212
+    },
+    {
+      "sample_id": "S1705",
+      "time": 45.0,
+      "event": 1.0,
+      "ensemble_risk": 2.0543150901794434
+    },
+    {
+      "sample_id": "S1706",
+      "time": 77.0,
+      "event": 1.0,
+      "ensemble_risk": 0.7218754887580872
+    },
+    {
+      "sample_id": "S171",
+      "time": 24.0,
+      "event": 1.0,
+      "ensemble_risk": 0.7041957974433899
+    },
+    {
+      "sample_id": "S1710",
+      "time": 24.0,
+      "event": 1.0,
+      "ensemble_risk": 1.8954041004180908
+    },
+    {
+      "sample_id": "S1717",
+      "time": 37.0,
+      "event": 1.0,
+      "ensemble_risk": 0.5653056502342224
+    },
+    {
+      "sample_id": "S1720",
+      "time": 45.0,
+      "event": 1.0,
+      "ensemble_risk": -0.31527382135391235
+    },
+    {
+      "sample_id": "S1726",
+      "time": 55.0,
+      "event": 0.0,
+      "ensemble_risk": -0.1893664300441742
+    },
+    {
+      "sample_id": "S1727",
+      "time": 85.0,
+      "event": 1.0,
+      "ensemble_risk": -0.45838460326194763
+    },
+    {
+      "sample_id": "S1735",
+      "time": 78.0,
+      "event": 0.0,
+      "ensemble_risk": 0.6424344182014465
+    },
+    {
+      "sample_id": "S1736",
+      "time": 28.0,
+      "event": 1.0,
+      "ensemble_risk": 0.18892066180706024
+    },
+    {
+      "sample_id": "S1738",
+      "time": 95.0,
+      "event": 1.0,
+      "ensemble_risk": -1.0951611995697021
+    },
+    {
+      "sample_id": "S1741",
+      "time": 55.0,
+      "event": 1.0,
+      "ensemble_risk": -0.5718514323234558
+    },
+    {
+      "sample_id": "S1742",
+      "time": 91.0,
+      "event": 1.0,
+      "ensemble_risk": -1.5484349727630615
+    },
+    {
+      "sample_id": "S1754",
+      "time": 29.0,
+      "event": 1.0,
+      "ensemble_risk": 0.3924061357975006
+    },
+    {
+      "sample_id": "S1757",
+      "time": 94.0,
+      "event": 0.0,
+      "ensemble_risk": -1.2727432250976562
+    },
+    {
+      "sample_id": "S1765",
+      "time": 111.0,
+      "event": 0.0,
+      "ensemble_risk": -0.0190010666847229
+    },
+    {
+      "sample_id": "S1769",
+      "time": 32.0,
+      "event": 1.0,
+      "ensemble_risk": 0.7162584662437439
+    },
+    {
+      "sample_id": "S177",
+      "time": 48.0,
+      "event": 1.0,
+      "ensemble_risk": -0.38017410039901733
+    },
+    {
+      "sample_id": "S1772",
+      "time": 35.0,
+      "event": 1.0,
+      "ensemble_risk": -0.12365460395812988
+    },
+    {
+      "sample_id": "S1774",
+      "time": 73.0,
+      "event": 1.0,
+      "ensemble_risk": -0.9715124368667603
+    },
+    {
+      "sample_id": "S1779",
+      "time": 63.0,
+      "event": 0.0,
+      "ensemble_risk": -0.1433880776166916
+    },
+    {
+      "sample_id": "S1782",
+      "time": 81.0,
+      "event": 1.0,
+      "ensemble_risk": -1.1440973281860352
+    },
+    {
+      "sample_id": "S179",
+      "time": 76.0,
+      "event": 0.0,
+      "ensemble_risk": -0.5382741093635559
+    },
+    {
+      "sample_id": "S1794",
+      "time": 44.0,
+      "event": 1.0,
+      "ensemble_risk": 1.3688018321990967
+    },
+    {
+      "sample_id": "S1795",
+      "time": 52.0,
+      "event": 1.0,
+      "ensemble_risk": 1.7500028610229492
+    },
+    {
+      "sample_id": "S180",
+      "time": 56.0,
+      "event": 1.0,
+      "ensemble_risk": 0.08830144256353378
+    },
+    {
+      "sample_id": "S1805",
+      "time": 69.0,
+      "event": 1.0,
+      "ensemble_risk": 0.49923792481422424
+    },
+    {
+      "sample_id": "S181",
+      "time": 75.0,
+      "event": 1.0,
+      "ensemble_risk": 0.0900975838303566
+    },
+    {
+      "sample_id": "S1810",
+      "time": 40.0,
+      "event": 1.0,
+      "ensemble_risk": -0.3310559391975403
+    },
+    {
+      "sample_id": "S1814",
+      "time": 85.0,
+      "event": 1.0,
+      "ensemble_risk": 0.43662595748901367
+    },
+    {
+      "sample_id": "S1820",
+      "time": 106.0,
+      "event": 0.0,
+      "ensemble_risk": 0.1186901330947876
+    },
+    {
+      "sample_id": "S1825",
+      "time": 123.0,
+      "event": 0.0,
+      "ensemble_risk": -1.298889398574829
+    },
+    {
+      "sample_id": "S1826",
+      "time": 33.0,
+      "event": 1.0,
+      "ensemble_risk": 1.0252515077590942
+    },
+    {
+      "sample_id": "S1829",
+      "time": 32.0,
+      "event": 1.0,
+      "ensemble_risk": 1.0170669555664062
+    },
+    {
+      "sample_id": "S1830",
+      "time": 29.0,
+      "event": 1.0,
+      "ensemble_risk": 0.48858222365379333
+    },
+    {
+      "sample_id": "S1833",
+      "time": 50.0,
+      "event": 1.0,
+      "ensemble_risk": 1.4854680299758911
+    },
+    {
+      "sample_id": "S1837",
+      "time": 46.0,
+      "event": 1.0,
+      "ensemble_risk": -1.0589040517807007
+    },
+    {
+      "sample_id": "S1843",
+      "time": 87.0,
+      "event": 0.0,
+      "ensemble_risk": -1.0349873304367065
+    },
+    {
+      "sample_id": "S1848",
+      "time": 52.0,
+      "event": 0.0,
+      "ensemble_risk": -0.23911547660827637
+    },
+    {
+      "sample_id": "S1850",
+      "time": 21.0,
+      "event": 1.0,
+      "ensemble_risk": 2.132422924041748
+    },
+    {
+      "sample_id": "S1857",
+      "time": 6.0,
+      "event": 1.0,
+      "ensemble_risk": 2.015448808670044
+    },
+    {
+      "sample_id": "S1864",
+      "time": 89.0,
+      "event": 0.0,
+      "ensemble_risk": 0.07491330802440643
+    },
+    {
+      "sample_id": "S1865",
+      "time": 87.0,
+      "event": 0.0,
+      "ensemble_risk": -0.6694977283477783
+    },
+    {
+      "sample_id": "S1866",
+      "time": 70.0,
+      "event": 1.0,
+      "ensemble_risk": -0.429713636636734
+    },
+    {
+      "sample_id": "S187",
+      "time": 75.0,
+      "event": 0.0,
+      "ensemble_risk": 0.11201439052820206
+    },
+    {
+      "sample_id": "S1874",
+      "time": 66.0,
+      "event": 0.0,
+      "ensemble_risk": -0.1362406313419342
+    },
+    {
+      "sample_id": "S1876",
+      "time": 70.0,
+      "event": 0.0,
+      "ensemble_risk": -1.1639397144317627
+    },
+    {
+      "sample_id": "S1879",
+      "time": 76.0,
+      "event": 0.0,
+      "ensemble_risk": -0.13712558150291443
+    },
+    {
+      "sample_id": "S1884",
+      "time": 84.0,
+      "event": 0.0,
+      "ensemble_risk": 0.12178447097539902
+    },
+    {
+      "sample_id": "S1895",
+      "time": 62.0,
+      "event": 1.0,
+      "ensemble_risk": 0.520919680595398
+    },
+    {
+      "sample_id": "S1897",
+      "time": 92.0,
+      "event": 0.0,
+      "ensemble_risk": -0.0909409373998642
+    },
+    {
+      "sample_id": "S19",
+      "time": 125.0,
+      "event": 1.0,
+      "ensemble_risk": 0.29129865765571594
+    },
+    {
+      "sample_id": "S1905",
+      "time": 66.0,
+      "event": 1.0,
+      "ensemble_risk": -0.16042348742485046
+    },
+    {
+      "sample_id": "S1907",
+      "time": 91.0,
+      "event": 0.0,
+      "ensemble_risk": -0.8356958627700806
+    },
+    {
+      "sample_id": "S1910",
+      "time": 40.0,
+      "event": 0.0,
+      "ensemble_risk": 0.5257349014282227
+    },
+    {
+      "sample_id": "S1913",
+      "time": 7.0,
+      "event": 1.0,
+      "ensemble_risk": 1.9333114624023438
+    },
+    {
+      "sample_id": "S1919",
+      "time": 39.0,
+      "event": 1.0,
+      "ensemble_risk": 1.7567455768585205
+    },
+    {
+      "sample_id": "S1929",
+      "time": 63.0,
+      "event": 1.0,
+      "ensemble_risk": 2.164116382598877
+    },
+    {
+      "sample_id": "S1940",
+      "time": 33.0,
+      "event": 1.0,
+      "ensemble_risk": 0.8886073231697083
+    },
+    {
+      "sample_id": "S1944",
+      "time": 57.0,
+      "event": 1.0,
+      "ensemble_risk": 0.3831726908683777
+    },
+    {
+      "sample_id": "S1948",
+      "time": 28.0,
+      "event": 1.0,
+      "ensemble_risk": 2.031494617462158
+    },
+    {
+      "sample_id": "S195",
+      "time": 54.0,
+      "event": 1.0,
+      "ensemble_risk": 0.8902326822280884
+    },
+    {
+      "sample_id": "S1950",
+      "time": 56.0,
+      "event": 0.0,
+      "ensemble_risk": 0.40483102202415466
+    },
+    {
+      "sample_id": "S1959",
+      "time": 26.0,
+      "event": 1.0,
+      "ensemble_risk": 0.22467860579490662
+    },
+    {
+      "sample_id": "S1964",
+      "time": 54.0,
+      "event": 1.0,
+      "ensemble_risk": 0.6002894043922424
+    },
+    {
+      "sample_id": "S1967",
+      "time": 57.0,
+      "event": 1.0,
+      "ensemble_risk": 1.9534164667129517
+    },
+    {
+      "sample_id": "S197",
+      "time": 43.0,
+      "event": 0.0,
+      "ensemble_risk": 0.36673590540885925
+    },
+    {
+      "sample_id": "S1976",
+      "time": 39.0,
+      "event": 1.0,
+      "ensemble_risk": 2.06809663772583
+    },
+    {
+      "sample_id": "S198",
+      "time": 60.0,
+      "event": 1.0,
+      "ensemble_risk": 1.3791106939315796
+    },
+    {
+      "sample_id": "S1980",
+      "time": 76.0,
+      "event": 0.0,
+      "ensemble_risk": -0.04398401826620102
+    },
+    {
+      "sample_id": "S1983",
+      "time": 73.0,
+      "event": 0.0,
+      "ensemble_risk": -0.9505256414413452
+    },
+    {
+      "sample_id": "S1995",
+      "time": 60.0,
+      "event": 1.0,
+      "ensemble_risk": -0.06937086582183838
+    },
+    {
+      "sample_id": "S1999",
+      "time": 61.0,
+      "event": 1.0,
+      "ensemble_risk": 1.7081022262573242
+    },
+    {
+      "sample_id": "S2",
+      "time": 28.0,
+      "event": 1.0,
+      "ensemble_risk": 0.6584726572036743
+    },
+    {
+      "sample_id": "S2019",
+      "time": 26.0,
+      "event": 1.0,
+      "ensemble_risk": 1.232696771621704
+    },
+    {
+      "sample_id": "S202",
+      "time": 42.0,
+      "event": 1.0,
+      "ensemble_risk": 0.5003973841667175
+    },
+    {
+      "sample_id": "S2033",
+      "time": 39.0,
+      "event": 1.0,
+      "ensemble_risk": 0.5702584981918335
+    },
+    {
+      "sample_id": "S2034",
+      "time": 93.0,
+      "event": 1.0,
+      "ensemble_risk": -1.2111232280731201
+    },
+    {
+      "sample_id": "S2039",
+      "time": 80.0,
+      "event": 1.0,
+      "ensemble_risk": -0.510917067527771
+    },
+    {
+      "sample_id": "S2041",
+      "time": 72.0,
+      "event": 0.0,
+      "ensemble_risk": 0.9460822939872742
+    },
+    {
+      "sample_id": "S2048",
+      "time": 107.0,
+      "event": 0.0,
+      "ensemble_risk": 0.05170823261141777
+    },
+    {
+      "sample_id": "S2050",
+      "time": 55.0,
+      "event": 0.0,
+      "ensemble_risk": 0.708335280418396
+    },
+    {
+      "sample_id": "S2053",
+      "time": 51.0,
+      "event": 1.0,
+      "ensemble_risk": 0.9298356175422668
+    },
+    {
+      "sample_id": "S2055",
+      "time": 54.0,
+      "event": 1.0,
+      "ensemble_risk": 1.9289770126342773
+    },
+    {
+      "sample_id": "S2056",
+      "time": 83.0,
+      "event": 0.0,
+      "ensemble_risk": -0.7014200687408447
+    },
+    {
+      "sample_id": "S2059",
+      "time": 74.0,
+      "event": 0.0,
+      "ensemble_risk": -0.2379136085510254
+    },
+    {
+      "sample_id": "S206",
+      "time": 46.0,
+      "event": 0.0,
+      "ensemble_risk": 0.2617422640323639
+    },
+    {
+      "sample_id": "S2065",
+      "time": 83.0,
+      "event": 0.0,
+      "ensemble_risk": -0.15646104514598846
+    },
+    {
+      "sample_id": "S2068",
+      "time": 78.0,
+      "event": 0.0,
+      "ensemble_risk": -0.9440407752990723
+    },
+    {
+      "sample_id": "S2070",
+      "time": 41.0,
+      "event": 1.0,
+      "ensemble_risk": 0.27609437704086304
+    },
+    {
+      "sample_id": "S2072",
+      "time": 59.0,
+      "event": 1.0,
+      "ensemble_risk": 0.28386998176574707
+    },
+    {
+      "sample_id": "S2074",
+      "time": 62.0,
+      "event": 1.0,
+      "ensemble_risk": 1.7579286098480225
+    },
+    {
+      "sample_id": "S2087",
+      "time": 70.0,
+      "event": 1.0,
+      "ensemble_risk": 0.8269839286804199
+    },
+    {
+      "sample_id": "S2092",
+      "time": 52.0,
+      "event": 1.0,
+      "ensemble_risk": -0.05745310336351395
+    },
+    {
+      "sample_id": "S2099",
+      "time": 26.0,
+      "event": 1.0,
+      "ensemble_risk": 1.7835302352905273
+    },
+    {
+      "sample_id": "S21",
+      "time": 95.0,
+      "event": 1.0,
+      "ensemble_risk": -0.8428093194961548
+    },
+    {
+      "sample_id": "S2110",
+      "time": 86.0,
+      "event": 0.0,
+      "ensemble_risk": -1.0173828601837158
+    },
+    {
+      "sample_id": "S2116",
+      "time": 48.0,
+      "event": 0.0,
+      "ensemble_risk": -1.121338129043579
+    },
+    {
+      "sample_id": "S2118",
+      "time": 58.0,
+      "event": 1.0,
+      "ensemble_risk": 2.0189766883850098
+    },
+    {
+      "sample_id": "S2124",
+      "time": 68.0,
+      "event": 1.0,
+      "ensemble_risk": -0.9650694727897644
+    },
+    {
+      "sample_id": "S2125",
+      "time": 49.0,
+      "event": 1.0,
+      "ensemble_risk": 0.694857120513916
+    },
+    {
+      "sample_id": "S2128",
+      "time": 93.0,
+      "event": 0.0,
+      "ensemble_risk": -0.3220926523208618
+    },
+    {
+      "sample_id": "S213",
+      "time": 83.0,
+      "event": 0.0,
+      "ensemble_risk": -1.3654630184173584
+    },
+    {
+      "sample_id": "S2134",
+      "time": 87.0,
+      "event": 1.0,
+      "ensemble_risk": 0.506583571434021
+    },
+    {
+      "sample_id": "S2140",
+      "time": 61.0,
+      "event": 1.0,
+      "ensemble_risk": 1.5103461742401123
+    },
+    {
+      "sample_id": "S2158",
+      "time": 129.0,
+      "event": 0.0,
+      "ensemble_risk": -0.3311407268047333
+    },
+    {
+      "sample_id": "S216",
+      "time": 60.0,
+      "event": 1.0,
+      "ensemble_risk": 1.6827675104141235
+    },
+    {
+      "sample_id": "S2171",
+      "time": 35.0,
+      "event": 1.0,
+      "ensemble_risk": 1.0088698863983154
+    },
+    {
+      "sample_id": "S2175",
+      "time": 102.0,
+      "event": 1.0,
+      "ensemble_risk": -1.2311633825302124
+    },
+    {
+      "sample_id": "S2183",
+      "time": 52.0,
+      "event": 1.0,
+      "ensemble_risk": 1.2848663330078125
+    },
+    {
+      "sample_id": "S2195",
+      "time": 64.0,
+      "event": 1.0,
+      "ensemble_risk": 0.49990010261535645
+    },
+    {
+      "sample_id": "S2197",
+      "time": 70.0,
+      "event": 1.0,
+      "ensemble_risk": 0.39726394414901733
+    },
+    {
+      "sample_id": "S2198",
+      "time": 65.0,
+      "event": 1.0,
+      "ensemble_risk": -0.9553301930427551
+    },
+    {
+      "sample_id": "S2202",
+      "time": 55.0,
+      "event": 0.0,
+      "ensemble_risk": 0.8672466278076172
+    },
+    {
+      "sample_id": "S2203",
+      "time": 77.0,
+      "event": 1.0,
+      "ensemble_risk": -0.36162447929382324
+    },
+    {
+      "sample_id": "S2207",
+      "time": 87.0,
+      "event": 0.0,
+      "ensemble_risk": 0.26356345415115356
+    },
+    {
+      "sample_id": "S2212",
+      "time": 97.0,
+      "event": 0.0,
+      "ensemble_risk": 1.101845145225525
+    },
+    {
+      "sample_id": "S2217",
+      "time": 58.0,
+      "event": 0.0,
+      "ensemble_risk": -0.3204439878463745
+    },
+    {
+      "sample_id": "S222",
+      "time": 56.0,
+      "event": 1.0,
+      "ensemble_risk": -0.8946075439453125
+    },
+    {
+      "sample_id": "S2228",
+      "time": 62.0,
+      "event": 0.0,
+      "ensemble_risk": 0.47405576705932617
+    },
+    {
+      "sample_id": "S223",
+      "time": 66.0,
+      "event": 1.0,
+      "ensemble_risk": -0.6027083396911621
+    },
+    {
+      "sample_id": "S2232",
+      "time": 38.0,
+      "event": 0.0,
+      "ensemble_risk": 1.6054675579071045
+    },
+    {
+      "sample_id": "S2244",
+      "time": 55.0,
+      "event": 0.0,
+      "ensemble_risk": 0.7168036699295044
+    },
+    {
+      "sample_id": "S225",
+      "time": 35.0,
+      "event": 1.0,
+      "ensemble_risk": 1.449496865272522
+    },
+    {
+      "sample_id": "S2253",
+      "time": 48.0,
+      "event": 0.0,
+      "ensemble_risk": 0.7598164081573486
+    },
+    {
+      "sample_id": "S2258",
+      "time": 43.0,
+      "event": 1.0,
+      "ensemble_risk": 0.0051583824679255486
+    },
+    {
+      "sample_id": "S2264",
+      "time": 56.0,
+      "event": 1.0,
+      "ensemble_risk": 0.8860680460929871
+    },
+    {
+      "sample_id": "S2280",
+      "time": 57.0,
+      "event": 0.0,
+      "ensemble_risk": 1.0912542343139648
+    },
+    {
+      "sample_id": "S2290",
+      "time": 51.0,
+      "event": 0.0,
+      "ensemble_risk": 1.8635915517807007
+    },
+    {
+      "sample_id": "S2293",
+      "time": 101.0,
+      "event": 0.0,
+      "ensemble_risk": -0.48137062788009644
+    },
+    {
+      "sample_id": "S2298",
+      "time": 38.0,
+      "event": 1.0,
+      "ensemble_risk": -0.25244683027267456
+    },
+    {
+      "sample_id": "S23",
+      "time": 20.0,
+      "event": 1.0,
+      "ensemble_risk": 2.1616997718811035
+    },
+    {
+      "sample_id": "S230",
+      "time": 46.0,
+      "event": 1.0,
+      "ensemble_risk": 0.12473341077566147
+    },
+    {
+      "sample_id": "S2304",
+      "time": 35.0,
+      "event": 1.0,
+      "ensemble_risk": 1.8836065530776978
+    },
+    {
+      "sample_id": "S2305",
+      "time": 64.0,
+      "event": 0.0,
+      "ensemble_risk": 1.9037317037582397
+    },
+    {
+      "sample_id": "S2312",
+      "time": 54.0,
+      "event": 0.0,
+      "ensemble_risk": 1.730989694595337
+    },
+    {
+      "sample_id": "S2315",
+      "time": 74.0,
+      "event": 0.0,
+      "ensemble_risk": 0.4297863841056824
+    },
+    {
+      "sample_id": "S2317",
+      "time": 89.0,
+      "event": 0.0,
+      "ensemble_risk": 0.3362710773944855
+    },
+    {
+      "sample_id": "S2324",
+      "time": 52.0,
+      "event": 1.0,
+      "ensemble_risk": 0.9536430239677429
+    },
+    {
+      "sample_id": "S2325",
+      "time": 56.0,
+      "event": 1.0,
+      "ensemble_risk": 1.0138721466064453
+    },
+    {
+      "sample_id": "S2327",
+      "time": 97.0,
+      "event": 0.0,
+      "ensemble_risk": -0.7803467512130737
+    },
+    {
+      "sample_id": "S2334",
+      "time": 48.0,
+      "event": 1.0,
+      "ensemble_risk": -0.149651437997818
+    },
+    {
+      "sample_id": "S2339",
+      "time": 23.0,
+      "event": 1.0,
+      "ensemble_risk": 2.1686108112335205
+    },
+    {
+      "sample_id": "S2342",
+      "time": 76.0,
+      "event": 0.0,
+      "ensemble_risk": -0.46001607179641724
+    },
+    {
+      "sample_id": "S2348",
+      "time": 40.0,
+      "event": 1.0,
+      "ensemble_risk": 0.8451622724533081
+    },
+    {
+      "sample_id": "S2349",
+      "time": 31.0,
+      "event": 1.0,
+      "ensemble_risk": 0.9451103210449219
+    },
+    {
+      "sample_id": "S2352",
+      "time": 58.0,
+      "event": 0.0,
+      "ensemble_risk": 0.028313016518950462
+    },
+    {
+      "sample_id": "S2361",
+      "time": 30.0,
+      "event": 1.0,
+      "ensemble_risk": 1.6509246826171875
+    },
+    {
+      "sample_id": "S2370",
+      "time": 53.0,
+      "event": 0.0,
+      "ensemble_risk": 0.15933950245380402
+    },
+    {
+      "sample_id": "S2371",
+      "time": 12.0,
+      "event": 1.0,
+      "ensemble_risk": 2.0559840202331543
+    },
+    {
+      "sample_id": "S2378",
+      "time": 42.0,
+      "event": 1.0,
+      "ensemble_risk": 1.4750778675079346
+    },
+    {
+      "sample_id": "S2379",
+      "time": 35.0,
+      "event": 0.0,
+      "ensemble_risk": 0.6949078440666199
+    },
+    {
+      "sample_id": "S2381",
+      "time": 78.0,
+      "event": 1.0,
+      "ensemble_risk": 0.302060067653656
+    },
+    {
+      "sample_id": "S2382",
+      "time": 44.0,
+      "event": 1.0,
+      "ensemble_risk": 0.3385116457939148
+    },
+    {
+      "sample_id": "S239",
+      "time": 75.0,
+      "event": 0.0,
+      "ensemble_risk": -0.025660693645477295
+    },
+    {
+      "sample_id": "S2391",
+      "time": 10.0,
+      "event": 1.0,
+      "ensemble_risk": 2.0142154693603516
+    },
+    {
+      "sample_id": "S2393",
+      "time": 65.0,
+      "event": 0.0,
+      "ensemble_risk": 1.508518934249878
+    },
+    {
+      "sample_id": "S2398",
+      "time": 86.0,
+      "event": 1.0,
+      "ensemble_risk": -1.491210699081421
+    },
+    {
+      "sample_id": "S2409",
+      "time": 87.0,
+      "event": 0.0,
+      "ensemble_risk": -0.3335288166999817
+    },
+    {
+      "sample_id": "S2416",
+      "time": 54.0,
+      "event": 1.0,
+      "ensemble_risk": 1.8562116622924805
+    },
+    {
+      "sample_id": "S2418",
+      "time": 82.0,
+      "event": 0.0,
+      "ensemble_risk": -0.999886155128479
+    },
+    {
+      "sample_id": "S2419",
+      "time": 51.0,
+      "event": 1.0,
+      "ensemble_risk": 0.9279826879501343
+    },
+    {
+      "sample_id": "S2439",
+      "time": 67.0,
+      "event": 1.0,
+      "ensemble_risk": 0.8778494000434875
+    },
+    {
+      "sample_id": "S2440",
+      "time": 74.0,
+      "event": 0.0,
+      "ensemble_risk": 0.5601964592933655
+    },
+    {
+      "sample_id": "S2441",
+      "time": 76.0,
+      "event": 0.0,
+      "ensemble_risk": 0.13414974510669708
+    },
+    {
+      "sample_id": "S2447",
+      "time": 44.0,
+      "event": 0.0,
+      "ensemble_risk": -0.12109160423278809
+    },
+    {
+      "sample_id": "S2450",
+      "time": 41.0,
+      "event": 1.0,
+      "ensemble_risk": 0.5652270913124084
+    },
+    {
+      "sample_id": "S2454",
+      "time": 54.0,
+      "event": 1.0,
+      "ensemble_risk": -0.5315620303153992
+    },
+    {
+      "sample_id": "S2456",
+      "time": 51.0,
+      "event": 1.0,
+      "ensemble_risk": 0.6896234154701233
+    },
+    {
+      "sample_id": "S2458",
+      "time": 70.0,
+      "event": 1.0,
+      "ensemble_risk": 2.163102388381958
+    },
+    {
+      "sample_id": "S2462",
+      "time": 55.0,
+      "event": 1.0,
+      "ensemble_risk": 1.3688883781433105
+    },
+    {
+      "sample_id": "S2463",
+      "time": 86.0,
+      "event": 0.0,
+      "ensemble_risk": -0.9339298009872437
+    },
+    {
+      "sample_id": "S2464",
+      "time": 50.0,
+      "event": 1.0,
+      "ensemble_risk": 1.3162782192230225
+    },
+    {
+      "sample_id": "S2466",
+      "time": 92.0,
+      "event": 0.0,
+      "ensemble_risk": -0.9872423410415649
+    },
+    {
+      "sample_id": "S2469",
+      "time": 57.0,
+      "event": 1.0,
+      "ensemble_risk": 1.723405122756958
+    },
+    {
+      "sample_id": "S2477",
+      "time": 46.0,
+      "event": 1.0,
+      "ensemble_risk": 0.7860151529312134
+    },
+    {
+      "sample_id": "S2479",
+      "time": 52.0,
+      "event": 1.0,
+      "ensemble_risk": 0.5656561851501465
+    },
+    {
+      "sample_id": "S2480",
+      "time": 104.0,
+      "event": 0.0,
+      "ensemble_risk": -0.4193759858608246
+    },
+    {
+      "sample_id": "S2481",
+      "time": 54.0,
+      "event": 0.0,
+      "ensemble_risk": 0.5901509523391724
+    },
+    {
+      "sample_id": "S2496",
+      "time": 93.0,
+      "event": 0.0,
+      "ensemble_risk": 0.6205779910087585
+    },
+    {
+      "sample_id": "S250",
+      "time": 21.0,
+      "event": 1.0,
+      "ensemble_risk": 2.160855770111084
+    },
+    {
+      "sample_id": "S2503",
+      "time": 82.0,
+      "event": 0.0,
+      "ensemble_risk": -0.847953200340271
+    },
+    {
+      "sample_id": "S2504",
+      "time": 32.0,
+      "event": 1.0,
+      "ensemble_risk": 1.6847259998321533
+    },
+    {
+      "sample_id": "S2518",
+      "time": 42.0,
+      "event": 1.0,
+      "ensemble_risk": 2.1367313861846924
+    },
+    {
+      "sample_id": "S2524",
+      "time": 100.0,
+      "event": 0.0,
+      "ensemble_risk": 0.5106055736541748
+    },
+    {
+      "sample_id": "S2525",
+      "time": 115.0,
+      "event": 0.0,
+      "ensemble_risk": 0.23370616137981415
+    },
+    {
+      "sample_id": "S2526",
+      "time": 47.0,
+      "event": 0.0,
+      "ensemble_risk": 0.11512601375579834
+    },
+    {
+      "sample_id": "S2533",
+      "time": 12.0,
+      "event": 1.0,
+      "ensemble_risk": 1.9351539611816406
+    },
+    {
+      "sample_id": "S2536",
+      "time": 64.0,
+      "event": 0.0,
+      "ensemble_risk": 0.4441537857055664
+    },
+    {
+      "sample_id": "S254",
+      "time": 21.0,
+      "event": 1.0,
+      "ensemble_risk": 1.8411295413970947
+    },
+    {
+      "sample_id": "S2541",
+      "time": 66.0,
+      "event": 1.0,
+      "ensemble_risk": 1.4947572946548462
+    },
+    {
+      "sample_id": "S2545",
+      "time": 81.0,
+      "event": 1.0,
+      "ensemble_risk": -0.10723014920949936
+    },
+    {
+      "sample_id": "S2547",
+      "time": 65.0,
+      "event": 0.0,
+      "ensemble_risk": 0.37277501821517944
+    },
+    {
+      "sample_id": "S2548",
+      "time": 54.0,
+      "event": 1.0,
+      "ensemble_risk": 1.0500648021697998
+    },
+    {
+      "sample_id": "S255",
+      "time": 80.0,
+      "event": 0.0,
+      "ensemble_risk": -0.626531720161438
+    },
+    {
+      "sample_id": "S2552",
+      "time": 25.0,
+      "event": 1.0,
+      "ensemble_risk": 1.0174736976623535
+    },
+    {
+      "sample_id": "S2554",
+      "time": 76.0,
+      "event": 1.0,
+      "ensemble_risk": 0.06459786742925644
+    },
+    {
+      "sample_id": "S2561",
+      "time": 79.0,
+      "event": 1.0,
+      "ensemble_risk": 1.1819875240325928
+    },
+    {
+      "sample_id": "S2563",
+      "time": 64.0,
+      "event": 0.0,
+      "ensemble_risk": 0.20642518997192383
+    },
+    {
+      "sample_id": "S2569",
+      "time": 55.0,
+      "event": 1.0,
+      "ensemble_risk": 1.5080960988998413
+    },
+    {
+      "sample_id": "S2574",
+      "time": 76.0,
+      "event": 1.0,
+      "ensemble_risk": 0.37024372816085815
+    },
+    {
+      "sample_id": "S2582",
+      "time": 100.0,
+      "event": 0.0,
+      "ensemble_risk": 0.025810426101088524
+    },
+    {
+      "sample_id": "S2587",
+      "time": 88.0,
+      "event": 1.0,
+      "ensemble_risk": -1.0439767837524414
+    },
+    {
+      "sample_id": "S259",
+      "time": 68.0,
+      "event": 0.0,
+      "ensemble_risk": -0.36865562200546265
+    },
+    {
+      "sample_id": "S2593",
+      "time": 83.0,
+      "event": 0.0,
+      "ensemble_risk": 1.309870958328247
+    },
+    {
+      "sample_id": "S2595",
+      "time": 75.0,
+      "event": 0.0,
+      "ensemble_risk": -0.0781370997428894
+    },
+    {
+      "sample_id": "S2596",
+      "time": 60.0,
+      "event": 1.0,
+      "ensemble_risk": 0.791210412979126
+    },
+    {
+      "sample_id": "S2599",
+      "time": 71.0,
+      "event": 0.0,
+      "ensemble_risk": -0.8260253667831421
+    },
+    {
+      "sample_id": "S2604",
+      "time": 49.0,
+      "event": 1.0,
+      "ensemble_risk": 1.9793872833251953
+    },
+    {
+      "sample_id": "S2607",
+      "time": 45.0,
+      "event": 1.0,
+      "ensemble_risk": 0.9681406021118164
+    },
+    {
+      "sample_id": "S2613",
+      "time": 60.0,
+      "event": 1.0,
+      "ensemble_risk": 1.1090772151947021
+    },
+    {
+      "sample_id": "S2614",
+      "time": 26.0,
+      "event": 0.0,
+      "ensemble_risk": 0.09444545209407806
+    },
+    {
+      "sample_id": "S2636",
+      "time": 89.0,
+      "event": 0.0,
+      "ensemble_risk": -0.7076225280761719
+    },
+    {
+      "sample_id": "S2651",
+      "time": 63.0,
+      "event": 0.0,
+      "ensemble_risk": -1.1247247457504272
+    },
+    {
+      "sample_id": "S2658",
+      "time": 66.0,
+      "event": 0.0,
+      "ensemble_risk": -1.2758400440216064
+    },
+    {
+      "sample_id": "S2659",
+      "time": 54.0,
+      "event": 1.0,
+      "ensemble_risk": -0.14127936959266663
+    },
+    {
+      "sample_id": "S2661",
+      "time": 59.0,
+      "event": 1.0,
+      "ensemble_risk": 0.20006580650806427
+    },
+    {
+      "sample_id": "S2669",
+      "time": 80.0,
+      "event": 0.0,
+      "ensemble_risk": -0.2308279573917389
+    },
+    {
+      "sample_id": "S2676",
+      "time": 74.0,
+      "event": 1.0,
+      "ensemble_risk": -0.07151631265878677
+    },
+    {
+      "sample_id": "S2677",
+      "time": 76.0,
+      "event": 1.0,
+      "ensemble_risk": -0.23662157356739044
+    },
+    {
+      "sample_id": "S268",
+      "time": 77.0,
+      "event": 1.0,
+      "ensemble_risk": -0.10245126485824585
+    },
+    {
+      "sample_id": "S2688",
+      "time": 77.0,
+      "event": 1.0,
+      "ensemble_risk": 0.09950612485408783
+    },
+    {
+      "sample_id": "S2694",
+      "time": 113.0,
+      "event": 0.0,
+      "ensemble_risk": -1.0295723676681519
+    },
+    {
+      "sample_id": "S2697",
+      "time": 98.0,
+      "event": 0.0,
+      "ensemble_risk": -0.2849929928779602
+    },
+    {
+      "sample_id": "S27",
+      "time": 52.0,
+      "event": 1.0,
+      "ensemble_risk": 1.776834487915039
+    },
+    {
+      "sample_id": "S2710",
+      "time": 121.0,
+      "event": 0.0,
+      "ensemble_risk": 0.3160631060600281
+    },
+    {
+      "sample_id": "S2712",
+      "time": 40.0,
+      "event": 0.0,
+      "ensemble_risk": 0.21606913208961487
+    },
+    {
+      "sample_id": "S2716",
+      "time": 41.0,
+      "event": 1.0,
+      "ensemble_risk": 1.4593956470489502
+    },
+    {
+      "sample_id": "S2724",
+      "time": 106.0,
+      "event": 0.0,
+      "ensemble_risk": -0.24020056426525116
+    },
+    {
+      "sample_id": "S2729",
+      "time": 120.0,
+      "event": 0.0,
+      "ensemble_risk": 0.08579180389642715
+    },
+    {
+      "sample_id": "S2730",
+      "time": 86.0,
+      "event": 0.0,
+      "ensemble_risk": 0.16130433976650238
+    },
+    {
+      "sample_id": "S2731",
+      "time": 19.0,
+      "event": 1.0,
+      "ensemble_risk": 1.274864673614502
+    },
+    {
+      "sample_id": "S2739",
+      "time": 60.0,
+      "event": 1.0,
+      "ensemble_risk": -0.14365383982658386
+    },
+    {
+      "sample_id": "S2747",
+      "time": 41.0,
+      "event": 1.0,
+      "ensemble_risk": 1.8867442607879639
+    },
+    {
+      "sample_id": "S2751",
+      "time": 77.0,
+      "event": 1.0,
+      "ensemble_risk": -1.2275540828704834
+    },
+    {
+      "sample_id": "S2756",
+      "time": 93.0,
+      "event": 0.0,
+      "ensemble_risk": -1.2646605968475342
+    },
+    {
+      "sample_id": "S2758",
+      "time": 87.0,
+      "event": 0.0,
+      "ensemble_risk": 0.10886124521493912
+    },
+    {
+      "sample_id": "S2759",
+      "time": 64.0,
+      "event": 0.0,
+      "ensemble_risk": 1.3700220584869385
+    },
+    {
+      "sample_id": "S2773",
+      "time": 87.0,
+      "event": 0.0,
+      "ensemble_risk": 1.6321756839752197
+    },
+    {
+      "sample_id": "S278",
+      "time": 96.0,
+      "event": 0.0,
+      "ensemble_risk": 0.3009208142757416
+    },
+    {
+      "sample_id": "S2785",
+      "time": 50.0,
+      "event": 1.0,
+      "ensemble_risk": -0.7480416297912598
+    },
+    {
+      "sample_id": "S2794",
+      "time": 64.0,
+      "event": 1.0,
+      "ensemble_risk": -1.16825270652771
+    },
+    {
+      "sample_id": "S2797",
+      "time": 87.0,
+      "event": 0.0,
+      "ensemble_risk": 2.0439019203186035
+    },
+    {
+      "sample_id": "S2804",
+      "time": 19.0,
+      "event": 1.0,
+      "ensemble_risk": 0.8154516220092773
+    },
+    {
+      "sample_id": "S2808",
+      "time": 36.0,
+      "event": 1.0,
+      "ensemble_risk": 1.0792648792266846
+    },
+    {
+      "sample_id": "S2813",
+      "time": 61.0,
+      "event": 1.0,
+      "ensemble_risk": -0.9981967806816101
+    },
+    {
+      "sample_id": "S2821",
+      "time": 61.0,
+      "event": 0.0,
+      "ensemble_risk": 1.3676376342773438
+    },
+    {
+      "sample_id": "S2823",
+      "time": 49.0,
+      "event": 1.0,
+      "ensemble_risk": 1.3942879438400269
+    },
+    {
+      "sample_id": "S2826",
+      "time": 58.0,
+      "event": 0.0,
+      "ensemble_risk": 0.312770277261734
+    },
+    {
+      "sample_id": "S2831",
+      "time": 92.0,
+      "event": 1.0,
+      "ensemble_risk": -0.9598952531814575
+    },
+    {
+      "sample_id": "S2835",
+      "time": 73.0,
+      "event": 0.0,
+      "ensemble_risk": 0.4750654697418213
+    },
+    {
+      "sample_id": "S2841",
+      "time": 68.0,
+      "event": 0.0,
+      "ensemble_risk": 0.9818830490112305
+    },
+    {
+      "sample_id": "S2845",
+      "time": 51.0,
+      "event": 1.0,
+      "ensemble_risk": 1.510778784751892
+    },
+    {
+      "sample_id": "S2849",
+      "time": 59.0,
+      "event": 1.0,
+      "ensemble_risk": 1.7167106866836548
+    },
+    {
+      "sample_id": "S2853",
+      "time": 40.0,
+      "event": 1.0,
+      "ensemble_risk": 1.9171521663665771
+    },
+    {
+      "sample_id": "S286",
+      "time": 26.0,
+      "event": 1.0,
+      "ensemble_risk": 2.118595600128174
+    },
+    {
+      "sample_id": "S2863",
+      "time": 59.0,
+      "event": 0.0,
+      "ensemble_risk": -1.0010921955108643
+    },
+    {
+      "sample_id": "S287",
+      "time": 68.0,
+      "event": 0.0,
+      "ensemble_risk": -1.1022365093231201
+    },
+    {
+      "sample_id": "S2873",
+      "time": 63.0,
+      "event": 1.0,
+      "ensemble_risk": 0.5268350839614868
+    },
+    {
+      "sample_id": "S2875",
+      "time": 55.0,
+      "event": 1.0,
+      "ensemble_risk": 2.0378761291503906
+    },
+    {
+      "sample_id": "S2877",
+      "time": 80.0,
+      "event": 1.0,
+      "ensemble_risk": -0.10953617095947266
+    },
+    {
+      "sample_id": "S2879",
+      "time": 37.0,
+      "event": 1.0,
+      "ensemble_risk": 2.0901412963867188
+    },
+    {
+      "sample_id": "S2888",
+      "time": 58.0,
+      "event": 1.0,
+      "ensemble_risk": -1.051409363746643
+    },
+    {
+      "sample_id": "S2895",
+      "time": 45.0,
+      "event": 0.0,
+      "ensemble_risk": 1.2935073375701904
+    },
+    {
+      "sample_id": "S2899",
+      "time": 74.0,
+      "event": 1.0,
+      "ensemble_risk": 0.2628001570701599
+    },
+    {
+      "sample_id": "S2901",
+      "time": 35.0,
+      "event": 1.0,
+      "ensemble_risk": 2.1064515113830566
+    },
+    {
+      "sample_id": "S2904",
+      "time": 61.0,
+      "event": 0.0,
+      "ensemble_risk": 1.6913388967514038
+    },
+    {
+      "sample_id": "S2907",
+      "time": 26.0,
+      "event": 1.0,
+      "ensemble_risk": 0.530610203742981
+    },
+    {
+      "sample_id": "S2909",
+      "time": 80.0,
+      "event": 0.0,
+      "ensemble_risk": 0.43548282980918884
+    },
+    {
+      "sample_id": "S2910",
+      "time": 84.0,
+      "event": 1.0,
+      "ensemble_risk": -0.5266056656837463
+    },
+    {
+      "sample_id": "S2916",
+      "time": 63.0,
+      "event": 1.0,
+      "ensemble_risk": 0.731036901473999
+    },
+    {
+      "sample_id": "S2920",
+      "time": 64.0,
+      "event": 0.0,
+      "ensemble_risk": 1.0233498811721802
+    },
+    {
+      "sample_id": "S2926",
+      "time": 76.0,
+      "event": 1.0,
+      "ensemble_risk": 1.6104202270507812
+    },
+    {
+      "sample_id": "S293",
+      "time": 54.0,
+      "event": 1.0,
+      "ensemble_risk": 1.884299635887146
+    },
+    {
+      "sample_id": "S2931",
+      "time": 56.0,
+      "event": 0.0,
+      "ensemble_risk": -0.11948654800653458
+    },
+    {
+      "sample_id": "S294",
+      "time": 64.0,
+      "event": 1.0,
+      "ensemble_risk": 0.63062584400177
+    },
+    {
+      "sample_id": "S2951",
+      "time": 76.0,
+      "event": 0.0,
+      "ensemble_risk": 0.07138936221599579
+    },
+    {
+      "sample_id": "S2955",
+      "time": 106.0,
+      "event": 0.0,
+      "ensemble_risk": -1.0084549188613892
+    },
+    {
+      "sample_id": "S2962",
+      "time": 84.0,
+      "event": 0.0,
+      "ensemble_risk": 0.6249673962593079
+    },
+    {
+      "sample_id": "S2963",
+      "time": 25.0,
+      "event": 1.0,
+      "ensemble_risk": 1.6432502269744873
+    },
+    {
+      "sample_id": "S297",
+      "time": 18.0,
+      "event": 1.0,
+      "ensemble_risk": 1.5662643909454346
+    },
+    {
+      "sample_id": "S2975",
+      "time": 41.0,
+      "event": 0.0,
+      "ensemble_risk": 1.78778076171875
+    },
+    {
+      "sample_id": "S2977",
+      "time": 75.0,
+      "event": 1.0,
+      "ensemble_risk": 0.5290393829345703
+    },
+    {
+      "sample_id": "S2983",
+      "time": 82.0,
+      "event": 1.0,
+      "ensemble_risk": 0.055688757449388504
+    },
+    {
+      "sample_id": "S2990",
+      "time": 88.0,
+      "event": 0.0,
+      "ensemble_risk": 0.1751279979944229
+    },
+    {
+      "sample_id": "S2994",
+      "time": 92.0,
+      "event": 1.0,
+      "ensemble_risk": 0.45195484161376953
+    },
+    {
+      "sample_id": "S2996",
+      "time": 79.0,
+      "event": 0.0,
+      "ensemble_risk": 0.7849351763725281
+    },
+    {
+      "sample_id": "S2997",
+      "time": 55.0,
+      "event": 1.0,
+      "ensemble_risk": 2.0455636978149414
+    },
+    {
+      "sample_id": "S3001",
+      "time": 76.0,
+      "event": 0.0,
+      "ensemble_risk": -1.3417984247207642
+    },
+    {
+      "sample_id": "S3011",
+      "time": 52.0,
+      "event": 0.0,
+      "ensemble_risk": 0.8420168161392212
+    },
+    {
+      "sample_id": "S3012",
+      "time": 67.0,
+      "event": 0.0,
+      "ensemble_risk": 0.32370731234550476
+    },
+    {
+      "sample_id": "S3014",
+      "time": 44.0,
+      "event": 1.0,
+      "ensemble_risk": 2.0242812633514404
+    },
+    {
+      "sample_id": "S3015",
+      "time": 112.0,
+      "event": 0.0,
+      "ensemble_risk": -0.7938810586929321
+    },
+    {
+      "sample_id": "S3033",
+      "time": 56.0,
+      "event": 0.0,
+      "ensemble_risk": -0.7984564304351807
+    },
+    {
+      "sample_id": "S3035",
+      "time": 74.0,
+      "event": 1.0,
+      "ensemble_risk": -0.9456393122673035
+    },
+    {
+      "sample_id": "S3038",
+      "time": 55.0,
+      "event": 1.0,
+      "ensemble_risk": 0.31149977445602417
+    },
+    {
+      "sample_id": "S3043",
+      "time": 45.0,
+      "event": 1.0,
+      "ensemble_risk": 0.5569014549255371
+    },
+    {
+      "sample_id": "S3052",
+      "time": 95.0,
+      "event": 0.0,
+      "ensemble_risk": -0.842424213886261
+    },
+    {
+      "sample_id": "S3054",
+      "time": 56.0,
+      "event": 0.0,
+      "ensemble_risk": 0.28183987736701965
+    },
+    {
+      "sample_id": "S306",
+      "time": 77.0,
+      "event": 0.0,
+      "ensemble_risk": 0.08217465877532959
+    },
+    {
+      "sample_id": "S3062",
+      "time": 68.0,
+      "event": 0.0,
+      "ensemble_risk": 1.0308384895324707
+    },
+    {
+      "sample_id": "S3064",
+      "time": 68.0,
+      "event": 1.0,
+      "ensemble_risk": 0.48990947008132935
+    },
+    {
+      "sample_id": "S3067",
+      "time": 68.0,
+      "event": 0.0,
+      "ensemble_risk": -0.010774564929306507
+    },
+    {
+      "sample_id": "S3069",
+      "time": 51.0,
+      "event": 1.0,
+      "ensemble_risk": 0.7629354596138
+    },
+    {
+      "sample_id": "S3073",
+      "time": 48.0,
+      "event": 0.0,
+      "ensemble_risk": 0.44956737756729126
+    },
+    {
+      "sample_id": "S3087",
+      "time": 32.0,
+      "event": 1.0,
+      "ensemble_risk": 0.4290474057197571
+    },
+    {
+      "sample_id": "S309",
+      "time": 102.0,
+      "event": 0.0,
+      "ensemble_risk": -0.3088156282901764
+    },
+    {
+      "sample_id": "S3090",
+      "time": 44.0,
+      "event": 1.0,
+      "ensemble_risk": -0.011460334062576294
+    },
+    {
+      "sample_id": "S3092",
+      "time": 70.0,
+      "event": 0.0,
+      "ensemble_risk": 0.7140313982963562
+    },
+    {
+      "sample_id": "S3093",
+      "time": 60.0,
+      "event": 1.0,
+      "ensemble_risk": 2.177858829498291
+    },
+    {
+      "sample_id": "S3094",
+      "time": 69.0,
+      "event": 0.0,
+      "ensemble_risk": 0.332810640335083
+    },
+    {
+      "sample_id": "S3095",
+      "time": 73.0,
+      "event": 0.0,
+      "ensemble_risk": 0.18704606592655182
+    },
+    {
+      "sample_id": "S3098",
+      "time": 7.0,
+      "event": 0.0,
+      "ensemble_risk": 1.4916093349456787
+    },
+    {
+      "sample_id": "S31",
+      "time": 106.0,
+      "event": 0.0,
+      "ensemble_risk": 0.021371370181441307
+    },
+    {
+      "sample_id": "S3103",
+      "time": 58.0,
+      "event": 1.0,
+      "ensemble_risk": 0.37128475308418274
+    },
+    {
+      "sample_id": "S3105",
+      "time": 114.0,
+      "event": 0.0,
+      "ensemble_risk": -0.5739453434944153
+    },
+    {
+      "sample_id": "S3106",
+      "time": 63.0,
+      "event": 0.0,
+      "ensemble_risk": 1.0827546119689941
+    },
+    {
+      "sample_id": "S3113",
+      "time": 65.0,
+      "event": 1.0,
+      "ensemble_risk": 1.2723162174224854
+    },
+    {
+      "sample_id": "S3118",
+      "time": 84.0,
+      "event": 1.0,
+      "ensemble_risk": -0.20734894275665283
+    },
+    {
+      "sample_id": "S3122",
+      "time": 65.0,
+      "event": 1.0,
+      "ensemble_risk": 0.20633915066719055
+    },
+    {
+      "sample_id": "S3123",
+      "time": 17.0,
+      "event": 1.0,
+      "ensemble_risk": 0.9410977363586426
+    },
+    {
+      "sample_id": "S3125",
+      "time": 39.0,
+      "event": 1.0,
+      "ensemble_risk": 1.4607096910476685
+    },
+    {
+      "sample_id": "S3133",
+      "time": 41.0,
+      "event": 1.0,
+      "ensemble_risk": 1.862303376197815
+    },
+    {
+      "sample_id": "S3134",
+      "time": 29.0,
+      "event": 1.0,
+      "ensemble_risk": 2.14502215385437
+    },
+    {
+      "sample_id": "S3138",
+      "time": 70.0,
+      "event": 1.0,
+      "ensemble_risk": 2.0849599838256836
+    },
+    {
+      "sample_id": "S3139",
+      "time": 101.0,
+      "event": 0.0,
+      "ensemble_risk": 0.5703997611999512
+    },
+    {
+      "sample_id": "S3140",
+      "time": 70.0,
+      "event": 0.0,
+      "ensemble_risk": 1.4245245456695557
+    },
+    {
+      "sample_id": "S3141",
+      "time": 67.0,
+      "event": 1.0,
+      "ensemble_risk": 0.5041249990463257
+    },
+    {
+      "sample_id": "S3142",
+      "time": 52.0,
+      "event": 1.0,
+      "ensemble_risk": -0.8713486790657043
+    },
+    {
+      "sample_id": "S3145",
+      "time": 70.0,
+      "event": 1.0,
+      "ensemble_risk": -0.31961745023727417
+    },
+    {
+      "sample_id": "S315",
+      "time": 42.0,
+      "event": 1.0,
+      "ensemble_risk": 1.2628591060638428
+    },
+    {
+      "sample_id": "S3152",
+      "time": 67.0,
+      "event": 0.0,
+      "ensemble_risk": 0.16902878880500793
+    },
+    {
+      "sample_id": "S3155",
+      "time": 37.0,
+      "event": 1.0,
+      "ensemble_risk": 0.4317283630371094
+    },
+    {
+      "sample_id": "S3156",
+      "time": 54.0,
+      "event": 0.0,
+      "ensemble_risk": 0.92625492811203
+    },
+    {
+      "sample_id": "S316",
+      "time": 60.0,
+      "event": 0.0,
+      "ensemble_risk": 0.053895480930805206
+    },
+    {
+      "sample_id": "S3163",
+      "time": 92.0,
+      "event": 0.0,
+      "ensemble_risk": 0.9349344372749329
+    },
+    {
+      "sample_id": "S3167",
+      "time": 56.0,
+      "event": 1.0,
+      "ensemble_risk": 1.6553938388824463
+    },
+    {
+      "sample_id": "S3169",
+      "time": 51.0,
+      "event": 0.0,
+      "ensemble_risk": 1.1335029602050781
+    },
+    {
+      "sample_id": "S317",
+      "time": 52.0,
+      "event": 1.0,
+      "ensemble_risk": 1.5973021984100342
+    },
+    {
+      "sample_id": "S3171",
+      "time": 64.0,
+      "event": 0.0,
+      "ensemble_risk": 0.08533750474452972
+    },
+    {
+      "sample_id": "S3173",
+      "time": 72.0,
+      "event": 0.0,
+      "ensemble_risk": 0.283348023891449
+    },
+    {
+      "sample_id": "S3175",
+      "time": 67.0,
+      "event": 0.0,
+      "ensemble_risk": -1.0606534481048584
+    },
+    {
+      "sample_id": "S3177",
+      "time": 85.0,
+      "event": 0.0,
+      "ensemble_risk": -0.42103004455566406
+    },
+    {
+      "sample_id": "S3190",
+      "time": 91.0,
+      "event": 1.0,
+      "ensemble_risk": -0.2848511040210724
+    },
+    {
+      "sample_id": "S3196",
+      "time": 80.0,
+      "event": 0.0,
+      "ensemble_risk": 0.48616963624954224
+    },
+    {
+      "sample_id": "S3198",
+      "time": 55.0,
+      "event": 1.0,
+      "ensemble_risk": -0.47675079107284546
+    },
+    {
+      "sample_id": "S320",
+      "time": 82.0,
+      "event": 0.0,
+      "ensemble_risk": 0.7502197027206421
+    },
+    {
+      "sample_id": "S3206",
+      "time": 58.0,
+      "event": 0.0,
+      "ensemble_risk": 2.0748291015625
+    },
+    {
+      "sample_id": "S3207",
+      "time": 90.0,
+      "event": 0.0,
+      "ensemble_risk": 0.36635634303092957
+    },
+    {
+      "sample_id": "S321",
+      "time": 81.0,
+      "event": 0.0,
+      "ensemble_risk": 0.6807035207748413
+    },
+    {
+      "sample_id": "S3224",
+      "time": 43.0,
+      "event": 1.0,
+      "ensemble_risk": 2.0899100303649902
+    },
+    {
+      "sample_id": "S3233",
+      "time": 36.0,
+      "event": 1.0,
+      "ensemble_risk": 1.74844229221344
+    },
+    {
+      "sample_id": "S3234",
+      "time": 50.0,
+      "event": 1.0,
+      "ensemble_risk": 1.011852502822876
+    },
+    {
+      "sample_id": "S3235",
+      "time": 78.0,
+      "event": 0.0,
+      "ensemble_risk": -0.22962355613708496
+    },
+    {
+      "sample_id": "S3236",
+      "time": 112.0,
+      "event": 1.0,
+      "ensemble_risk": 0.6386920213699341
+    },
+    {
+      "sample_id": "S3240",
+      "time": 81.0,
+      "event": 0.0,
+      "ensemble_risk": 0.5813302993774414
+    },
+    {
+      "sample_id": "S3244",
+      "time": 71.0,
+      "event": 1.0,
+      "ensemble_risk": 1.8600441217422485
+    },
+    {
+      "sample_id": "S3246",
+      "time": 46.0,
+      "event": 1.0,
+      "ensemble_risk": -0.04917321354150772
+    },
+    {
+      "sample_id": "S3260",
+      "time": 47.0,
+      "event": 0.0,
+      "ensemble_risk": 1.4238660335540771
+    },
+    {
+      "sample_id": "S3264",
+      "time": 98.0,
+      "event": 0.0,
+      "ensemble_risk": -0.41681376099586487
+    },
+    {
+      "sample_id": "S3266",
+      "time": 32.0,
+      "event": 1.0,
+      "ensemble_risk": 0.8398763537406921
+    },
+    {
+      "sample_id": "S3271",
+      "time": 82.0,
+      "event": 0.0,
+      "ensemble_risk": 0.5187380313873291
+    },
+    {
+      "sample_id": "S3276",
+      "time": 65.0,
+      "event": 0.0,
+      "ensemble_risk": -0.6823916435241699
+    },
+    {
+      "sample_id": "S3280",
+      "time": 76.0,
+      "event": 0.0,
+      "ensemble_risk": 0.16959209740161896
+    },
+    {
+      "sample_id": "S3286",
+      "time": 44.0,
+      "event": 1.0,
+      "ensemble_risk": 1.2121493816375732
+    },
+    {
+      "sample_id": "S3287",
+      "time": 69.0,
+      "event": 0.0,
+      "ensemble_risk": 1.1371476650238037
+    },
+    {
+      "sample_id": "S3289",
+      "time": 29.0,
+      "event": 1.0,
+      "ensemble_risk": 1.989151954650879
+    },
+    {
+      "sample_id": "S3294",
+      "time": 47.0,
+      "event": 0.0,
+      "ensemble_risk": -0.23609773814678192
+    },
+    {
+      "sample_id": "S3300",
+      "time": 67.0,
+      "event": 1.0,
+      "ensemble_risk": 0.6068198084831238
+    },
+    {
+      "sample_id": "S3301",
+      "time": 32.0,
+      "event": 1.0,
+      "ensemble_risk": 2.0417301654815674
+    },
+    {
+      "sample_id": "S3303",
+      "time": 102.0,
+      "event": 0.0,
+      "ensemble_risk": -0.9925999641418457
+    },
+    {
+      "sample_id": "S3306",
+      "time": 56.0,
+      "event": 1.0,
+      "ensemble_risk": 1.7172071933746338
+    },
+    {
+      "sample_id": "S3312",
+      "time": 81.0,
+      "event": 0.0,
+      "ensemble_risk": 0.5603014230728149
+    },
+    {
+      "sample_id": "S3313",
+      "time": 69.0,
+      "event": 1.0,
+      "ensemble_risk": 0.6329870223999023
+    },
+    {
+      "sample_id": "S3315",
+      "time": 54.0,
+      "event": 0.0,
+      "ensemble_risk": 0.33118143677711487
+    },
+    {
+      "sample_id": "S332",
+      "time": 89.0,
+      "event": 0.0,
+      "ensemble_risk": -0.767082691192627
+    },
+    {
+      "sample_id": "S3323",
+      "time": 73.0,
+      "event": 0.0,
+      "ensemble_risk": 0.38561326265335083
+    },
+    {
+      "sample_id": "S3324",
+      "time": 69.0,
+      "event": 1.0,
+      "ensemble_risk": 0.31312647461891174
+    },
+    {
+      "sample_id": "S3325",
+      "time": 33.0,
+      "event": 0.0,
+      "ensemble_risk": 1.6748039722442627
+    },
+    {
+      "sample_id": "S3328",
+      "time": 74.0,
+      "event": 0.0,
+      "ensemble_risk": 0.9544663429260254
+    },
+    {
+      "sample_id": "S3329",
+      "time": 73.0,
+      "event": 1.0,
+      "ensemble_risk": 0.7871739268302917
+    },
+    {
+      "sample_id": "S333",
+      "time": 45.0,
+      "event": 0.0,
+      "ensemble_risk": 0.3949875235557556
+    },
+    {
+      "sample_id": "S3344",
+      "time": 92.0,
+      "event": 0.0,
+      "ensemble_risk": -1.0588085651397705
+    },
+    {
+      "sample_id": "S3361",
+      "time": 97.0,
+      "event": 0.0,
+      "ensemble_risk": -1.4202935695648193
+    },
+    {
+      "sample_id": "S3365",
+      "time": 11.0,
+      "event": 1.0,
+      "ensemble_risk": 1.8496280908584595
+    },
+    {
+      "sample_id": "S3368",
+      "time": 34.0,
+      "event": 1.0,
+      "ensemble_risk": 2.0815157890319824
+    },
+    {
+      "sample_id": "S3372",
+      "time": 53.0,
+      "event": 1.0,
+      "ensemble_risk": 0.1757454127073288
+    },
+    {
+      "sample_id": "S3377",
+      "time": 44.0,
+      "event": 1.0,
+      "ensemble_risk": 1.441183090209961
+    },
+    {
+      "sample_id": "S3382",
+      "time": 89.0,
+      "event": 0.0,
+      "ensemble_risk": -0.41644087433815
+    },
+    {
+      "sample_id": "S3387",
+      "time": 96.0,
+      "event": 0.0,
+      "ensemble_risk": -0.2834133505821228
+    },
+    {
+      "sample_id": "S3389",
+      "time": 76.0,
+      "event": 0.0,
+      "ensemble_risk": -0.15984854102134705
+    },
+    {
+      "sample_id": "S3391",
+      "time": 87.0,
+      "event": 0.0,
+      "ensemble_risk": 0.2984699606895447
+    },
+    {
+      "sample_id": "S3392",
+      "time": 95.0,
+      "event": 0.0,
+      "ensemble_risk": -0.7257857322692871
+    },
+    {
+      "sample_id": "S3395",
+      "time": 87.0,
+      "event": 0.0,
+      "ensemble_risk": -1.2853609323501587
+    },
+    {
+      "sample_id": "S34",
+      "time": 87.0,
+      "event": 0.0,
+      "ensemble_risk": -1.1959244012832642
+    },
+    {
+      "sample_id": "S3406",
+      "time": 96.0,
+      "event": 1.0,
+      "ensemble_risk": -0.3514133393764496
+    },
+    {
+      "sample_id": "S3408",
+      "time": 55.0,
+      "event": 1.0,
+      "ensemble_risk": 0.3127298057079315
+    },
+    {
+      "sample_id": "S3410",
+      "time": 30.0,
+      "event": 0.0,
+      "ensemble_risk": 1.2573381662368774
+    },
+    {
+      "sample_id": "S3421",
+      "time": 59.0,
+      "event": 0.0,
+      "ensemble_risk": 0.5158246159553528
+    },
+    {
+      "sample_id": "S3431",
+      "time": 65.0,
+      "event": 1.0,
+      "ensemble_risk": 0.10051894187927246
+    },
+    {
+      "sample_id": "S3436",
+      "time": 74.0,
+      "event": 1.0,
+      "ensemble_risk": 0.5804470777511597
+    },
+    {
+      "sample_id": "S3441",
+      "time": 68.0,
+      "event": 1.0,
+      "ensemble_risk": 0.5726475715637207
+    },
+    {
+      "sample_id": "S3444",
+      "time": 70.0,
+      "event": 0.0,
+      "ensemble_risk": 2.167497158050537
+    },
+    {
+      "sample_id": "S3446",
+      "time": 66.0,
+      "event": 1.0,
+      "ensemble_risk": -0.41269630193710327
+    },
+    {
+      "sample_id": "S3454",
+      "time": 32.0,
+      "event": 1.0,
+      "ensemble_risk": 1.719469428062439
+    },
+    {
+      "sample_id": "S346",
+      "time": 93.0,
+      "event": 0.0,
+      "ensemble_risk": 0.4767764210700989
+    },
+    {
+      "sample_id": "S3468",
+      "time": 63.0,
+      "event": 1.0,
+      "ensemble_risk": 0.7534035444259644
+    },
+    {
+      "sample_id": "S3471",
+      "time": 58.0,
+      "event": 0.0,
+      "ensemble_risk": 0.2278391420841217
+    },
+    {
+      "sample_id": "S3475",
+      "time": 61.0,
+      "event": 1.0,
+      "ensemble_risk": 0.3532981872558594
+    },
+    {
+      "sample_id": "S3478",
+      "time": 63.0,
+      "event": 0.0,
+      "ensemble_risk": 0.6158872246742249
+    },
+    {
+      "sample_id": "S3485",
+      "time": 43.0,
+      "event": 1.0,
+      "ensemble_risk": 0.19747258722782135
+    },
+    {
+      "sample_id": "S3488",
+      "time": 72.0,
+      "event": 1.0,
+      "ensemble_risk": 0.5687475204467773
+    },
+    {
+      "sample_id": "S3495",
+      "time": 43.0,
+      "event": 1.0,
+      "ensemble_risk": 1.4759016036987305
+    },
+    {
+      "sample_id": "S3501",
+      "time": 64.0,
+      "event": 1.0,
+      "ensemble_risk": -1.2727997303009033
+    },
+    {
+      "sample_id": "S3504",
+      "time": 101.0,
+      "event": 1.0,
+      "ensemble_risk": -0.16434510052204132
+    },
+    {
+      "sample_id": "S3505",
+      "time": 29.0,
+      "event": 1.0,
+      "ensemble_risk": 2.0917210578918457
+    },
+    {
+      "sample_id": "S3506",
+      "time": 70.0,
+      "event": 0.0,
+      "ensemble_risk": -0.364248663187027
+    },
+    {
+      "sample_id": "S3509",
+      "time": 89.0,
+      "event": 1.0,
+      "ensemble_risk": -0.1982170045375824
+    },
+    {
+      "sample_id": "S3512",
+      "time": 75.0,
+      "event": 0.0,
+      "ensemble_risk": -0.33648744225502014
+    },
+    {
+      "sample_id": "S3516",
+      "time": 40.0,
+      "event": 1.0,
+      "ensemble_risk": 1.9306484460830688
+    },
+    {
+      "sample_id": "S3519",
+      "time": 41.0,
+      "event": 0.0,
+      "ensemble_risk": 1.6436907052993774
+    },
+    {
+      "sample_id": "S3520",
+      "time": 62.0,
+      "event": 0.0,
+      "ensemble_risk": 0.7034066915512085
+    },
+    {
+      "sample_id": "S3523",
+      "time": 79.0,
+      "event": 0.0,
+      "ensemble_risk": -1.2045633792877197
+    },
+    {
+      "sample_id": "S3529",
+      "time": 44.0,
+      "event": 1.0,
+      "ensemble_risk": 0.659737765789032
+    },
+    {
+      "sample_id": "S3532",
+      "time": 67.0,
+      "event": 0.0,
+      "ensemble_risk": -1.035192847251892
+    },
+    {
+      "sample_id": "S3534",
+      "time": 41.0,
+      "event": 1.0,
+      "ensemble_risk": 0.5857268571853638
+    },
+    {
+      "sample_id": "S3539",
+      "time": 36.0,
+      "event": 1.0,
+      "ensemble_risk": 1.841495156288147
+    },
+    {
+      "sample_id": "S3540",
+      "time": 61.0,
+      "event": 0.0,
+      "ensemble_risk": 0.748309314250946
+    },
+    {
+      "sample_id": "S3549",
+      "time": 96.0,
+      "event": 0.0,
+      "ensemble_risk": -0.0883326530456543
+    },
+    {
+      "sample_id": "S3558",
+      "time": 67.0,
+      "event": 1.0,
+      "ensemble_risk": -0.41505756974220276
+    },
+    {
+      "sample_id": "S3559",
+      "time": 14.0,
+      "event": 1.0,
+      "ensemble_risk": 1.9960439205169678
+    },
+    {
+      "sample_id": "S3564",
+      "time": 110.0,
+      "event": 0.0,
+      "ensemble_risk": -1.2121015787124634
+    },
+    {
+      "sample_id": "S3567",
+      "time": 56.0,
+      "event": 1.0,
+      "ensemble_risk": 1.4757546186447144
+    },
+    {
+      "sample_id": "S3570",
+      "time": 51.0,
+      "event": 1.0,
+      "ensemble_risk": -1.1901817321777344
+    },
+    {
+      "sample_id": "S358",
+      "time": 54.0,
+      "event": 1.0,
+      "ensemble_risk": -0.35488229990005493
+    },
+    {
+      "sample_id": "S3582",
+      "time": 44.0,
+      "event": 1.0,
+      "ensemble_risk": 1.2837384939193726
+    },
+    {
+      "sample_id": "S3587",
+      "time": 39.0,
+      "event": 1.0,
+      "ensemble_risk": 1.9082040786743164
+    },
+    {
+      "sample_id": "S3591",
+      "time": 124.0,
+      "event": 0.0,
+      "ensemble_risk": -0.5303759574890137
+    },
+    {
+      "sample_id": "S3592",
+      "time": 29.0,
+      "event": 1.0,
+      "ensemble_risk": 0.616870641708374
+    },
+    {
+      "sample_id": "S3593",
+      "time": 56.0,
+      "event": 1.0,
+      "ensemble_risk": 2.0870773792266846
+    },
+    {
+      "sample_id": "S36",
+      "time": 6.0,
+      "event": 1.0,
+      "ensemble_risk": 1.1157828569412231
+    },
+    {
+      "sample_id": "S369",
+      "time": 30.0,
+      "event": 1.0,
+      "ensemble_risk": 2.099539279937744
+    },
+    {
+      "sample_id": "S371",
+      "time": 76.0,
+      "event": 1.0,
+      "ensemble_risk": 0.5967728495597839
+    },
+    {
+      "sample_id": "S383",
+      "time": 29.0,
+      "event": 1.0,
+      "ensemble_risk": 1.8528465032577515
+    },
+    {
+      "sample_id": "S384",
+      "time": 47.0,
+      "event": 1.0,
+      "ensemble_risk": 0.24229486286640167
+    },
+    {
+      "sample_id": "S386",
+      "time": 91.0,
+      "event": 0.0,
+      "ensemble_risk": -0.3365093767642975
+    },
+    {
+      "sample_id": "S387",
+      "time": 91.0,
+      "event": 0.0,
+      "ensemble_risk": -0.406398206949234
+    },
+    {
+      "sample_id": "S39",
+      "time": 18.0,
+      "event": 1.0,
+      "ensemble_risk": 1.3990556001663208
+    },
+    {
+      "sample_id": "S395",
+      "time": 72.0,
+      "event": 1.0,
+      "ensemble_risk": -1.0567045211791992
+    },
+    {
+      "sample_id": "S396",
+      "time": 13.0,
+      "event": 0.0,
+      "ensemble_risk": -0.26599663496017456
+    },
+    {
+      "sample_id": "S398",
+      "time": 57.0,
+      "event": 1.0,
+      "ensemble_risk": -0.5242465138435364
+    },
+    {
+      "sample_id": "S403",
+      "time": 27.0,
+      "event": 1.0,
+      "ensemble_risk": 1.9503246545791626
+    },
+    {
+      "sample_id": "S411",
+      "time": 82.0,
+      "event": 0.0,
+      "ensemble_risk": 0.5098689794540405
+    },
+    {
+      "sample_id": "S413",
+      "time": 58.0,
+      "event": 1.0,
+      "ensemble_risk": 2.103029727935791
+    },
+    {
+      "sample_id": "S416",
+      "time": 44.0,
+      "event": 0.0,
+      "ensemble_risk": 1.7671626806259155
+    },
+    {
+      "sample_id": "S418",
+      "time": 82.0,
+      "event": 0.0,
+      "ensemble_risk": 0.7649495005607605
+    },
+    {
+      "sample_id": "S42",
+      "time": 20.0,
+      "event": 1.0,
+      "ensemble_risk": 1.879401445388794
+    },
+    {
+      "sample_id": "S420",
+      "time": 70.0,
+      "event": 0.0,
+      "ensemble_risk": -1.064448356628418
+    },
+    {
+      "sample_id": "S425",
+      "time": 71.0,
+      "event": 0.0,
+      "ensemble_risk": 0.17539498209953308
+    },
+    {
+      "sample_id": "S427",
+      "time": 87.0,
+      "event": 0.0,
+      "ensemble_risk": 0.4464390277862549
+    },
+    {
+      "sample_id": "S429",
+      "time": 64.0,
+      "event": 0.0,
+      "ensemble_risk": 1.4274150133132935
+    },
+    {
+      "sample_id": "S432",
+      "time": 35.0,
+      "event": 1.0,
+      "ensemble_risk": 1.9811007976531982
+    },
+    {
+      "sample_id": "S435",
+      "time": 54.0,
+      "event": 1.0,
+      "ensemble_risk": 0.33745551109313965
+    },
+    {
+      "sample_id": "S445",
+      "time": 42.0,
+      "event": 1.0,
+      "ensemble_risk": 1.9832156896591187
+    },
+    {
+      "sample_id": "S451",
+      "time": 41.0,
+      "event": 0.0,
+      "ensemble_risk": 1.0710546970367432
+    },
+    {
+      "sample_id": "S460",
+      "time": 26.0,
+      "event": 0.0,
+      "ensemble_risk": 1.6041892766952515
+    },
+    {
+      "sample_id": "S463",
+      "time": 64.0,
+      "event": 1.0,
+      "ensemble_risk": 0.03555510565638542
+    },
+    {
+      "sample_id": "S47",
+      "time": 27.0,
+      "event": 1.0,
+      "ensemble_risk": 1.6724910736083984
+    },
+    {
+      "sample_id": "S474",
+      "time": 71.0,
+      "event": 1.0,
+      "ensemble_risk": -0.04833836108446121
+    },
+    {
+      "sample_id": "S478",
+      "time": 67.0,
+      "event": 0.0,
+      "ensemble_risk": -0.40324848890304565
+    },
+    {
+      "sample_id": "S482",
+      "time": 23.0,
+      "event": 0.0,
+      "ensemble_risk": 1.682120680809021
+    },
+    {
+      "sample_id": "S484",
+      "time": 58.0,
+      "event": 0.0,
+      "ensemble_risk": -1.4466190338134766
+    },
+    {
+      "sample_id": "S49",
+      "time": 86.0,
+      "event": 1.0,
+      "ensemble_risk": 0.3064895272254944
+    },
+    {
+      "sample_id": "S5",
+      "time": 75.0,
+      "event": 0.0,
+      "ensemble_risk": -0.8765695691108704
+    },
+    {
+      "sample_id": "S50",
+      "time": 49.0,
+      "event": 0.0,
+      "ensemble_risk": 0.2502785623073578
+    },
+    {
+      "sample_id": "S500",
+      "time": 40.0,
+      "event": 1.0,
+      "ensemble_risk": 2.028189182281494
+    },
+    {
+      "sample_id": "S509",
+      "time": 76.0,
+      "event": 0.0,
+      "ensemble_risk": -0.5755332708358765
+    },
+    {
+      "sample_id": "S515",
+      "time": 44.0,
+      "event": 1.0,
+      "ensemble_risk": 2.0168628692626953
+    },
+    {
+      "sample_id": "S520",
+      "time": 70.0,
+      "event": 1.0,
+      "ensemble_risk": 0.8272590637207031
+    },
+    {
+      "sample_id": "S523",
+      "time": 93.0,
+      "event": 0.0,
+      "ensemble_risk": 0.3409571647644043
+    },
+    {
+      "sample_id": "S53",
+      "time": 79.0,
+      "event": 0.0,
+      "ensemble_risk": 0.2185453474521637
+    },
+    {
+      "sample_id": "S534",
+      "time": 39.0,
+      "event": 0.0,
+      "ensemble_risk": 0.15912045538425446
+    },
+    {
+      "sample_id": "S535",
+      "time": 25.0,
+      "event": 1.0,
+      "ensemble_risk": 2.071587085723877
+    },
+    {
+      "sample_id": "S536",
+      "time": 65.0,
+      "event": 0.0,
+      "ensemble_risk": 0.3328886032104492
+    },
+    {
+      "sample_id": "S542",
+      "time": 23.0,
+      "event": 1.0,
+      "ensemble_risk": 0.8088453412055969
+    },
+    {
+      "sample_id": "S546",
+      "time": 44.0,
+      "event": 1.0,
+      "ensemble_risk": 0.3945889472961426
+    },
+    {
+      "sample_id": "S548",
+      "time": 43.0,
+      "event": 1.0,
+      "ensemble_risk": 0.03743087127804756
+    },
+    {
+      "sample_id": "S552",
+      "time": 82.0,
+      "event": 0.0,
+      "ensemble_risk": 0.13537998497486115
+    },
+    {
+      "sample_id": "S557",
+      "time": 30.0,
+      "event": 1.0,
+      "ensemble_risk": 0.03483330458402634
+    },
+    {
+      "sample_id": "S561",
+      "time": 39.0,
+      "event": 1.0,
+      "ensemble_risk": -0.2412557154893875
+    },
+    {
+      "sample_id": "S569",
+      "time": 56.0,
+      "event": 1.0,
+      "ensemble_risk": 0.18909606337547302
+    },
+    {
+      "sample_id": "S572",
+      "time": 75.0,
+      "event": 0.0,
+      "ensemble_risk": 0.10795514285564423
+    },
+    {
+      "sample_id": "S575",
+      "time": 62.0,
+      "event": 1.0,
+      "ensemble_risk": 1.5037089586257935
+    },
+    {
+      "sample_id": "S578",
+      "time": 88.0,
+      "event": 1.0,
+      "ensemble_risk": -1.340605616569519
+    },
+    {
+      "sample_id": "S579",
+      "time": 96.0,
+      "event": 1.0,
+      "ensemble_risk": -0.9713350534439087
+    },
+    {
+      "sample_id": "S583",
+      "time": 101.0,
+      "event": 0.0,
+      "ensemble_risk": -0.9881467819213867
+    },
+    {
+      "sample_id": "S584",
+      "time": 19.0,
+      "event": 1.0,
+      "ensemble_risk": 2.019552230834961
+    },
+    {
+      "sample_id": "S586",
+      "time": 30.0,
+      "event": 1.0,
+      "ensemble_risk": 1.848865270614624
+    },
+    {
+      "sample_id": "S590",
+      "time": 34.0,
+      "event": 1.0,
+      "ensemble_risk": 2.0529839992523193
+    },
+    {
+      "sample_id": "S591",
+      "time": 65.0,
+      "event": 1.0,
+      "ensemble_risk": -0.055182553827762604
+    },
+    {
+      "sample_id": "S595",
+      "time": 67.0,
+      "event": 1.0,
+      "ensemble_risk": 1.7287918329238892
+    },
+    {
+      "sample_id": "S596",
+      "time": 59.0,
+      "event": 1.0,
+      "ensemble_risk": 2.0457398891448975
+    },
+    {
+      "sample_id": "S599",
+      "time": 43.0,
+      "event": 0.0,
+      "ensemble_risk": 0.6358188986778259
+    },
+    {
+      "sample_id": "S603",
+      "time": 99.0,
+      "event": 0.0,
+      "ensemble_risk": -0.09344929456710815
+    },
+    {
+      "sample_id": "S61",
+      "time": 37.0,
+      "event": 1.0,
+      "ensemble_risk": 0.47990432381629944
+    },
+    {
+      "sample_id": "S611",
+      "time": 89.0,
+      "event": 0.0,
+      "ensemble_risk": -0.16420498490333557
+    },
+    {
+      "sample_id": "S622",
+      "time": 29.0,
+      "event": 0.0,
+      "ensemble_risk": 1.418142557144165
+    },
+    {
+      "sample_id": "S627",
+      "time": 83.0,
+      "event": 0.0,
+      "ensemble_risk": 0.4234136939048767
+    },
+    {
+      "sample_id": "S632",
+      "time": 55.0,
+      "event": 1.0,
+      "ensemble_risk": 1.2156771421432495
+    },
+    {
+      "sample_id": "S633",
+      "time": 48.0,
+      "event": 1.0,
+      "ensemble_risk": 0.24222664535045624
+    },
+    {
+      "sample_id": "S642",
+      "time": 29.0,
+      "event": 1.0,
+      "ensemble_risk": 1.8315002918243408
+    },
+    {
+      "sample_id": "S65",
+      "time": 80.0,
+      "event": 0.0,
+      "ensemble_risk": 1.4966374635696411
+    },
+    {
+      "sample_id": "S657",
+      "time": 62.0,
+      "event": 1.0,
+      "ensemble_risk": 1.7205108404159546
+    },
+    {
+      "sample_id": "S665",
+      "time": 48.0,
+      "event": 1.0,
+      "ensemble_risk": -0.6621919870376587
+    },
+    {
+      "sample_id": "S672",
+      "time": 79.0,
+      "event": 0.0,
+      "ensemble_risk": -0.08764706552028656
+    },
+    {
+      "sample_id": "S679",
+      "time": 83.0,
+      "event": 0.0,
+      "ensemble_risk": -0.5897854566574097
+    },
+    {
+      "sample_id": "S70",
+      "time": 98.0,
+      "event": 1.0,
+      "ensemble_risk": -0.3364717662334442
+    },
+    {
+      "sample_id": "S702",
+      "time": 62.0,
+      "event": 1.0,
+      "ensemble_risk": 1.7420762777328491
+    },
+    {
+      "sample_id": "S708",
+      "time": 50.0,
+      "event": 0.0,
+      "ensemble_risk": 0.17361238598823547
+    },
+    {
+      "sample_id": "S709",
+      "time": 55.0,
+      "event": 1.0,
+      "ensemble_risk": -0.022523820400238037
+    },
+    {
+      "sample_id": "S718",
+      "time": 88.0,
+      "event": 0.0,
+      "ensemble_risk": -0.7293570637702942
+    },
+    {
+      "sample_id": "S719",
+      "time": 6.0,
+      "event": 1.0,
+      "ensemble_risk": 1.644993543624878
+    },
+    {
+      "sample_id": "S723",
+      "time": 47.0,
+      "event": 1.0,
+      "ensemble_risk": 0.21652169525623322
+    },
+    {
+      "sample_id": "S726",
+      "time": 69.0,
+      "event": 1.0,
+      "ensemble_risk": 0.33205974102020264
+    },
+    {
+      "sample_id": "S727",
+      "time": 16.0,
+      "event": 1.0,
+      "ensemble_risk": 1.8286148309707642
+    },
+    {
+      "sample_id": "S731",
+      "time": 75.0,
+      "event": 0.0,
+      "ensemble_risk": 0.11650566756725311
+    },
+    {
+      "sample_id": "S734",
+      "time": 43.0,
+      "event": 0.0,
+      "ensemble_risk": 1.5813995599746704
+    },
+    {
+      "sample_id": "S750",
+      "time": 74.0,
+      "event": 1.0,
+      "ensemble_risk": 0.44862762093544006
+    },
+    {
+      "sample_id": "S757",
+      "time": 50.0,
+      "event": 1.0,
+      "ensemble_risk": 1.8161453008651733
+    },
+    {
+      "sample_id": "S761",
+      "time": 6.0,
+      "event": 1.0,
+      "ensemble_risk": 2.040382146835327
+    },
+    {
+      "sample_id": "S767",
+      "time": 33.0,
+      "event": 1.0,
+      "ensemble_risk": 0.9892228841781616
+    },
+    {
+      "sample_id": "S779",
+      "time": 38.0,
+      "event": 1.0,
+      "ensemble_risk": 2.053358554840088
+    },
+    {
+      "sample_id": "S78",
+      "time": 96.0,
+      "event": 0.0,
+      "ensemble_risk": 0.07664786279201508
+    },
+    {
+      "sample_id": "S797",
+      "time": 68.0,
+      "event": 0.0,
+      "ensemble_risk": -0.49339789152145386
+    },
+    {
+      "sample_id": "S798",
+      "time": 98.0,
+      "event": 0.0,
+      "ensemble_risk": -1.1862905025482178
+    },
+    {
+      "sample_id": "S800",
+      "time": 65.0,
+      "event": 1.0,
+      "ensemble_risk": -0.5381161570549011
+    },
+    {
+      "sample_id": "S810",
+      "time": 49.0,
+      "event": 1.0,
+      "ensemble_risk": 1.3995096683502197
+    },
+    {
+      "sample_id": "S814",
+      "time": 54.0,
+      "event": 1.0,
+      "ensemble_risk": 1.4045324325561523
+    },
+    {
+      "sample_id": "S818",
+      "time": 103.0,
+      "event": 0.0,
+      "ensemble_risk": 0.12276840209960938
+    },
+    {
+      "sample_id": "S820",
+      "time": 71.0,
+      "event": 0.0,
+      "ensemble_risk": -1.1379005908966064
+    },
+    {
+      "sample_id": "S823",
+      "time": 86.0,
+      "event": 0.0,
+      "ensemble_risk": -0.6627917885780334
+    },
+    {
+      "sample_id": "S831",
+      "time": 86.0,
+      "event": 0.0,
+      "ensemble_risk": 0.2800918221473694
+    },
+    {
+      "sample_id": "S833",
+      "time": 78.0,
+      "event": 0.0,
+      "ensemble_risk": 0.18017764389514923
+    },
+    {
+      "sample_id": "S841",
+      "time": 50.0,
+      "event": 1.0,
+      "ensemble_risk": 1.7720180749893188
+    },
+    {
+      "sample_id": "S847",
+      "time": 31.0,
+      "event": 0.0,
+      "ensemble_risk": 1.6903886795043945
+    },
+    {
+      "sample_id": "S854",
+      "time": 82.0,
+      "event": 0.0,
+      "ensemble_risk": 0.08494049310684204
+    },
+    {
+      "sample_id": "S855",
+      "time": 66.0,
+      "event": 0.0,
+      "ensemble_risk": -0.6119813919067383
+    },
+    {
+      "sample_id": "S856",
+      "time": 59.0,
+      "event": 0.0,
+      "ensemble_risk": 0.21058563888072968
+    },
+    {
+      "sample_id": "S858",
+      "time": 65.0,
+      "event": 0.0,
+      "ensemble_risk": -0.3028605580329895
+    },
+    {
+      "sample_id": "S859",
+      "time": 41.0,
+      "event": 1.0,
+      "ensemble_risk": 2.0938785076141357
+    },
+    {
+      "sample_id": "S86",
+      "time": 43.0,
+      "event": 0.0,
+      "ensemble_risk": -0.7783753275871277
+    },
+    {
+      "sample_id": "S862",
+      "time": 97.0,
+      "event": 0.0,
+      "ensemble_risk": 0.18517911434173584
+    },
+    {
+      "sample_id": "S867",
+      "time": 21.0,
+      "event": 1.0,
+      "ensemble_risk": 1.2271995544433594
+    },
+    {
+      "sample_id": "S871",
+      "time": 67.0,
+      "event": 1.0,
+      "ensemble_risk": -0.09401484578847885
+    },
+    {
+      "sample_id": "S892",
+      "time": 27.0,
+      "event": 1.0,
+      "ensemble_risk": 1.6952530145645142
+    },
+    {
+      "sample_id": "S894",
+      "time": 89.0,
+      "event": 0.0,
+      "ensemble_risk": -1.1556971073150635
+    },
+    {
+      "sample_id": "S897",
+      "time": 82.0,
+      "event": 1.0,
+      "ensemble_risk": 0.38121482729911804
+    },
+    {
+      "sample_id": "S90",
+      "time": 76.0,
+      "event": 0.0,
+      "ensemble_risk": 0.630130410194397
+    },
+    {
+      "sample_id": "S910",
+      "time": 25.0,
+      "event": 1.0,
+      "ensemble_risk": 0.5619203448295593
+    },
+    {
+      "sample_id": "S918",
+      "time": 72.0,
+      "event": 1.0,
+      "ensemble_risk": -0.011036050505936146
+    },
+    {
+      "sample_id": "S930",
+      "time": 53.0,
+      "event": 1.0,
+      "ensemble_risk": 1.906341314315796
+    },
+    {
+      "sample_id": "S937",
+      "time": 74.0,
+      "event": 1.0,
+      "ensemble_risk": 1.1053918600082397
+    },
+    {
+      "sample_id": "S944",
+      "time": 79.0,
+      "event": 0.0,
+      "ensemble_risk": 0.33781108260154724
+    },
+    {
+      "sample_id": "S951",
+      "time": 42.0,
+      "event": 0.0,
+      "ensemble_risk": 0.5979642868041992
+    },
+    {
+      "sample_id": "S953",
+      "time": 55.0,
+      "event": 1.0,
+      "ensemble_risk": 0.05553831532597542
+    },
+    {
+      "sample_id": "S956",
+      "time": 46.0,
+      "event": 1.0,
+      "ensemble_risk": 1.4702986478805542
+    },
+    {
+      "sample_id": "S960",
+      "time": 6.0,
+      "event": 1.0,
+      "ensemble_risk": 2.1502912044525146
+    },
+    {
+      "sample_id": "S961",
+      "time": 71.0,
+      "event": 1.0,
+      "ensemble_risk": -0.15478938817977905
+    },
+    {
+      "sample_id": "S972",
+      "time": 69.0,
+      "event": 1.0,
+      "ensemble_risk": 1.592547059059143
+    },
+    {
+      "sample_id": "S973",
+      "time": 64.0,
+      "event": 1.0,
+      "ensemble_risk": 0.21410664916038513
+    },
+    {
+      "sample_id": "S974",
+      "time": 109.0,
+      "event": 0.0,
+      "ensemble_risk": -1.3082258701324463
+    },
+    {
+      "sample_id": "S978",
+      "time": 61.0,
+      "event": 0.0,
+      "ensemble_risk": -0.39413416385650635
+    },
+    {
+      "sample_id": "S980",
+      "time": 53.0,
+      "event": 1.0,
+      "ensemble_risk": -0.1654055118560791
+    },
+    {
+      "sample_id": "S983",
+      "time": 47.0,
+      "event": 1.0,
+      "ensemble_risk": -0.27706655859947205
+    },
+    {
+      "sample_id": "S984",
+      "time": 81.0,
+      "event": 1.0,
+      "ensemble_risk": 0.46068233251571655
+    },
+    {
+      "sample_id": "S988",
+      "time": 60.0,
+      "event": 1.0,
+      "ensemble_risk": 1.7241532802581787
+    },
+    {
+      "sample_id": "S991",
+      "time": 76.0,
+      "event": 0.0,
+      "ensemble_risk": 0.3831217885017395
+    },
+    {
+      "sample_id": "S992",
+      "time": 40.0,
+      "event": 1.0,
+      "ensemble_risk": 0.767666220664978
+    }
+  ]
+}

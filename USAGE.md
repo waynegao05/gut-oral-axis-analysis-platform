@@ -12,4 +12,4 @@ Run the modular version:
 python modular_app.py
 ```
 
-Open http://127.0.0.1:5000 and paste a JSON payload for analysis.
+Open http://127.0.0.1:8765 and paste a JSON payload for analysis.

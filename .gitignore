@@ -201,6 +201,10 @@ cython_debug/
 .cursorignore
 .cursorindexingignore
 
+# Local demo outputs
+outputs/report_*.json
+outputs/current_mainline_v2/web_research_model_reference_cache.json
+
 # Marimo
 marimo/_static/
 marimo/_lsp/

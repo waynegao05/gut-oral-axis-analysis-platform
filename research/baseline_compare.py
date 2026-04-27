@@ -21,6 +21,7 @@ from research.data import build_sample_table, load_research_tables, preprocess_s
 from research.losses import build_time_bin_edges, cox_ph_loss
 from research.metrics import concordance_index
 from research.task import get_survival_task_definition
+from research.train_v2 import resolve_device
 
 
 @dataclass
@@ -185,19 +186,26 @@ def prepare_split_data(
     )
 
 
-def evaluate_cox_model(model: torch.nn.Module, split: SplitData, which: str = "val") -> dict[str, Any]:
+def evaluate_cox_model(
+    model: torch.nn.Module,
+    split: SplitData,
+    which: str = "val",
+    device: torch.device | None = None,
+) -> dict[str, Any]:
     model.eval()
+    if device is None:
+        device = next(model.parameters()).device
     with torch.no_grad():
         if which == "val":
-            X = torch.tensor(split.X_val, dtype=torch.float32)
-            time = torch.tensor(split.time_val, dtype=torch.float32)
-            event = torch.tensor(split.event_val, dtype=torch.float32)
+            X = torch.tensor(split.X_val, dtype=torch.float32, device=device)
+            time = torch.tensor(split.time_val, dtype=torch.float32, device=device)
+            event = torch.tensor(split.event_val, dtype=torch.float32, device=device)
             time_np = split.time_val
             event_np = split.event_val
         else:
-            X = torch.tensor(split.X_test, dtype=torch.float32)
-            time = torch.tensor(split.time_test, dtype=torch.float32)
-            event = torch.tensor(split.event_test, dtype=torch.float32)
+            X = torch.tensor(split.X_test, dtype=torch.float32, device=device)
+            time = torch.tensor(split.time_test, dtype=torch.float32, device=device)
+            event = torch.tensor(split.event_test, dtype=torch.float32, device=device)
             time_np = split.time_test
             event_np = split.event_test
 
@@ -223,8 +231,10 @@ def train_tabular_cox(
     patience: int,
     min_delta: float,
     seed: int,
+    device: torch.device | str = "cuda",
 ) -> tuple[torch.nn.Module, dict[str, Any], dict[str, Any]]:
     set_seed(seed)
+    torch_device = resolve_device(device) if isinstance(device, str) else device
     input_dim = split.X_train.shape[1]
 
     if model_type == "linear":
@@ -233,10 +243,11 @@ def train_tabular_cox(
         model = MLPCox(input_dim, hidden_dim=hidden_dim, dropout=dropout)
     else:
         raise ValueError(f"Unsupported model_type: {model_type}")
+    model = model.to(torch_device)
 
-    X_train = torch.tensor(split.X_train, dtype=torch.float32)
-    time_train = torch.tensor(split.time_train, dtype=torch.float32)
-    event_train = torch.tensor(split.event_train, dtype=torch.float32)
+    X_train = torch.tensor(split.X_train, dtype=torch.float32, device=torch_device)
+    time_train = torch.tensor(split.time_train, dtype=torch.float32, device=torch_device)
+    event_train = torch.tensor(split.event_train, dtype=torch.float32, device=torch_device)
 
     optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
     best_state = None
@@ -252,7 +263,7 @@ def train_tabular_cox(
         loss.backward()
         optimizer.step()
 
-        val_metrics = evaluate_cox_model(model, split, which="val")
+        val_metrics = evaluate_cox_model(model, split, which="val", device=torch_device)
         history.append(
             {
                 "epoch": epoch,
@@ -274,8 +285,8 @@ def train_tabular_cox(
     if best_state is not None:
         model.load_state_dict(best_state)
 
-    val_metrics = evaluate_cox_model(model, split, which="val")
-    test_metrics = evaluate_cox_model(model, split, which="test")
+    val_metrics = evaluate_cox_model(model, split, which="val", device=torch_device)
+    test_metrics = evaluate_cox_model(model, split, which="test", device=torch_device)
     return model, {"best_val_c_index": best_val_c, "history": history, **val_metrics}, test_metrics
 
 
@@ -420,8 +431,10 @@ def run_baseline_suite(
     output_root: str = "outputs/current_mainline_v2",
     split_seed: int | None = None,
     only_baselines: List[str] | None = None,
+    device: str = "cuda",
 ) -> dict:
     config = yaml.safe_load(Path(config_path).read_text(encoding="utf-8"))
+    torch_device = resolve_device(device)
     df, feature_groups, data_summary = build_tabular_dataframe(config)
     baseline_specs = get_baseline_specs(feature_groups)
     if only_baselines:
@@ -464,6 +477,7 @@ def run_baseline_suite(
                     patience=max(8, int(config["train"].get("early_stop_patience", 10))),
                     min_delta=float(config["train"].get("min_delta", 5e-4)),
                     seed=seed,
+                    device=torch_device,
                 )
             elif spec["baseline_family"] == "mlp_cox":
                 _, val_metrics, test_metrics = train_tabular_cox(
@@ -477,6 +491,7 @@ def run_baseline_suite(
                     patience=max(8, int(config["train"].get("early_stop_patience", 10))),
                     min_delta=float(config["train"].get("min_delta", 5e-4)),
                     seed=seed,
+                    device=torch_device,
                 )
             elif spec["baseline_family"] == "discrete_hazard_logistic":
                 _, val_metrics, test_metrics = train_discrete_hazard_logistic(split=split, seed=seed)
@@ -524,6 +539,7 @@ def run_baseline_suite(
     summary = {
         "config_path": config_path,
         "output_root": output_root,
+        "device": str(torch_device),
         "task_definition": get_survival_task_definition(),
         "data_summary": data_summary,
         "seeds": seeds,
@@ -558,6 +574,7 @@ def main() -> None:
     parser.add_argument("--seeds", nargs="+", type=int, default=[7, 21, 42, 123, 2026])
     parser.add_argument("--split-seed", type=int, default=None)
     parser.add_argument("--only", nargs="+", default=None)
+    parser.add_argument("--device", choices=["auto", "cpu", "cuda"], default="cuda")
     parser.add_argument("--output-root", default="outputs/current_mainline_v2")
     args = parser.parse_args()
 
@@ -567,6 +584,7 @@ def main() -> None:
         output_root=args.output_root,
         split_seed=args.split_seed,
         only_baselines=args.only,
+        device=args.device,
     )
     print(json.dumps(summary, indent=2))
 

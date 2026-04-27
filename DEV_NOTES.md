@@ -12,7 +12,7 @@ Recommended local workflow:
 
 1. Install dependencies with `pip install -r requirements.txt`
 2. Run `python modular_app.py`
-3. Open `http://127.0.0.1:5000`
+3. Open `http://127.0.0.1:8765`
 4. Test the API with `api_test.http`
 
 Next planned upgrades:

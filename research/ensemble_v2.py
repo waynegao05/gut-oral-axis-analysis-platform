@@ -153,7 +153,7 @@ def main() -> None:
     parser.add_argument("--config", default="research_config_v2.yaml")
     parser.add_argument("--checkpoint-glob", required=True)
     parser.add_argument("--split", choices=["train", "val", "test"], default="test")
-    parser.add_argument("--device", choices=["auto", "cpu", "cuda"], default="cpu")
+    parser.add_argument("--device", choices=["auto", "cpu", "cuda"], default="cuda")
     parser.add_argument("--split-seed", type=int, default=None)
     parser.add_argument("--output", default="outputs/current_mainline_v2/ensemble_summary.json")
     args = parser.parse_args()

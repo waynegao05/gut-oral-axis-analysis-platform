@@ -246,6 +246,7 @@ function renderRiskBanner(riskResult) {
   const riskScore = document.getElementById("risk-score");
   const riskLevel = document.getElementById("risk-level");
   const level = String(riskResult.risk_level || "unknown").toLowerCase();
+  const percentile = riskResult.risk_percentile;
 
   banner.className = "risk-banner";
   if (level === "low") {
@@ -258,7 +259,11 @@ function renderRiskBanner(riskResult) {
     banner.classList.add("risk-banner-empty");
   }
 
-  riskScore.textContent = riskResult.risk_score ?? "--";
+  if (Number.isFinite(Number(percentile))) {
+    riskScore.textContent = `${Number(percentile).toFixed(2)}%`;
+  } else {
+    riskScore.textContent = riskResult.risk_score ?? "--";
+  }
   riskLevel.textContent = formatRiskLevel(level);
 }
 

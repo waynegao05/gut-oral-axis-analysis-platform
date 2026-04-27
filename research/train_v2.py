@@ -29,7 +29,9 @@ def resolve_device(device_arg: str) -> torch.device:
         if not torch.cuda.is_available():
             raise RuntimeError("CUDA was requested but is not available in the current environment.")
         return torch.device("cuda")
-    return torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    if torch.cuda.is_available():
+        return torch.device("cuda")
+    raise RuntimeError("CUDA auto-selection failed. Use --device cpu only for explicit CPU debugging.")
 
 
 def build_scheduler(optimizer: torch.optim.Optimizer, total_epochs: int, warmup_epochs: int):
@@ -147,7 +149,7 @@ def evaluate(
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", default="research_config_v2.yaml")
-    parser.add_argument("--device", choices=["auto", "cpu", "cuda"], default="auto")
+    parser.add_argument("--device", choices=["auto", "cpu", "cuda"], default="cuda")
     parser.add_argument("--split-seed", type=int, default=None)
     args = parser.parse_args()
 

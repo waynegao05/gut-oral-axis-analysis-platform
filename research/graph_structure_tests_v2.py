@@ -62,6 +62,66 @@ def perturb_graph_dataframe(graph_df: pd.DataFrame, variant: str, seed: int) -> 
     return pd.concat(out_groups, ignore_index=True)
 
 
+def _aggregate_variant_runs(summary: Dict[str, List[dict]]) -> dict:
+    aggregate = {"variants": {}}
+    for variant, runs in summary.items():
+        if not runs:
+            continue
+        runs = sorted(runs, key=lambda item: item["seed"])
+        c_indices = [item["test_c_index"] for item in runs]
+        losses = [item["test_loss"] for item in runs]
+        aggregate["variants"][variant] = {
+            "runs": runs,
+            "mean_test_c_index": float(np.mean(c_indices)),
+            "std_test_c_index": float(np.std(c_indices, ddof=1)) if len(c_indices) > 1 else 0.0,
+            "min_test_c_index": float(np.min(c_indices)),
+            "max_test_c_index": float(np.max(c_indices)),
+            "mean_test_loss": float(np.mean(losses)),
+        }
+    return aggregate
+
+
+def summarize_existing_graph_structure_tests(
+    config_path: str,
+    seeds: List[int],
+    variants: List[str],
+    split_seed: int | None,
+    output_root: str,
+) -> dict:
+    output_root_path = Path(output_root)
+    summary: Dict[str, List[dict]] = {variant: [] for variant in variants}
+
+    for variant in variants:
+        for metrics_path in sorted(output_root_path.glob(f"{variant}_seed*/test_metrics.json")):
+            seed = int(metrics_path.parent.name.rsplit("seed", 1)[1])
+            if seed not in seeds:
+                continue
+            metrics = json.loads(metrics_path.read_text(encoding="utf-8"))
+            summary[variant].append(
+                {
+                    "seed": seed,
+                    "test_loss": metrics["loss"],
+                    "test_c_index": metrics["c_index"],
+                    "graph_aux_loss": metrics.get("graph_aux_loss", 0.0),
+                    "node_aux_loss": metrics.get("node_aux_loss", 0.0),
+                    "output_dir": str(metrics_path.parent.as_posix()),
+                }
+            )
+
+    aggregate = {
+        "config_path": config_path,
+        "seeds": seeds,
+        "split_seed": split_seed,
+        "output_root": output_root,
+        **_aggregate_variant_runs(summary),
+    }
+
+    out_path = output_root_path / "graph_structure_tests_summary.json"
+    out_path.write_text(json.dumps(aggregate, indent=2), encoding="utf-8")
+    print(json.dumps(aggregate, indent=2))
+    return aggregate
+
+
 def run_graph_structure_tests(
     config_path: str,
     seeds: List[int],
@@ -124,24 +184,14 @@ def run_graph_structure_tests(
                 }
             )
 
+    variant_summary = _aggregate_variant_runs(summary)
     aggregate = {
         "config_path": config_path,
         "seeds": seeds,
         "split_seed": split_seed,
         "output_root": output_root,
-        "variants": {},
+        **variant_summary,
     }
-    for variant, runs in summary.items():
-        c_indices = [item["test_c_index"] for item in runs]
-        losses = [item["test_loss"] for item in runs]
-        aggregate["variants"][variant] = {
-            "runs": runs,
-            "mean_test_c_index": float(np.mean(c_indices)),
-            "std_test_c_index": float(np.std(c_indices, ddof=1)) if len(c_indices) > 1 else 0.0,
-            "min_test_c_index": float(np.min(c_indices)),
-            "max_test_c_index": float(np.max(c_indices)),
-            "mean_test_loss": float(np.mean(losses)),
-        }
 
     out_path = output_root_path / "graph_structure_tests_summary.json"
     out_path.write_text(json.dumps(aggregate, indent=2), encoding="utf-8")
@@ -158,10 +208,25 @@ def main() -> None:
         nargs="+",
         default=["original", "shuffle_weights", "shuffle_edges", "shuffle_edges_and_weights"],
     )
-    parser.add_argument("--device", choices=["auto", "cpu", "cuda"], default="cpu")
+    parser.add_argument("--device", choices=["auto", "cpu", "cuda"], default="cuda")
     parser.add_argument("--split-seed", type=int, default=None)
     parser.add_argument("--output-root", default="outputs/current_mainline_v2/graph_structure_tests")
+    parser.add_argument(
+        "--summarize-existing",
+        action="store_true",
+        help="Only rebuild graph_structure_tests_summary.json from existing variant seed outputs.",
+    )
     args = parser.parse_args()
+
+    if args.summarize_existing:
+        summarize_existing_graph_structure_tests(
+            args.config,
+            args.seeds,
+            args.variants,
+            args.split_seed,
+            args.output_root,
+        )
+        return
 
     run_graph_structure_tests(
         args.config,

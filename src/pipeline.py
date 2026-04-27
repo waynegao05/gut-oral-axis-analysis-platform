@@ -3,29 +3,24 @@ from __future__ import annotations
 from typing import Any, Dict
 
 from src.graph_builder import build_microbe_graph, graph_topology_features
-from src.gnn_encoder import LightweightGNNEncoder
 from src.preprocess import build_structured_input
 from src.recommendation import generate_recommendations
+from src.research_model_bridge import get_research_model_bridge
 from src.report import build_report
-from src.risk_model import CoxStyleRiskModel
-
-
-encoder = LightweightGNNEncoder()
-risk_model = CoxStyleRiskModel()
 
 
 def run_pipeline(payload: Dict[str, Any]) -> Dict[str, object]:
     structured = build_structured_input(payload)
     graph = build_microbe_graph(structured.microbes)
     graph_features = graph_topology_features(graph)
-    gnn_features = encoder.encode(graph)
-    gnn_features.update(graph_features)
-    risk_result = risk_model.score(
-        gnn_features,
+    model_bridge = get_research_model_bridge()
+    model_prediction = model_bridge.score(
         structured.microbes,
         structured.clinical,
         structured.metabolites,
     )
+    gnn_features = {**graph_features, **model_prediction.model_features}
+    risk_result = model_prediction.risk_result
     recommendations = generate_recommendations(
         structured.microbes,
         float(risk_result["risk_score"]),

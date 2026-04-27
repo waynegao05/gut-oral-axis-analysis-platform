@@ -101,7 +101,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", default="research_config_structure_aware.yaml")
     parser.add_argument("--seeds", nargs="+", type=int, default=[7, 21, 42])
-    parser.add_argument("--device", choices=["auto", "cpu", "cuda"], default="cpu")
+    parser.add_argument("--device", choices=["auto", "cpu", "cuda"], default="cuda")
     args = parser.parse_args()
 
     summary = run_tuning(args.config, args.seeds, args.device)

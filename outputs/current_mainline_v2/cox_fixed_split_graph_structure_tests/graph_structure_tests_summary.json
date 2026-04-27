@@ -1,0 +1,210 @@
+{
+  "config_path": "research_config_v2.yaml",
+  "seeds": [
+    7,
+    21,
+    42,
+    123,
+    2026
+  ],
+  "split_seed": 42,
+  "output_root": "outputs\\current_mainline_v2\\cox_fixed_split_graph_structure_tests",
+  "variants": {
+    "original": {
+      "runs": [
+        {
+          "seed": 7,
+          "test_loss": 1.3622223165300158,
+          "test_c_index": 0.7371970807917696,
+          "graph_aux_loss": 0.00013156691779335638,
+          "node_aux_loss": 0.0020190455743836033,
+          "output_dir": "outputs/current_mainline_v2/cox_fixed_split_graph_structure_tests/original_seed7"
+        },
+        {
+          "seed": 21,
+          "test_loss": 1.401946716176139,
+          "test_c_index": 0.7434851329221183,
+          "graph_aux_loss": 0.00016088006276630847,
+          "node_aux_loss": 0.0016950253523342932,
+          "output_dir": "outputs/current_mainline_v2/cox_fixed_split_graph_structure_tests/original_seed21"
+        },
+        {
+          "seed": 42,
+          "test_loss": 1.3620277159743839,
+          "test_c_index": 0.7323127136197384,
+          "graph_aux_loss": 0.0003284421658867763,
+          "node_aux_loss": 0.0026881034317840303,
+          "output_dir": "outputs/current_mainline_v2/cox_fixed_split_graph_structure_tests/original_seed42"
+        },
+        {
+          "seed": 123,
+          "test_loss": 1.357654454973009,
+          "test_c_index": 0.7411913062829167,
+          "graph_aux_loss": 9.157171670166361e-05,
+          "node_aux_loss": 0.0011227459569151204,
+          "output_dir": "outputs/current_mainline_v2/cox_fixed_split_graph_structure_tests/original_seed123"
+        },
+        {
+          "seed": 2026,
+          "test_loss": 1.360622078842587,
+          "test_c_index": 0.7349431964074795,
+          "graph_aux_loss": 0.0004439669408990691,
+          "node_aux_loss": 0.003091267561022606,
+          "output_dir": "outputs/current_mainline_v2/cox_fixed_split_graph_structure_tests/original_seed2026"
+        }
+      ],
+      "mean_test_c_index": 0.7378258860048045,
+      "std_test_c_index": 0.004540195325571788,
+      "min_test_c_index": 0.7323127136197384,
+      "max_test_c_index": 0.7434851329221183,
+      "mean_test_loss": 1.368894656499227
+    },
+    "shuffle_weights": {
+      "runs": [
+        {
+          "seed": 7,
+          "test_loss": 1.4217688235971662,
+          "test_c_index": 0.712404352564578,
+          "graph_aux_loss": 0.00016150316759093482,
+          "node_aux_loss": 0.002393588798198228,
+          "output_dir": "outputs/current_mainline_v2/cox_fixed_split_graph_structure_tests/shuffle_weights_seed7"
+        },
+        {
+          "seed": 21,
+          "test_loss": 1.402102029323578,
+          "test_c_index": 0.7153144311366996,
+          "graph_aux_loss": 0.00010956862788589206,
+          "node_aux_loss": 0.0017201299604494124,
+          "output_dir": "outputs/current_mainline_v2/cox_fixed_split_graph_structure_tests/shuffle_weights_seed21"
+        },
+        {
+          "seed": 42,
+          "test_loss": 1.3974687059720357,
+          "test_c_index": 0.7164784625655481,
+          "graph_aux_loss": 0.00013017331600874765,
+          "node_aux_loss": 0.0021762256361802833,
+          "output_dir": "outputs/current_mainline_v2/cox_fixed_split_graph_structure_tests/shuffle_weights_seed42"
+        },
+        {
+          "seed": 123,
+          "test_loss": 1.405196992556254,
+          "test_c_index": 0.7127467147495335,
+          "graph_aux_loss": 0.00015602616792117867,
+          "node_aux_loss": 0.0023855278410741853,
+          "output_dir": "outputs/current_mainline_v2/cox_fixed_split_graph_structure_tests/shuffle_weights_seed123"
+        },
+        {
+          "seed": 2026,
+          "test_loss": 1.3954727762275272,
+          "test_c_index": 0.7162216909268315,
+          "graph_aux_loss": 0.00010623665063273317,
+          "node_aux_loss": 0.0021045298121559123,
+          "output_dir": "outputs/current_mainline_v2/cox_fixed_split_graph_structure_tests/shuffle_weights_seed2026"
+        }
+      ],
+      "mean_test_c_index": 0.7146331303886381,
+      "std_test_c_index": 0.0019312535235200417,
+      "min_test_c_index": 0.712404352564578,
+      "max_test_c_index": 0.7164784625655481,
+      "mean_test_loss": 1.4044018655353123
+    },
+    "shuffle_edges": {
+      "runs": [
+        {
+          "seed": 7,
+          "test_loss": 1.4238674415482415,
+          "test_c_index": 0.7104186518918364,
+          "graph_aux_loss": 0.020983240298098987,
+          "node_aux_loss": 0.01093552448372874,
+          "output_dir": "outputs/current_mainline_v2/cox_fixed_split_graph_structure_tests/shuffle_edges_seed7"
+        },
+        {
+          "seed": 21,
+          "test_loss": 1.4061213897334204,
+          "test_c_index": 0.7172544835181138,
+          "graph_aux_loss": 0.00853211536563726,
+          "node_aux_loss": 0.008502281669320332,
+          "output_dir": "outputs/current_mainline_v2/cox_fixed_split_graph_structure_tests/shuffle_edges_seed21"
+        },
+        {
+          "seed": 42,
+          "test_loss": 1.4147713826762305,
+          "test_c_index": 0.7129977803518343,
+          "graph_aux_loss": 0.025817771390494373,
+          "node_aux_loss": 0.010216606620492206,
+          "output_dir": "outputs/current_mainline_v2/cox_fixed_split_graph_structure_tests/shuffle_edges_seed42"
+        },
+        {
+          "seed": 123,
+          "test_loss": 1.409047104914983,
+          "test_c_index": 0.7150804836436466,
+          "graph_aux_loss": 0.029051529983472494,
+          "node_aux_loss": 0.011778468736964795,
+          "output_dir": "outputs/current_mainline_v2/cox_fixed_split_graph_structure_tests/shuffle_edges_seed123"
+        },
+        {
+          "seed": 2026,
+          "test_loss": 1.4088693797588348,
+          "test_c_index": 0.7107324838947122,
+          "graph_aux_loss": 0.023822108361249168,
+          "node_aux_loss": 0.008781030748246444,
+          "output_dir": "outputs/current_mainline_v2/cox_fixed_split_graph_structure_tests/shuffle_edges_seed2026"
+        }
+      ],
+      "mean_test_c_index": 0.7132967766600287,
+      "std_test_c_index": 0.0029066154087611837,
+      "min_test_c_index": 0.7104186518918364,
+      "max_test_c_index": 0.7172544835181138,
+      "mean_test_loss": 1.412535339726342
+    },
+    "shuffle_edges_and_weights": {
+      "runs": [
+        {
+          "seed": 7,
+          "test_loss": 1.4156002879142762,
+          "test_c_index": 0.7148579482234255,
+          "graph_aux_loss": 0.010512266064890557,
+          "node_aux_loss": 0.00969704954057104,
+          "output_dir": "outputs/current_mainline_v2/cox_fixed_split_graph_structure_tests/shuffle_edges_and_weights_seed7"
+        },
+        {
+          "seed": 21,
+          "test_loss": 1.447227538956536,
+          "test_c_index": 0.7086041323115724,
+          "graph_aux_loss": 0.012816645523222784,
+          "node_aux_loss": 0.009626066141451398,
+          "output_dir": "outputs/current_mainline_v2/cox_fixed_split_graph_structure_tests/shuffle_edges_and_weights_seed21"
+        },
+        {
+          "seed": 42,
+          "test_loss": 1.4056009882026248,
+          "test_c_index": 0.7134599693015241,
+          "graph_aux_loss": 0.026173197669494483,
+          "node_aux_loss": 0.009085643151775003,
+          "output_dir": "outputs/current_mainline_v2/cox_fixed_split_graph_structure_tests/shuffle_edges_and_weights_seed42"
+        },
+        {
+          "seed": 123,
+          "test_loss": 1.41333966255188,
+          "test_c_index": 0.7119763998333838,
+          "graph_aux_loss": 0.02418252171482891,
+          "node_aux_loss": 0.009718661951935954,
+          "output_dir": "outputs/current_mainline_v2/cox_fixed_split_graph_structure_tests/shuffle_edges_and_weights_seed123"
+        },
+        {
+          "seed": 2026,
+          "test_loss": 1.4048138327068753,
+          "test_c_index": 0.7131061950437367,
+          "graph_aux_loss": 0.024167120104862584,
+          "node_aux_loss": 0.008869233013441166,
+          "output_dir": "outputs/current_mainline_v2/cox_fixed_split_graph_structure_tests/shuffle_edges_and_weights_seed2026"
+        }
+      ],
+      "mean_test_c_index": 0.7124009289427284,
+      "std_test_c_index": 0.0023585906874416395,
+      "min_test_c_index": 0.7086041323115724,
+      "max_test_c_index": 0.7148579482234255,
+      "mean_test_loss": 1.4173164620664385
+    }
+  }
+}

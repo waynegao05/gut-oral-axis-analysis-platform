@@ -16,6 +16,7 @@ from research.baseline_compare import (
 )
 from research.data import split_sample_table
 from research.task import get_survival_task_definition
+from research.train_v2 import resolve_device
 
 
 def run_graph_specific_baselines(
@@ -24,8 +25,10 @@ def run_graph_specific_baselines(
     output_root: str = "outputs/current_mainline_v2",
     split_seed: int | None = None,
     only_baselines: List[str] | None = None,
+    device: str = "cuda",
 ) -> dict:
     config = yaml.safe_load(Path(config_path).read_text(encoding="utf-8"))
+    torch_device = resolve_device(device)
     df, feature_groups, data_summary = build_tabular_dataframe(config)
 
     baseline_specs = {
@@ -82,6 +85,7 @@ def run_graph_specific_baselines(
                     patience=max(8, int(config["train"].get("early_stop_patience", 10))),
                     min_delta=float(config["train"].get("min_delta", 5e-4)),
                     seed=seed,
+                    device=torch_device,
                 )
             elif spec["baseline_family"] == "mlp_cox":
                 _, val_metrics, test_metrics = train_tabular_cox(
@@ -95,6 +99,7 @@ def run_graph_specific_baselines(
                     patience=max(8, int(config["train"].get("early_stop_patience", 10))),
                     min_delta=float(config["train"].get("min_delta", 5e-4)),
                     seed=seed,
+                    device=torch_device,
                 )
             elif spec["baseline_family"] == "discrete_hazard_logistic":
                 _, val_metrics, test_metrics = train_discrete_hazard_logistic(split=split, seed=seed)
@@ -117,6 +122,7 @@ def run_graph_specific_baselines(
     summary = {
         "config_path": config_path,
         "output_root": output_root,
+        "device": str(torch_device),
         "task_definition": get_survival_task_definition(),
         "data_summary": data_summary,
         "seeds": seeds,
@@ -149,6 +155,7 @@ def main() -> None:
     parser.add_argument("--seeds", nargs="+", type=int, default=[7, 21, 42, 123, 2026])
     parser.add_argument("--split-seed", type=int, default=None)
     parser.add_argument("--only", nargs="+", default=None)
+    parser.add_argument("--device", choices=["auto", "cpu", "cuda"], default="cuda")
     parser.add_argument("--output-root", default="outputs/current_mainline_v2")
     args = parser.parse_args()
 
@@ -158,6 +165,7 @@ def main() -> None:
         output_root=args.output_root,
         split_seed=args.split_seed,
         only_baselines=args.only,
+        device=args.device,
     )
     print(json.dumps(summary, indent=2))
 

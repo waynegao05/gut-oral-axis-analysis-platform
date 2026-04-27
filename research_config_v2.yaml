@@ -12,7 +12,7 @@ train:
   layer_attn_heads: 4
   use_layer_attention: false
   contrastive_temperature: 0.2
-  survival_head_type: discrete_time
+  survival_head_type: cox
   num_time_bins: 12
   graph_aux_weight: 0.08
   node_aux_weight: 0.05

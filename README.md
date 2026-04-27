@@ -38,7 +38,12 @@ Install lightweight dependencies and run the enhanced web demo:
 
 Open the browser at:
 
-    http://127.0.0.1:5000
+    http://127.0.0.1:8765
+
+If Windows blocks the default port in your environment, override it before launch:
+
+    set GOA_PORT=8000
+    python enhanced_app.py
 
 安装轻量依赖后，运行增强版网页演示：
 
@@ -47,7 +52,7 @@ Open the browser at:
 
 浏览器访问：
 
-    http://127.0.0.1:5000
+    http://127.0.0.1:8765
 
 ### 2. Research training | 科研训练
 

@@ -1,0 +1,522 @@
+{
+  "config_path": "research_config_v2.yaml",
+  "output_root": "outputs\\current_mainline_v2\\fixed_split_benchmark\\graph_baseline",
+  "task_definition": {
+    "task_name": "right_censored_survival_risk_prediction",
+    "target_type": "survival",
+    "time_column": "time",
+    "event_column": "event",
+    "event_positive_value": 1,
+    "event_negative_value": 0,
+    "primary_metric": "c_index",
+    "allowed_model_outputs": [
+      "cox_risk",
+      "discrete_time_hazard"
+    ],
+    "label_semantics": "time is the observed follow-up duration; event=1 means observed event; event=0 means right-censored sample.",
+    "incompatible_baselines": [
+      "plain_binary_logistic_regression",
+      "plain_regression_on_time_ignoring_censoring"
+    ],
+    "conservative_baselines": [
+      "linear_cox",
+      "discrete_time_logistic_hazard",
+      "tabular_mlp_cox"
+    ]
+  },
+  "data_summary": {
+    "task_definition": {
+      "task_name": "right_censored_survival_risk_prediction",
+      "target_type": "survival",
+      "time_column": "time",
+      "event_column": "event",
+      "event_positive_value": 1,
+      "event_negative_value": 0,
+      "primary_metric": "c_index",
+      "allowed_model_outputs": [
+        "cox_risk",
+        "discrete_time_hazard"
+      ],
+      "label_semantics": "time is the observed follow-up duration; event=1 means observed event; event=0 means right-censored sample.",
+      "incompatible_baselines": [
+        "plain_binary_logistic_regression",
+        "plain_regression_on_time_ignoring_censoring"
+      ],
+      "conservative_baselines": [
+        "linear_cox",
+        "discrete_time_logistic_hazard",
+        "tabular_mlp_cox"
+      ]
+    },
+    "label_summary": {
+      "num_samples": 3600,
+      "num_events": 1974,
+      "num_censored": 1626,
+      "event_rate": 0.5483333333333333,
+      "time_min": 6.0,
+      "time_median": 60.0,
+      "time_mean": 60.356944444444444,
+      "time_max": 132.0
+    },
+    "dataset_origin": {
+      "dataset_version": "topology_v6",
+      "is_synthetic": true,
+      "is_augmented": true,
+      "contains_noise": true,
+      "is_archived_source": false,
+      "source_paths": [
+        "data/research/topology_v6_sample_graph_table.csv",
+        "data/research/topology_v6_sample_clinical_table.csv",
+        "data/research/topology_v6_sample_metabolite_table.csv",
+        "data/research/topology_v6_sample_label_table.csv"
+      ]
+    },
+    "modalities": {
+      "graph_num_rows": 36000,
+      "graph_num_samples": 3600,
+      "clinical_num_samples": 3600,
+      "metabolite_num_samples": 3600,
+      "label_num_samples": 3600
+    },
+    "dropped_sample_id_examples": {
+      "graph_only": [],
+      "clinical_only": [],
+      "metabolite_only": [],
+      "label_only": []
+    },
+    "strict_assumptions": [
+      "All modalities are inner-joined on sample_id before splitting.",
+      "Current repository dataset version is inferred from file names; topology_v6 is treated as synthetic/noisy augmented research data.",
+      "Evaluation remains survival-style and uses the same time/event semantics across deep models and baselines."
+    ],
+    "baseline_feature_groups": {
+      "clinical": 4,
+      "metabolite": 3,
+      "graph_summary": 17,
+      "clinical_metabolite": 7,
+      "all_tabular": 24
+    }
+  },
+  "seeds": [
+    7,
+    21,
+    42,
+    123,
+    2026
+  ],
+  "split_seed": 42,
+  "selected_baselines": [
+    "graph_summary_mlp_cox"
+  ],
+  "baselines": {
+    "graph_summary_mlp_cox": {
+      "runs": [
+        {
+          "seed": 7,
+          "num_features": 17,
+          "baseline_family": "mlp_cox",
+          "split_seed": 42,
+          "best_val_c_index": 0.7279918887335884,
+          "test_loss": 5.712189674377441,
+          "test_c_index": 0.7272115170639019,
+          "split_summary": {
+            "split_seed": 42,
+            "split_strategy": "event_stratified_train_val_test_split",
+            "num_total_samples": 3600,
+            "train": {
+              "num_samples": 2160,
+              "num_events": 1184,
+              "num_censored": 976,
+              "event_rate": 0.5481481481481482,
+              "time_min": 6.0,
+              "time_median": 59.0,
+              "time_mean": 59.92407407407408,
+              "time_max": 132.0
+            },
+            "val": {
+              "num_samples": 720,
+              "num_events": 395,
+              "num_censored": 325,
+              "event_rate": 0.5486111111111112,
+              "time_min": 6.0,
+              "time_median": 60.0,
+              "time_mean": 60.74444444444445,
+              "time_max": 128.0
+            },
+            "test": {
+              "num_samples": 720,
+              "num_events": 395,
+              "num_censored": 325,
+              "event_rate": 0.5486111111111112,
+              "time_min": 6.0,
+              "time_median": 62.0,
+              "time_mean": 61.268055555555556,
+              "time_max": 129.0
+            },
+            "train_sample_ids_preview": [
+              "S967",
+              "S2949",
+              "S2268",
+              "S1620",
+              "S751",
+              "S1819",
+              "S3143",
+              "S2816",
+              "S1232",
+              "S2024"
+            ],
+            "val_sample_ids_preview": [
+              "S1536",
+              "S2934",
+              "S3527",
+              "S148",
+              "S376",
+              "S1437",
+              "S629",
+              "S275",
+              "S567",
+              "S2838"
+            ],
+            "test_sample_ids_preview": [
+              "S2456",
+              "S1397",
+              "S2813",
+              "S1650",
+              "S1726",
+              "S2441",
+              "S1403",
+              "S1483",
+              "S1919",
+              "S2879"
+            ]
+          }
+        },
+        {
+          "seed": 21,
+          "num_features": 17,
+          "baseline_family": "mlp_cox",
+          "split_seed": 42,
+          "best_val_c_index": 0.7279346057787045,
+          "test_loss": 5.71039342880249,
+          "test_c_index": 0.7280959527083701,
+          "split_summary": {
+            "split_seed": 42,
+            "split_strategy": "event_stratified_train_val_test_split",
+            "num_total_samples": 3600,
+            "train": {
+              "num_samples": 2160,
+              "num_events": 1184,
+              "num_censored": 976,
+              "event_rate": 0.5481481481481482,
+              "time_min": 6.0,
+              "time_median": 59.0,
+              "time_mean": 59.92407407407408,
+              "time_max": 132.0
+            },
+            "val": {
+              "num_samples": 720,
+              "num_events": 395,
+              "num_censored": 325,
+              "event_rate": 0.5486111111111112,
+              "time_min": 6.0,
+              "time_median": 60.0,
+              "time_mean": 60.74444444444445,
+              "time_max": 128.0
+            },
+            "test": {
+              "num_samples": 720,
+              "num_events": 395,
+              "num_censored": 325,
+              "event_rate": 0.5486111111111112,
+              "time_min": 6.0,
+              "time_median": 62.0,
+              "time_mean": 61.268055555555556,
+              "time_max": 129.0
+            },
+            "train_sample_ids_preview": [
+              "S967",
+              "S2949",
+              "S2268",
+              "S1620",
+              "S751",
+              "S1819",
+              "S3143",
+              "S2816",
+              "S1232",
+              "S2024"
+            ],
+            "val_sample_ids_preview": [
+              "S1536",
+              "S2934",
+              "S3527",
+              "S148",
+              "S376",
+              "S1437",
+              "S629",
+              "S275",
+              "S567",
+              "S2838"
+            ],
+            "test_sample_ids_preview": [
+              "S2456",
+              "S1397",
+              "S2813",
+              "S1650",
+              "S1726",
+              "S2441",
+              "S1403",
+              "S1483",
+              "S1919",
+              "S2879"
+            ]
+          }
+        },
+        {
+          "seed": 42,
+          "num_features": 17,
+          "baseline_family": "mlp_cox",
+          "split_seed": 42,
+          "best_val_c_index": 0.7258437779254405,
+          "test_loss": 5.70952844619751,
+          "test_c_index": 0.7276622939407599,
+          "split_summary": {
+            "split_seed": 42,
+            "split_strategy": "event_stratified_train_val_test_split",
+            "num_total_samples": 3600,
+            "train": {
+              "num_samples": 2160,
+              "num_events": 1184,
+              "num_censored": 976,
+              "event_rate": 0.5481481481481482,
+              "time_min": 6.0,
+              "time_median": 59.0,
+              "time_mean": 59.92407407407408,
+              "time_max": 132.0
+            },
+            "val": {
+              "num_samples": 720,
+              "num_events": 395,
+              "num_censored": 325,
+              "event_rate": 0.5486111111111112,
+              "time_min": 6.0,
+              "time_median": 60.0,
+              "time_mean": 60.74444444444445,
+              "time_max": 128.0
+            },
+            "test": {
+              "num_samples": 720,
+              "num_events": 395,
+              "num_censored": 325,
+              "event_rate": 0.5486111111111112,
+              "time_min": 6.0,
+              "time_median": 62.0,
+              "time_mean": 61.268055555555556,
+              "time_max": 129.0
+            },
+            "train_sample_ids_preview": [
+              "S967",
+              "S2949",
+              "S2268",
+              "S1620",
+              "S751",
+              "S1819",
+              "S3143",
+              "S2816",
+              "S1232",
+              "S2024"
+            ],
+            "val_sample_ids_preview": [
+              "S1536",
+              "S2934",
+              "S3527",
+              "S148",
+              "S376",
+              "S1437",
+              "S629",
+              "S275",
+              "S567",
+              "S2838"
+            ],
+            "test_sample_ids_preview": [
+              "S2456",
+              "S1397",
+              "S2813",
+              "S1650",
+              "S1726",
+              "S2441",
+              "S1403",
+              "S1483",
+              "S1919",
+              "S2879"
+            ]
+          }
+        },
+        {
+          "seed": 123,
+          "num_features": 17,
+          "baseline_family": "mlp_cox",
+          "split_seed": 42,
+          "best_val_c_index": 0.7274706138441446,
+          "test_loss": 5.714486598968506,
+          "test_c_index": 0.7247636274414704,
+          "split_summary": {
+            "split_seed": 42,
+            "split_strategy": "event_stratified_train_val_test_split",
+            "num_total_samples": 3600,
+            "train": {
+              "num_samples": 2160,
+              "num_events": 1184,
+              "num_censored": 976,
+              "event_rate": 0.5481481481481482,
+              "time_min": 6.0,
+              "time_median": 59.0,
+              "time_mean": 59.92407407407408,
+              "time_max": 132.0
+            },
+            "val": {
+              "num_samples": 720,
+              "num_events": 395,
+              "num_censored": 325,
+              "event_rate": 0.5486111111111112,
+              "time_min": 6.0,
+              "time_median": 60.0,
+              "time_mean": 60.74444444444445,
+              "time_max": 128.0
+            },
+            "test": {
+              "num_samples": 720,
+              "num_events": 395,
+              "num_censored": 325,
+              "event_rate": 0.5486111111111112,
+              "time_min": 6.0,
+              "time_median": 62.0,
+              "time_mean": 61.268055555555556,
+              "time_max": 129.0
+            },
+            "train_sample_ids_preview": [
+              "S967",
+              "S2949",
+              "S2268",
+              "S1620",
+              "S751",
+              "S1819",
+              "S3143",
+              "S2816",
+              "S1232",
+              "S2024"
+            ],
+            "val_sample_ids_preview": [
+              "S1536",
+              "S2934",
+              "S3527",
+              "S148",
+              "S376",
+              "S1437",
+              "S629",
+              "S275",
+              "S567",
+              "S2838"
+            ],
+            "test_sample_ids_preview": [
+              "S2456",
+              "S1397",
+              "S2813",
+              "S1650",
+              "S1726",
+              "S2441",
+              "S1403",
+              "S1483",
+              "S1919",
+              "S2879"
+            ]
+          }
+        },
+        {
+          "seed": 2026,
+          "num_features": 17,
+          "baseline_family": "mlp_cox",
+          "split_seed": 42,
+          "best_val_c_index": 0.7251048278074376,
+          "test_loss": 5.716301918029785,
+          "test_c_index": 0.7276622939407599,
+          "split_summary": {
+            "split_seed": 42,
+            "split_strategy": "event_stratified_train_val_test_split",
+            "num_total_samples": 3600,
+            "train": {
+              "num_samples": 2160,
+              "num_events": 1184,
+              "num_censored": 976,
+              "event_rate": 0.5481481481481482,
+              "time_min": 6.0,
+              "time_median": 59.0,
+              "time_mean": 59.92407407407408,
+              "time_max": 132.0
+            },
+            "val": {
+              "num_samples": 720,
+              "num_events": 395,
+              "num_censored": 325,
+              "event_rate": 0.5486111111111112,
+              "time_min": 6.0,
+              "time_median": 60.0,
+              "time_mean": 60.74444444444445,
+              "time_max": 128.0
+            },
+            "test": {
+              "num_samples": 720,
+              "num_events": 395,
+              "num_censored": 325,
+              "event_rate": 0.5486111111111112,
+              "time_min": 6.0,
+              "time_median": 62.0,
+              "time_mean": 61.268055555555556,
+              "time_max": 129.0
+            },
+            "train_sample_ids_preview": [
+              "S967",
+              "S2949",
+              "S2268",
+              "S1620",
+              "S751",
+              "S1819",
+              "S3143",
+              "S2816",
+              "S1232",
+              "S2024"
+            ],
+            "val_sample_ids_preview": [
+              "S1536",
+              "S2934",
+              "S3527",
+              "S148",
+              "S376",
+              "S1437",
+              "S629",
+              "S275",
+              "S567",
+              "S2838"
+            ],
+            "test_sample_ids_preview": [
+              "S2456",
+              "S1397",
+              "S2813",
+              "S1650",
+              "S1726",
+              "S2441",
+              "S1403",
+              "S1483",
+              "S1919",
+              "S2879"
+            ]
+          }
+        }
+      ],
+      "mean_test_c_index": 0.7270791370190525,
+      "std_test_c_index": 0.0013316500306820266,
+      "min_test_c_index": 0.7247636274414704,
+      "max_test_c_index": 0.7280959527083701,
+      "mean_test_loss": 5.712580013275146
+    }
+  }
+}

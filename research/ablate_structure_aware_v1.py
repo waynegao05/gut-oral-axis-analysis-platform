@@ -103,7 +103,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", default="research_config_v2.yaml")
     parser.add_argument("--seeds", nargs="+", type=int, default=[7, 21, 42, 123, 2026])
-    parser.add_argument("--device", choices=["auto", "cpu", "cuda"], default="cpu")
+    parser.add_argument("--device", choices=["auto", "cpu", "cuda"], default="cuda")
     parser.add_argument("--split-seed", type=int, default=None)
     parser.add_argument("--output-root", default="outputs/current_mainline_v2/ablations")
     args = parser.parse_args()
