@@ -205,6 +205,12 @@ cython_debug/
 outputs/report_*.json
 outputs/current_mainline_v2/web_research_model_reference_cache.json
 
+# Local environments and diagnostics
+.venv-*/
+gcm-diagnose.log
+git_push_*.log
+tmp_flask_*.log
+
 # Marimo
 marimo/_static/
 marimo/_lsp/
