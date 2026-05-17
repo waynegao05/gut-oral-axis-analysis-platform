@@ -14,11 +14,16 @@ from torch_geometric.data import Batch, Data
 from torch_geometric.loader import DataLoader
 
 from config.settings import (
+    RESEARCH_MODEL_ALLOW_FALLBACK,
     RESEARCH_MODEL_CHECKPOINT_GLOB,
     RESEARCH_MODEL_CONFIG_PATH,
+    RESEARCH_MODEL_EXPECTED_ENSEMBLE_SIZE,
     RESEARCH_MODEL_FALLBACK_CHECKPOINT,
     RESEARCH_MODEL_MAX_REFERENCE_BATCH,
     RESEARCH_MODEL_REFERENCE_CACHE,
+    RESEARCH_MODEL_RELEASE_METRICS,
+    RESEARCH_MODEL_RELEASE_NAME,
+    RESEARCH_MODEL_RELEASE_NOTE,
 )
 from research.data import build_dataset_from_csv, load_research_tables
 from research.model_v2 import DeepStructureAwareGATCoxModelV2
@@ -37,6 +42,9 @@ def _clip01(value: float) -> float:
 class ResearchModelBridge:
     def __init__(self) -> None:
         self.config_path = RESEARCH_MODEL_CONFIG_PATH
+        self.release_name = RESEARCH_MODEL_RELEASE_NAME
+        self.release_note = RESEARCH_MODEL_RELEASE_NOTE
+        self.release_metrics = dict(RESEARCH_MODEL_RELEASE_METRICS)
         self.config = yaml.safe_load(self.config_path.read_text(encoding="utf-8"))
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -123,13 +131,24 @@ class ResearchModelBridge:
     def _resolve_checkpoints(self) -> list[Path]:
         project_root = self.config_path.parent
         checkpoints = sorted(project_root.glob(RESEARCH_MODEL_CHECKPOINT_GLOB))
-        if checkpoints:
+        if len(checkpoints) == RESEARCH_MODEL_EXPECTED_ENSEMBLE_SIZE:
             return checkpoints
-        if RESEARCH_MODEL_FALLBACK_CHECKPOINT.exists():
+
+        if checkpoints and not RESEARCH_MODEL_ALLOW_FALLBACK:
+            raise RuntimeError(
+                "Locked web release requires the full Cox 5-seed ensemble. "
+                f"Expected {RESEARCH_MODEL_EXPECTED_ENSEMBLE_SIZE} checkpoints from "
+                f"{RESEARCH_MODEL_CHECKPOINT_GLOB}, but found {len(checkpoints)}."
+            )
+
+        if RESEARCH_MODEL_ALLOW_FALLBACK and RESEARCH_MODEL_FALLBACK_CHECKPOINT.exists():
             return [RESEARCH_MODEL_FALLBACK_CHECKPOINT]
+
         raise FileNotFoundError(
-            "No research model checkpoints were found. "
-            f"Tried glob: {RESEARCH_MODEL_CHECKPOINT_GLOB}"
+            "No locked research model release checkpoints were found. "
+            f"Tried glob: {RESEARCH_MODEL_CHECKPOINT_GLOB}. "
+            "If you intentionally want to allow the old single-checkpoint fallback, "
+            "set GOA_ALLOW_SINGLE_CHECKPOINT_FALLBACK=1."
         )
 
     def _build_model(self) -> DeepStructureAwareGATCoxModelV2:
@@ -309,9 +328,17 @@ class ResearchModelBridge:
             "raw_model_risk": round(raw_model_risk, 6),
             "ensemble_size": len(self.models),
             "backend": "research_gnn_cox_ensemble" if len(self.models) > 1 else "research_gnn_cox_single",
+            "model_release": self.release_name,
         }
         model_features = {
             "backend": risk_result["backend"],
+            "model_release": self.release_name,
+            "model_release_note": self.release_note,
+            "checkpoint_lock_mode": (
+                "strict_ensemble"
+                if not RESEARCH_MODEL_ALLOW_FALLBACK
+                else "fallback_allowed"
+            ),
             "ensemble_size": len(self.models),
             "supported_microbes": self.node_order,
             "supported_microbe_input": supported_microbes,
@@ -321,6 +348,7 @@ class ResearchModelBridge:
             "reference_medium_threshold_raw_risk": round(self.medium_threshold, 6),
             "reference_abundance_total": round(self.reference_abundance_total, 6),
             "checkpoint_sources": [str(path.as_posix()) for path in self.checkpoints],
+            "release_metrics": self.release_metrics,
         }
         return ResearchModelPrediction(risk_result=risk_result, model_features=model_features)
 

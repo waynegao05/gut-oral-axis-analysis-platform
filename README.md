@@ -37,6 +37,18 @@ The web app now uses the actual research model backend by default, not the legac
 
 当前网页端默认调用真实研究主线模型，不再使用早期手工权重原型打分器。
 
+The current locked web release is:
+
+当前锁定的网页发布版是：
+
+- `cox_fixed_split_ensemble_v1`
+- backend: `research_gnn_cox_ensemble`
+- checkpoint policy: strict `5-seed` Cox ensemble lock
+
+The web app now fails loudly if the full locked ensemble is missing. It no longer silently falls back to an older single checkpoint unless fallback is explicitly enabled.
+
+如果锁定的完整 `5-seed` ensemble 不存在，网页端现在会直接报错，而不会再静默退回旧单 checkpoint，除非你显式开启 fallback。
+
 ---
 
 ### 2. Run the current research mainline | 运行当前研究主线
@@ -204,6 +216,8 @@ The default research mainline is:
 - task: right-censored survival risk prediction
 - labels: `time`, `event`
 - primary metric: `c-index`
+- locked release: `cox_fixed_split_ensemble_v1`
+- best inference setup: `5-seed fixed-split ensemble`
 
 This is the paper-facing mainline. Older prototype branches and discarded heavy experiments are preserved only as history or auxiliary references.
 
@@ -384,10 +398,19 @@ The current default web backend is:
 当前网页默认后端是：
 
 - `research_gnn_cox_ensemble`
+- locked release: `cox_fixed_split_ensemble_v1`
 
-This backend loads the current research checkpoints and performs prediction-level ensemble scoring when multiple seed models are available.
+This backend is now pinned to the locked `5-seed` Cox ensemble release and performs prediction-level ensemble scoring across those checkpoints.
 
-当存在多个 seed checkpoint 时，这个后端会自动加载并执行预测级 ensemble 评分。
+这个后端现在固定绑定到锁定版 `5-seed` Cox ensemble，并在这些 checkpoint 之间执行预测级 ensemble 评分。
+
+Default lock behavior:
+
+默认锁定行为：
+
+- expected checkpoint count: `5`
+- default fallback: disabled
+- optional override: set `GOA_ALLOW_SINGLE_CHECKPOINT_FALLBACK=1` only for explicit debugging
 
 ---
 
@@ -547,6 +570,7 @@ The web app returns:
 - `risk_percentile`
 - `raw_model_risk`
 - `backend`
+- `model_release`
 - recommendations
 - structured report JSON
 
@@ -638,7 +662,7 @@ This repository is a research and demonstration platform. It is not a validated 
 
 本仓库是研究与演示平台，不是经过验证的临床决策系统。任何具有医学意义的结论都必须依赖真实队列设计、外部验证与临床审核。
 
-## Foud Support | 基金支持
+## Funding Support | 基金支持
 
 This research was supported by the Undergraduate Talented Innovation Education Program of Shenyang Pharmaceutical University, with the project number XH2025-06. We would like to express our gratitude.
 

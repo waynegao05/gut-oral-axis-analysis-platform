@@ -30,6 +30,37 @@ Detailed task notes live in:
 - `research_config_v2.yaml`
 - optional discrete-time branch: `research_config_v2_discrete_test.yaml`
 
+## Locked release snapshot
+
+The current best locked release in this repository is:
+
+- release name: `cox_fixed_split_ensemble_v1`
+- modeling family: conservative `GNN + Cox`
+- web inference default: `5-seed fixed-split ensemble`
+- web checkpoint glob: `outputs/current_mainline_v2/cox_fixed_split_repeat/research_seed*/best_model.pt`
+- expected ensemble size: `5`
+- fallback behavior: disabled by default; the web app now fails loudly instead of silently falling back to an older single checkpoint
+
+Current benchmark snapshot:
+
+- `gnn_5seed_ensemble`: `0.7409744769`
+- `all_tabular_mlp_cox`: `0.7395456854`
+- `gnn_cox_mainline`: `0.7387742293 ± 0.0029038753`
+- `graph_summary_mlp_cox`: `0.7270791370`
+
+Current graph perturbation snapshot on the Cox mainline:
+
+- `original`: `0.7378258860`
+- `shuffle_weights` gap: `0.0231927556`
+- `shuffle_edges` gap: `0.0245291093`
+- `shuffle_edges_and_weights` gap: `0.0254249571`
+
+Interpretation:
+
+- this is the current paper-facing mainline
+- this is also the current web-facing locked backend
+- future experiments should not replace it unless they beat the locked single-model mean and preserve graph perturbation evidence
+
 ## Mainline principles
 
 - preserve a GNN-based research direction
@@ -37,6 +68,7 @@ Detailed task notes live in:
 - keep task semantics survival-consistent across all runners
 - prefer reproducibility and baseline validation over architectural novelty
 - keep speculative complexity optional, not default
+- keep the web app pinned to the locked Cox ensemble release unless explicitly updated
 
 ## Recommended commands
 
