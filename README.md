@@ -1,6 +1,16 @@
 # Gut-Oral Axis Analysis Platform
 # 肠口轴分析平台
 
+## Star History
+
+<a href="https://www.star-history.com/?repos=https%3Awaynegao05%2Fgut-oral-axis-analysis-platform&type=timeline&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=https:waynegao05/gut-oral-axis-analysis-platform&type=timeline&theme=dark&logscale&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=https:waynegao05/gut-oral-axis-analysis-platform&type=timeline&logscale&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=https:waynegao05/gut-oral-axis-analysis-platform&type=timeline&logscale&legend=top-left" />
+ </picture>
+</a>
+
 ## Usage First | 用法优先
 
 ### 1. Run the web app | 启动网页端
