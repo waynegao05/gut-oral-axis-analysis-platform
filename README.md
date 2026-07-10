@@ -1,5 +1,4 @@
-# Gut-Oral Axis Analysis Platform
-# 肠口轴分析平台
+# Gut-Oral Axis Analysis Platform | 肠口轴分析平台
 
 ## Star History
 
