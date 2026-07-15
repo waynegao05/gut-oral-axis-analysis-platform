@@ -335,6 +335,12 @@ button:hover {
   background: #fff;
 }
 
+.input-card input:invalid,
+.microbe-row input:invalid {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px rgba(154, 60, 48, 0.12);
+}
+
 .extra-microbes {
   display: grid;
   gap: 10px;
