@@ -70,6 +70,132 @@ def _validate_unique_sample_ids(df: pd.DataFrame, table_name: str) -> None:
         raise ValueError(f"{table_name} contains duplicate sample_id values: {duplicated}")
 
 
+def _row_examples(df: pd.DataFrame, mask: pd.Series, limit: int = 5) -> list[str]:
+    selected = df.loc[mask]
+    if "sample_id" in selected.columns:
+        return selected["sample_id"].astype(str).head(limit).tolist()
+    return [str(index) for index in selected.index[:limit]]
+
+
+def _coerce_finite_column(df: pd.DataFrame, column: str, table_name: str) -> None:
+    numeric = pd.to_numeric(df[column], errors="coerce")
+    invalid = numeric.isna() | ~np.isfinite(numeric.to_numpy(dtype=float))
+    if invalid.any():
+        examples = _row_examples(df, pd.Series(invalid, index=df.index))
+        raise ValueError(
+            f"{table_name}.{column} contains non-numeric, NaN, or infinite values; "
+            f"sample_id examples: {examples}"
+        )
+    df[column] = numeric.astype(float)
+
+
+def _validate_column_range(
+    df: pd.DataFrame,
+    column: str,
+    table_name: str,
+    *,
+    minimum: float,
+    maximum: float | None = None,
+) -> None:
+    values = df[column].astype(float)
+    invalid = values < float(minimum)
+    if maximum is not None:
+        invalid = invalid | (values > float(maximum))
+    if invalid.any():
+        examples = _row_examples(df, invalid)
+        upper_text = "unbounded" if maximum is None else f"{maximum:g}"
+        raise ValueError(
+            f"{table_name}.{column} must be within [{minimum:g}, {upper_text}]; "
+            f"sample_id examples: {examples}"
+        )
+
+
+def validate_research_feature_tables(
+    graph_df: pd.DataFrame,
+    clinical_df: pd.DataFrame,
+    metabolite_df: pd.DataFrame,
+) -> dict[str, Any]:
+    numeric_columns = {
+        "graph table": [
+            column
+            for column in ("abundance", "function_score", "edge_weight")
+            if column in graph_df.columns
+        ],
+        "clinical table": [column for column in clinical_df.columns if column != "sample_id"],
+        "metabolite table": [column for column in metabolite_df.columns if column != "sample_id"],
+    }
+    table_map = {
+        "graph table": graph_df,
+        "clinical table": clinical_df,
+        "metabolite table": metabolite_df,
+    }
+    for table_name, columns in numeric_columns.items():
+        for column in columns:
+            _coerce_finite_column(table_map[table_name], column, table_name)
+
+    if "abundance" in graph_df.columns:
+        _validate_column_range(graph_df, "abundance", "graph table", minimum=0.0, maximum=1.0)
+        dedup = graph_df.drop_duplicates(subset=["sample_id", "node_name"])
+        totals = dedup.groupby("sample_id")["abundance"].sum()
+        empty_samples = totals.index[totals <= 0.0].astype(str).tolist()[:5]
+        if empty_samples:
+            raise ValueError(
+                "graph table must contain at least one positive microbial abundance per sample; "
+                f"sample_id examples: {empty_samples}"
+            )
+    if "function_score" in graph_df.columns:
+        _validate_column_range(graph_df, "function_score", "graph table", minimum=0.0, maximum=1.0)
+
+    known_clinical_ranges = {
+        "age": (1.0, 120.0),
+        "bmi": (5.0, 100.0),
+        "smoking": (0.0, 1.0),
+        "family_history": (0.0, 1.0),
+    }
+    for column, (minimum, maximum) in known_clinical_ranges.items():
+        if column in clinical_df.columns:
+            _validate_column_range(
+                clinical_df,
+                column,
+                "clinical table",
+                minimum=minimum,
+                maximum=maximum,
+            )
+    for column in ("smoking", "family_history"):
+        if column in clinical_df.columns:
+            invalid = ~clinical_df[column].isin([0.0, 1.0])
+            if invalid.any():
+                examples = _row_examples(clinical_df, invalid)
+                raise ValueError(
+                    f"clinical table.{column} must contain only 0 or 1; sample_id examples: {examples}"
+                )
+
+    for column in numeric_columns["metabolite table"]:
+        _validate_column_range(
+            metabolite_df,
+            column,
+            "metabolite table",
+            minimum=0.0,
+            maximum=1.0,
+        )
+
+    ranges = {
+        table_name: {
+            column: {
+                "min": float(table_map[table_name][column].min()),
+                "max": float(table_map[table_name][column].max()),
+            }
+            for column in columns
+        }
+        for table_name, columns in numeric_columns.items()
+    }
+    return {
+        "validated": True,
+        "numeric_columns": numeric_columns,
+        "observed_ranges": ranges,
+    }
+
+
 def _build_edges(sample_graph: pd.DataFrame, node_order: List[str]) -> Tuple[torch.Tensor, torch.Tensor]:
     node_to_idx = {name: i for i, name in enumerate(node_order)}
     edges_src: List[int] = []
@@ -107,6 +233,8 @@ def load_research_tables(
     missing_graph_cols = sorted(graph_required.difference(graph_df.columns))
     if missing_graph_cols:
         raise ValueError(f"Graph table is missing required columns: {missing_graph_cols}")
+
+    data_quality = validate_research_feature_tables(graph_df, clinical_df, metabolite_df)
 
     graph_sample_ids = set(graph_df["sample_id"].astype(str).unique().tolist())
     clinical_sample_ids = set(clinical_df["sample_id"].astype(str).tolist())
@@ -147,6 +275,7 @@ def load_research_tables(
             "label_num_samples": int(label_df["sample_id"].nunique()),
         },
         "dropped_sample_id_examples": dropped,
+        "data_quality": data_quality,
         "strict_assumptions": [
             "All modalities are inner-joined on sample_id before splitting.",
             "Current repository dataset version is inferred from file names; topology_v6 is treated as synthetic/noisy augmented research data.",
@@ -164,6 +293,60 @@ def build_sample_table(
     merged = clinical_df.merge(metabolite_df, on="sample_id", how="inner").merge(label_df, on="sample_id", how="inner")
     _validate_unique_sample_ids(merged, "merged sample table")
     return merged
+
+
+def fit_tabular_standardizer(
+    train_df: pd.DataFrame,
+    clinical_columns: List[str],
+    metabolite_columns: List[str],
+) -> dict[str, Any]:
+    feature_groups = {
+        "clinical": list(clinical_columns),
+        "metabolite": list(metabolite_columns),
+    }
+    columns = feature_groups["clinical"] + feature_groups["metabolite"]
+    if len(columns) != len(set(columns)):
+        raise ValueError("Clinical and metabolite feature names must be unique for tabular standardization.")
+
+    missing_columns = [column for column in columns if column not in train_df.columns]
+    if missing_columns:
+        raise ValueError(f"Cannot standardize missing tabular columns: {missing_columns}")
+
+    train_values = train_df[columns].astype(float)
+    means = train_values.mean(axis=0)
+    raw_scales = train_values.std(axis=0, ddof=0)
+    constant_mask = raw_scales <= 1e-12
+    scales = raw_scales.mask(constant_mask, 1.0)
+
+    return {
+        "enabled": True,
+        "method": "z_score",
+        "fit_split": "train",
+        "feature_groups": feature_groups,
+        "features": {
+            column: {
+                "mean": float(means[column]),
+                "scale": float(scales[column]),
+                "zero_variance": bool(constant_mask[column]),
+            }
+            for column in columns
+        },
+    }
+
+
+def apply_tabular_standardizer(
+    sample_df: pd.DataFrame,
+    standardizer: dict[str, Any],
+) -> pd.DataFrame:
+    if standardizer.get("method") != "z_score":
+        raise ValueError(f"Unsupported tabular standardization method: {standardizer.get('method')}")
+
+    transformed = sample_df.copy()
+    for column, stats in standardizer["features"].items():
+        if column not in transformed.columns:
+            raise ValueError(f"Cannot standardize missing tabular column: {column}")
+        transformed[column] = (transformed[column].astype(float) - float(stats["mean"])) / float(stats["scale"])
+    return transformed
 
 
 def _event_stratify_labels(sample_df: pd.DataFrame) -> np.ndarray | None:
@@ -251,6 +434,7 @@ def build_dataset_from_csv(
     split_seed: int | None = None,
     keep_top_k_edges: int | None = None,
     min_edge_weight: float | None = None,
+    standardize_tabular: bool = False,
     val_ratio: float = 0.2,
     test_ratio: float = 0.1,
 ) -> DatasetBundle:
@@ -271,6 +455,25 @@ def build_dataset_from_csv(
         val_ratio=val_ratio,
         test_ratio=test_ratio,
     )
+
+    if standardize_tabular:
+        tabular_preprocess = fit_tabular_standardizer(
+            train_df,
+            clinical_columns=clinical_columns,
+            metabolite_columns=metabolite_columns,
+        )
+        sample_table = apply_tabular_standardizer(sample_table, tabular_preprocess)
+    else:
+        tabular_preprocess = {
+            "enabled": False,
+            "method": "none",
+            "fit_split": None,
+            "feature_groups": {
+                "clinical": list(clinical_columns),
+                "metabolite": list(metabolite_columns),
+            },
+            "features": {},
+        }
 
     split_map = {
         "train": set(train_df["sample_id"].astype(str).tolist()),
@@ -337,6 +540,7 @@ def build_dataset_from_csv(
         "keep_top_k_edges": keep_top_k_edges,
         "min_edge_weight": min_edge_weight,
     }
+    data_summary["tabular_preprocess"] = tabular_preprocess
     data_summary["split_summary"] = split_summary
 
     return DatasetBundle(

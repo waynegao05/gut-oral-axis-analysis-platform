@@ -90,6 +90,60 @@ def compute_survival_losses(
     }
 
 
+def compute_cohort_evaluation_losses(
+    *,
+    risk: torch.Tensor,
+    time: torch.Tensor,
+    event: torch.Tensor,
+    survival_head_type: str,
+    time_bin_edges: torch.Tensor | None,
+    time_logits: torch.Tensor | None,
+    ranking_weight: float,
+    ranking_margin: float,
+    graph_aux_loss: float,
+    node_aux_loss: float,
+    graph_aux_weight: float,
+    node_aux_weight: float,
+) -> dict[str, float]:
+    if survival_head_type == "discrete_time":
+        if time_bin_edges is None or time_logits is None:
+            raise ValueError("time_bin_edges and time_logits are required for discrete-time cohort evaluation.")
+        discrete_loss = discrete_time_nll_loss(
+            time_logits=time_logits,
+            time=time,
+            event=event,
+            time_bin_edges=time_bin_edges.to(time.device),
+        )
+        ranking_loss = pairwise_ranking_loss(risk, time, event, margin=ranking_margin)
+        cox_loss = torch.zeros((), device=risk.device, dtype=risk.dtype)
+        survival_loss = discrete_loss + float(ranking_weight) * ranking_loss
+    else:
+        losses = combined_survival_loss(
+            risk=risk,
+            time=time,
+            event=event,
+            ranking_weight=ranking_weight,
+            ranking_margin=ranking_margin,
+        )
+        survival_loss = losses["total"]
+        cox_loss = losses["cox"]
+        ranking_loss = losses["ranking"]
+        discrete_loss = torch.zeros((), device=risk.device, dtype=risk.dtype)
+
+    total_loss = (
+        survival_loss
+        + float(graph_aux_weight) * float(graph_aux_loss)
+        + float(node_aux_weight) * float(node_aux_loss)
+    )
+    return {
+        "cohort_loss": float(total_loss.item()),
+        "cohort_survival_loss": float(survival_loss.item()),
+        "cohort_cox_loss": float(cox_loss.item()),
+        "cohort_ranking_loss": float(ranking_loss.item()),
+        "cohort_discrete_time_loss": float(discrete_loss.item()),
+    }
+
+
 def evaluate(
     model,
     loader,
@@ -103,12 +157,14 @@ def evaluate(
 ):
     model.eval()
     all_time, all_event, all_risk = [], [], []
+    all_time_logits = []
     losses = []
     cox_losses = []
     ranking_losses = []
     discrete_time_losses = []
     graph_aux_losses = []
     node_aux_losses = []
+    batch_weights = []
     with torch.no_grad():
         for batch in loader:
             batch = batch.to(device)
@@ -130,10 +186,31 @@ def evaluate(
             discrete_time_losses.append(float(survival_losses["discrete_time"].item()))
             graph_aux_losses.append(float(graph_aux.item()))
             node_aux_losses.append(float(node_aux.item()))
+            batch_weights.append(int(batch.num_graphs))
             all_time.extend(batch.time.cpu().numpy().tolist())
             all_event.extend(batch.event.cpu().numpy().tolist())
             all_risk.extend(output["risk"].cpu().numpy().tolist())
+            if output.get("time_logits") is not None:
+                all_time_logits.append(output["time_logits"].detach().cpu())
             del batch, output, survival_losses, graph_aux, node_aux, total_loss
+
+    total_weight = max(sum(batch_weights), 1)
+    weighted_graph_aux = sum(value * weight for value, weight in zip(graph_aux_losses, batch_weights)) / total_weight
+    weighted_node_aux = sum(value * weight for value, weight in zip(node_aux_losses, batch_weights)) / total_weight
+    cohort_metrics = compute_cohort_evaluation_losses(
+        risk=torch.tensor(all_risk, dtype=torch.float32, device=device),
+        time=torch.tensor(all_time, dtype=torch.float32, device=device),
+        event=torch.tensor(all_event, dtype=torch.float32, device=device),
+        survival_head_type=survival_head_type,
+        time_bin_edges=time_bin_edges,
+        time_logits=(torch.cat(all_time_logits, dim=0).to(device) if all_time_logits else None),
+        ranking_weight=ranking_weight,
+        ranking_margin=ranking_margin,
+        graph_aux_loss=weighted_graph_aux,
+        node_aux_loss=weighted_node_aux,
+        graph_aux_weight=graph_aux_weight,
+        node_aux_weight=node_aux_weight,
+    )
     return {
         "head_type": survival_head_type,
         "loss": sum(losses) / max(len(losses), 1),
@@ -143,6 +220,11 @@ def evaluate(
         "graph_aux_loss": sum(graph_aux_losses) / max(len(graph_aux_losses), 1),
         "node_aux_loss": sum(node_aux_losses) / max(len(node_aux_losses), 1),
         "c_index": concordance_index(all_time, all_event, all_risk),
+        **cohort_metrics,
+        "loss_note": (
+            "loss/cox_loss are legacy per-batch averages; cohort_loss/cohort_cox_loss are computed over the full "
+            "evaluation cohort and should be used for comparisons across batch-size experiments."
+        ),
     }
 
 
@@ -159,6 +241,7 @@ def main() -> None:
     if split_seed is None:
         split_seed = config["train"].get("split_seed")
     graph_preprocess = config.get("graph_preprocess", {})
+    tabular_preprocess = config.get("tabular_preprocess", {})
     survival_head_type = str(config["train"].get("survival_head_type", "cox"))
     num_time_bins = int(config["train"].get("num_time_bins", 12))
 
@@ -174,6 +257,7 @@ def main() -> None:
         split_seed=split_seed,
         keep_top_k_edges=graph_preprocess.get("keep_top_k_edges"),
         min_edge_weight=graph_preprocess.get("min_edge_weight"),
+        standardize_tabular=bool(tabular_preprocess.get("standardize", False)),
         val_ratio=config["train"]["val_ratio"],
         test_ratio=config["train"]["test_ratio"],
     )

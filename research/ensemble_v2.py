@@ -23,6 +23,7 @@ def load_checkpoints(checkpoint_glob: str) -> list[Path]:
 
 def build_loader(config: dict, split_seed: int | None, split: str) -> tuple[DataLoader, object]:
     graph_preprocess = config.get("graph_preprocess", {})
+    tabular_preprocess = config.get("tabular_preprocess", {})
     dataset = build_dataset_from_csv(
         graph_csv=config["paths"]["graph_csv"],
         clinical_csv=config["paths"]["clinical_csv"],
@@ -35,6 +36,7 @@ def build_loader(config: dict, split_seed: int | None, split: str) -> tuple[Data
         split_seed=split_seed,
         keep_top_k_edges=graph_preprocess.get("keep_top_k_edges"),
         min_edge_weight=graph_preprocess.get("min_edge_weight"),
+        standardize_tabular=bool(tabular_preprocess.get("standardize", False)),
         val_ratio=config["train"]["val_ratio"],
         test_ratio=config["train"]["test_ratio"],
     )
