@@ -75,6 +75,9 @@ def analyze():
         report = run_pipeline(standardized_payload)
         output_path = export_report(report)
         logger.info("Analysis completed. Report saved to %s", output_path)
+    except ValueError as exc:
+        logger.warning("Analysis rejected invalid input: %s", exc)
+        return jsonify({"ok": False, "errors": [str(exc)]}), 400
     except Exception as exc:
         logger.exception("Analysis failed.")
         return jsonify({"ok": False, "errors": [f"Analysis backend failed: {exc}"]}), 500

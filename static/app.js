@@ -64,9 +64,20 @@ function prettyJson(payload) {
   return JSON.stringify(payload, null, 2);
 }
 
-function numberOrZero(value) {
-  const parsed = Number(value);
-  return Number.isFinite(parsed) ? parsed : 0;
+function readNumberInput(input, label, { emptyValue = null } = {}) {
+  const rawValue = input.value.trim();
+  if (rawValue === "") {
+    return emptyValue;
+  }
+
+  const parsed = Number(rawValue);
+  if (!Number.isFinite(parsed)) {
+    throw new Error(`${label} 必须是有效数字。`);
+  }
+  if (!input.checkValidity()) {
+    throw new Error(`${label} 输入非法：${input.validationMessage}`);
+  }
+  return parsed;
 }
 
 async function postJson(url, payload) {
@@ -110,6 +121,7 @@ function createExtraMicrobeRow(name = "", value = "") {
   valueInput.className = "microbe-value";
   valueInput.step = "0.0001";
   valueInput.min = "0";
+  valueInput.max = "1";
   valueInput.placeholder = "丰度值";
   valueInput.value = String(value);
 
@@ -153,31 +165,61 @@ function populateForm(payload) {
 function buildCanonicalPayloadFromForm() {
   const microbes = {};
   PRESET_MICROBES.forEach((name) => {
-    microbes[name] = numberOrZero(document.getElementById(`microbe-${name}`).value);
+    microbes[name] = readNumberInput(
+      document.getElementById(`microbe-${name}`),
+      `${name} 丰度`,
+      { emptyValue: 0 }
+    );
   });
 
   document.querySelectorAll("#extra-microbe-rows .microbe-row").forEach((row) => {
     const name = row.querySelector(".microbe-name").value.trim();
-    const value = row.querySelector(".microbe-value").value;
     if (!name) {
       return;
     }
-    microbes[name] = numberOrZero(value);
+    const valueInput = row.querySelector(".microbe-value");
+    const abundance = readNumberInput(valueInput, `${name} 丰度`);
+    if (abundance === null) {
+      throw new Error(`${name} 丰度不能为空。`);
+    }
+    microbes[name] = abundance;
   });
+
+  if (!Object.values(microbes).some((value) => value > 0)) {
+    throw new Error("至少需要填写一个大于 0 的菌群丰度。");
+  }
+
+  const clinical = {
+    smoking: readNumberInput(document.getElementById("clinical-smoking"), "吸烟状态"),
+    family_history: readNumberInput(document.getElementById("clinical-family-history"), "家族史")
+  };
+  const age = readNumberInput(document.getElementById("clinical-age"), "年龄");
+  const bmi = readNumberInput(document.getElementById("clinical-bmi"), "BMI");
+  if (age !== null) {
+    clinical.age = age;
+  }
+  if (bmi !== null) {
+    clinical.bmi = bmi;
+  }
+
+  const metabolites = {};
+  const bileAcids = readNumberInput(document.getElementById("metabolite-bile-acids"), "胆汁酸");
+  const scfa = readNumberInput(document.getElementById("metabolite-scfa"), "短链脂肪酸（SCFA）");
+  const tryptophan = readNumberInput(document.getElementById("metabolite-tryptophan"), "色氨酸代谢");
+  if (bileAcids !== null) {
+    metabolites.bile_acids = bileAcids;
+  }
+  if (scfa !== null) {
+    metabolites.scfa = scfa;
+  }
+  if (tryptophan !== null) {
+    metabolites.tryptophan_metabolism = tryptophan;
+  }
 
   return {
     microbes,
-    clinical: {
-      age: numberOrZero(document.getElementById("clinical-age").value),
-      bmi: numberOrZero(document.getElementById("clinical-bmi").value),
-      smoking: numberOrZero(document.getElementById("clinical-smoking").value),
-      family_history: numberOrZero(document.getElementById("clinical-family-history").value)
-    },
-    metabolites: {
-      bile_acids: numberOrZero(document.getElementById("metabolite-bile-acids").value),
-      scfa: numberOrZero(document.getElementById("metabolite-scfa").value),
-      tryptophan_metabolism: numberOrZero(document.getElementById("metabolite-tryptophan").value)
-    }
+    clinical,
+    metabolites
   };
 }
 
@@ -306,10 +348,9 @@ async function standardizeFromTextarea() {
 }
 
 async function analyzeFromForm() {
-  const payload = buildCanonicalPayloadFromForm();
-  renderStandardizedPreview(payload, "form_manual");
-
   try {
+    const payload = buildCanonicalPayloadFromForm();
+    renderStandardizedPreview(payload, "form_manual");
     const data = await postJson("/analyze", payload);
     renderResult(data);
     setImportStatus("分析完成，结果区已更新。", "success");
