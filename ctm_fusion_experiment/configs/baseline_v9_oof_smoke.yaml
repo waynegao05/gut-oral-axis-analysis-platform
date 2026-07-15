@@ -1,0 +1,79 @@
+seed: 42
+cv:
+  folds: 2
+  val_ratio: 0.25
+runtime:
+  sample_limit: 48
+  max_folds: 1
+paths:
+  graph_csv: data/research/topology_v6_sample_graph_table.csv
+  clinical_csv: data/research/topology_v6_sample_clinical_table.csv
+  metabolite_csv: data/research/topology_v6_sample_metabolite_table.csv
+  label_csv: data/research/topology_v6_sample_label_table.csv
+  output_dir: outputs/ctm_fusion_experiment/baseline_v9_oof_smoke
+graph_preprocess:
+  keep_top_k_edges:
+  min_edge_weight:
+model:
+  node_feature_columns:
+    - abundance
+    - function_score
+  clinical_columns:
+    - age
+    - bmi
+    - smoking
+    - family_history
+  metabolite_columns:
+    - bile_acids
+    - scfa
+    - tryptophan_metabolism
+graph_encoder:
+  hidden_dim: 8
+  heads: 2
+  edge_hidden_dim: 4
+  embedding_dim: 12
+  dropout: 0.1
+  batch_size: 8
+  learning_rate: 0.001
+  weight_decay: 0.001
+  epochs: 2
+  early_stop_patience: 2
+  min_delta: 0.0
+  grad_clip_norm: 1.0
+fusion:
+  baseline_hidden_dim: 8
+  dropout: 0.1
+  batch_size: 8
+  learning_rate: 0.001
+  weight_decay: 0.001
+  epochs: 2
+  early_stop_patience: 2
+  min_delta: 0.0
+  grad_clip_norm: 1.0
+ctm:
+  d_model: 12
+  iterations: 3
+  memory_length: 3
+  nlm_hidden_dim: 4
+  n_heads: 2
+  d_input: 8
+  n_synch_out: 7
+  n_synch_action: 6
+  n_self_pairs: 2
+  synapse_depth: 2
+baseline_v5:
+  graph_seeds:
+    - 0
+  baseline_seeds:
+    - 1
+  pairwise_ranking_weight: 0.04
+  pairwise_margin: 0.0
+  min_validation_c_index_delta: 0.001
+  softmax_temperature: 0.01
+  selection_policy: ensemble_only_or_reference
+  max_top_k: 2
+baseline_v9:
+  inner_folds: 2
+  inner_val_ratio: 0.25
+  min_oof_c_index_delta: 0.001
+  min_validation_gate_delta: 0.0
