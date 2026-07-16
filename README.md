@@ -26,7 +26,7 @@
 | Primary metric | C-index |
 | Dataset | `topology_v6` synthetic/noisy augmented research data |
 
-网页端会对两个 split 的共识风险再取平均，并输出队列相对风险百分位、split disagreement 与可靠性提示。旧版五种子 Cox 网页后端仍可显式切换，但已归档且不再是默认主线。
+网页端会对两个 split 的共识风险再取平均，并输出队列相对风险百分位、split disagreement 与可靠性提示。
 
 ## Quick Start | 快速启动
 
