@@ -217,6 +217,12 @@ CURRENT_MAINLINE.md                   当前主线速查
 - 从 synthetic/noisy augmented 数据推导临床诊断、处方或外部泛化结论；
 - 在缺少真实独立队列和外部验证时宣称可用于临床决策。
 
+## License | 许可证
+
+This project is licensed under the Apache License 2.0. See the [LICENSE](LICENSE) file for details.
+
+本项目采用 Apache License 2.0 许可证。具体条款请参阅 [LICENSE](LICENSE) 文件。
+
 ## Funding Support | 基金支持
 
 This research was supported by the Undergraduate Talented Innovation Education Program of Shenyang Pharmaceutical University, project XH2025-06.
