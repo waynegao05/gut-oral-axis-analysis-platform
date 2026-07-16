@@ -1,8 +1,6 @@
 # Gut-Oral Axis Analysis Platform | 肠口轴分析平台
 
-面向右删失生存风险预测的研究与网页演示平台。当前正式网页后端将结构感知 GNN 与时间拓扑 AFT 专家进行跨划分共识融合，而不是继续使用早期的单一 Cox ensemble。
-
-> 当前默认发布：`temporal_topology_aft_cross_split_consensus_v1`
+面向右删失生存风险预测的研究与网页演示平台。当前正式网页后端将结构感知 GNN 与时间拓扑 AFT 专家进行跨划分共识融合。
 
 ## Star History
 
