@@ -2,16 +2,6 @@
 
 面向右删失生存风险预测的研究与网页演示平台。当前正式网页后端将结构感知 GNN 与时间拓扑 AFT 专家进行跨划分共识融合。
 
-## Star History
-
-<a href="https://www.star-history.com/?repos=waynegao05%2Fgut-oral-axis-analysis-platform&type=timeline&logscale=&legend=top-left">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=waynegao05/gut-oral-axis-analysis-platform&type=timeline&theme=dark&logscale&legend=top-left&sealed_token=mojgejj4p7d1PJ8ENcwk7PyKDO4fZIu29-4iNmjSCh-Ltjdp7ssX1UmhaDN-TDCMKrGQWszHdxwJxMn-XOlTAvzQuzTqebPcOYbColNDZjwjIn-nXsNEQuxAnRZxXwhxZ6KE0q1IPj5eJ4Ti0ClwIxtYnIB-yf9Bo5DX9k3_0LLxXI1ZLcsGDjXwhH7U" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=waynegao05/gut-oral-axis-analysis-platform&type=timeline&logscale&legend=top-left&sealed_token=mojgejj4p7d1PJ8ENcwk7PyKDO4fZIu29-4iNmjSCh-Ltjdp7ssX1UmhaDN-TDCMKrGQWszHdxwJxMn-XOlTAvzQuzTqebPcOYbColNDZjwjIn-nXsNEQuxAnRZxXwhxZ6KE0q1IPj5eJ4Ti0ClwIxtYnIB-yf9Bo5DX9k3_0LLxXI1ZLcsGDjXwhH7U" />
-   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=waynegao05/gut-oral-axis-analysis-platform&type=timeline&logscale&legend=top-left&sealed_token=mojgejj4p7d1PJ8ENcwk7PyKDO4fZIu29-4iNmjSCh-Ltjdp7ssX1UmhaDN-TDCMKrGQWszHdxwJxMn-XOlTAvzQuzTqebPcOYbColNDZjwjIn-nXsNEQuxAnRZxXwhxZ6KE0q1IPj5eJ4Ti0ClwIxtYnIB-yf9Bo5DX9k3_0LLxXI1ZLcsGDjXwhH7U" />
- </picture>
-</a>
-
 ## Current Release | 当前发布
 
 | Item | Current value |
