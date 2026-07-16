@@ -39,19 +39,7 @@ python -m pip install -r requirements.txt
 
 如使用 CUDA，可将 `GOA_TEMPORAL_DEVICE` 设为 `cuda` 或 `auto`。CPU 是默认部署设备。
 
-### 2. Restore model artifacts
-
-`outputs/` 不进入 Git 版本库。最新后端启动前必须在本地具备以下研究工件：
-
-```text
-outputs/current_mainline_v2/full_risk_head_refiner_v2/
-outputs/current_mainline_v2/temporal_independent_v3/
-outputs/current_mainline_v2/full_risk_expert_v2/
-```
-
-工件缺失时系统会明确报错，不会静默退回旧模型。这样可以防止网页显示的发布名与实际执行模型不一致。
-
-### 3. Run the web app
+### 2. Run the web app
 
 ```powershell
 $env:GOA_PORT = "8765"
@@ -62,14 +50,6 @@ python enhanced_app.py
 
 访问 `http://127.0.0.1:8765`。
 
-如需本地对照旧版 Cox ensemble：
-
-```powershell
-$env:GOA_MODEL_BACKEND = "legacy_cox"
-python enhanced_app.py
-```
-
-旧版兼容入口位于 `archive/legacy_web_backends/cox_ensemble_v1.py`。
 
 ## Web Input | 网页输入
 
