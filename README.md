@@ -219,18 +219,12 @@ CURRENT_MAINLINE.md                   当前主线速查
 
 ## License | 许可证
 
-This project is licensed under the Apache License 2.0. See the [LICENSE](LICENSE) file for details.
-
 本项目采用 Apache License 2.0 许可证。具体条款请参阅 [LICENSE](LICENSE) 文件。
 
 ## Funding Support | 基金支持
 
-This research was supported by the Undergraduate Talented Innovation Education Program of Shenyang Pharmaceutical University, project XH2025-06.
-
 本研究受沈阳药科大学本科生拔尖创新人才培养计划支持，项目编号 XH2025-06。
 
 ## Clinical Disclaimer | 临床声明
-
-This repository is a research and demonstration platform, not a validated clinical decision system. Medically meaningful conclusions require real-cohort design, external validation, and clinician review.
 
 本仓库仅用于研究与演示，不是经过临床验证的决策系统。任何医学结论都需要真实队列、外部验证和临床审核。
