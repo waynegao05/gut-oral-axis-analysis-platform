@@ -89,3 +89,11 @@ def test_pipeline_output_keys():
     assert "gnn_features" in report
     assert "risk_result" in report
     assert "recommendations" in report
+    assert report["risk_result"]["backend"] == "temporal_topology_aft_cross_split_consensus"
+    assert report["gnn_features"]["topology_source"] == "inferred_from_web_inputs"
+
+
+def test_archived_legacy_cox_bridge_remains_importable():
+    from archive.legacy_web_backends.cox_ensemble_v1 import get_research_model_bridge
+
+    assert callable(get_research_model_bridge)

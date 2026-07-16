@@ -114,6 +114,20 @@ def build_topology_fingerprint_dataframe(
         metabolite_df=metabolite_df,
         label_df=label_df,
     )
+    return build_topology_fingerprint_from_frames(
+        graph_df,
+        sample_df,
+        data_summary=data_summary,
+    )
+
+
+def build_topology_fingerprint_from_frames(
+    graph_df: pd.DataFrame,
+    sample_df: pd.DataFrame,
+    *,
+    data_summary: dict[str, Any],
+) -> tuple[pd.DataFrame, list[str], dict[str, Any]]:
+    """Build the training-compatible fingerprint from already aligned input frames."""
     graph = graph_df.copy()
     graph["sample_id"] = graph["sample_id"].astype(str)
     graph["edge_name"] = graph["src"].map(_safe_token) + "__to__" + graph["dst"].map(_safe_token)

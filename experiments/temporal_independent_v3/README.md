@@ -1,6 +1,6 @@
 # Temporal independent v3
 
-这个目录是一条完全独立的平行实验，不修改 `research/` 主训练流程，也不影响当前应用模型。
+这个目录最初作为完全独立的平行实验建立，不修改 `research/` 主训练流程。当前实验已通过跨 split 验证并被接入正式网页后端，但训练与汇总仍保持独立，旧 Cox 流程可以单独运行和回退。
 
 ## 目标
 
@@ -46,3 +46,5 @@ outputs/current_mainline_v2/temporal_independent_v3/cross_split_consensus/cross_
 ```
 
 注意：当前 `topology_v6` 是 synthetic/noisy augmented 数据。该结果证明方法在现有实验协议中有效，但不能替代外部真实队列验证。
+
+网页端还存在一个额外边界：研究评估使用表内拓扑和确定性的 8 样本上下文，网页端则从可提交字段推断拓扑，并使用固定校准 anchor 保证单样本推理不依赖并发请求。因此 `0.757056` 是正式离线协议结果，不能直接表述为网页部署模型的临床 C-index。

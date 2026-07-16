@@ -99,7 +99,10 @@ def run_tuning(base_config_path: str, seeds: list[int], device: str) -> dict:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--config", default="research_config_structure_aware.yaml")
+    parser.add_argument(
+        "--config",
+        default="archive/legacy_root_configs/research_config_structure_aware.yaml",
+    )
     parser.add_argument("--seeds", nargs="+", type=int, default=[7, 21, 42])
     parser.add_argument("--device", choices=["auto", "cpu", "cuda"], default="cuda")
     args = parser.parse_args()

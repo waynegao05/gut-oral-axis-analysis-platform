@@ -1,5 +1,9 @@
 # Gut-Oral Axis Analysis Platform | 肠口轴分析平台
 
+面向右删失生存风险预测的研究与网页演示平台。当前正式网页后端将结构感知 GNN 与时间拓扑 AFT 专家进行跨划分共识融合，而不是继续使用早期的单一 Cox ensemble。
+
+> 当前默认发布：`temporal_topology_aft_cross_split_consensus_v1`
+
 ## Star History
 
 <a href="https://www.star-history.com/?repos=waynegao05%2Fgut-oral-axis-analysis-platform&type=timeline&logscale=&legend=top-left">
@@ -10,140 +14,68 @@
  </picture>
 </a>
 
-## Usage First | 用法优先
+## Current Release | 当前发布
 
-### 1. Run the web app | 启动网页端
+| Item | Current value |
+|---|---|
+| Task | right-censored survival risk prediction (`time`, `event`) |
+| Default backend | `temporal_topology_aft_cross_split_consensus` |
+| Release | `temporal_topology_aft_cross_split_consensus_v1` |
+| Split branches | `42`, `43` |
+| Model seeds | `7`, `21`, `42`, `123`, `2026` |
+| Members | 6 GNN models + 10 AFT models |
+| Consensus | validation-selected shared `alpha = 0.63` |
+| Primary metric | C-index |
+| Dataset | `topology_v6` synthetic/noisy augmented research data |
 
-This is the fastest way to use the current platform.
+网页端会对两个 split 的共识风险再取平均，并输出队列相对风险百分位、split disagreement 与可靠性提示。旧版五种子 Cox 网页后端仍可显式切换，但已归档且不再是默认主线。
 
-这是当前平台最快的使用方式。
+## Quick Start | 快速启动
 
-```cmd
-cd /d <repo-root>
+### 1. Install dependencies
+
+```powershell
+cd <repo-root>
 python -m pip install -r requirements.txt
-set GOA_PORT=8765
-python enhanced_app.py
 ```
 
-Open:
+如使用 CUDA，可将 `GOA_TEMPORAL_DEVICE` 设为 `cuda` 或 `auto`。CPU 是默认部署设备。
 
-打开浏览器访问：
+### 2. Restore model artifacts
+
+`outputs/` 不进入 Git 版本库。最新后端启动前必须在本地具备以下研究工件：
 
 ```text
-http://127.0.0.1:8765
+outputs/current_mainline_v2/full_risk_head_refiner_v2/
+outputs/current_mainline_v2/temporal_independent_v3/
+outputs/current_mainline_v2/full_risk_expert_v2/
 ```
 
-If `8765` is blocked on your machine, switch to another port:
+工件缺失时系统会明确报错，不会静默退回旧模型。这样可以防止网页显示的发布名与实际执行模型不一致。
 
-如果你的机器上 `8765` 被占用或被拦截，可以切换端口：
+### 3. Run the web app
 
-```cmd
-set GOA_PORT=8000
+```powershell
+$env:GOA_PORT = "8765"
+$env:GOA_MODEL_BACKEND = "temporal_topology"
+$env:GOA_TEMPORAL_DEVICE = "cpu"
 python enhanced_app.py
 ```
 
-The web app now uses the actual research model backend by default, not the legacy hand-crafted prototype scorer.
+访问 `http://127.0.0.1:8765`。
 
-当前网页端默认调用真实研究主线模型，不再使用早期手工权重原型打分器。
+如需本地对照旧版 Cox ensemble：
 
-The current locked web release is:
-
-当前锁定的网页发布版是：
-
-- `cox_fixed_split_ensemble_v1`
-- backend: `research_gnn_cox_ensemble`
-- checkpoint policy: strict `5-seed` Cox ensemble lock
-
-The web app now fails loudly if the full locked ensemble is missing. It no longer silently falls back to an older single checkpoint unless fallback is explicitly enabled.
-
-如果锁定的完整 `5-seed` ensemble 不存在，网页端现在会直接报错，而不会再静默退回旧单 checkpoint，除非你显式开启 fallback。
-
----
-
-### 2. Run the current research mainline | 运行当前研究主线
-
-Install the research dependencies:
-
-安装研究环境依赖：
-
-```cmd
-cd /d <repo-root>
-python -m pip install -r requirements-research.txt
+```powershell
+$env:GOA_MODEL_BACKEND = "legacy_cox"
+python enhanced_app.py
 ```
 
-Recommended CUDA environment note:
+旧版兼容入口位于 `archive/legacy_web_backends/cox_ensemble_v1.py`。
 
-推荐的 CUDA 环境说明：
+## Web Input | 网页输入
 
-- Python: `python` available in the active environment
-- PyTorch: current project environment expects CUDA runners
-- Optional PyG acceleration package:
-
-```cmd
-python -m pip install --no-cache-dir --force-reinstall torch_scatter -f https://data.pyg.org/whl/torch-2.8.0+cu126.html
-```
-
-Single training run:
-
-单次训练：
-
-```cmd
-cd /d <repo-root>
-set OPENBLAS_NUM_THREADS=1
-set OMP_NUM_THREADS=1
-set MKL_NUM_THREADS=1
-python -m research.train_v2 --config research_config_v2.yaml --split-seed 42 --device cuda
-```
-
-Repeated runs across fixed seeds:
-
-固定种子重复实验：
-
-```cmd
-cd /d <repo-root>
-set OPENBLAS_NUM_THREADS=1
-set OMP_NUM_THREADS=1
-set MKL_NUM_THREADS=1
-python -m research.repeat_runs_v2 --config research_config_v2.yaml --seeds 7 21 42 123 2026 --split-seed 42 --device cuda --output-root outputs\current_mainline_v2\cox_fixed_split_repeat
-```
-
-Graph perturbation test:
-
-图结构扰动实验：
-
-```cmd
-cd /d <repo-root>
-set OPENBLAS_NUM_THREADS=1
-set OMP_NUM_THREADS=1
-set MKL_NUM_THREADS=1
-python -m research.graph_structure_tests_v2 --config research_config_v2.yaml --seeds 7 21 42 123 2026 --split-seed 42 --device cuda --output-root outputs\current_mainline_v2\cox_fixed_split_graph_structure_tests
-```
-
-5-seed ensemble evaluation:
-
-5-seed 集成评估：
-
-```cmd
-cd /d <repo-root>
-python -m research.ensemble_v2 --config research_config_v2.yaml --checkpoint-glob "outputs/current_mainline_v2/cox_fixed_split_repeat/research_seed*/best_model.pt" --split test --device cuda --split-seed 42 --output outputs/current_mainline_v2/cox_fixed_split_repeat/ensemble_test_summary.json
-```
-
-Fixed-split benchmark summary:
-
-固定划分 benchmark 汇总：
-
-```cmd
-cd /d <repo-root>
-python -m research.fixed_split_benchmark --config research_config_v2.yaml --seeds 7 21 42 123 2026 --split-seed 42 --device cuda --output-root outputs\current_mainline_v2\cox_fixed_split_benchmark --summarize-existing --mainline-summary-path outputs\current_mainline_v2\cox_fixed_split_repeat\research_repeat_runs_summary.json --tabular-summary-path outputs\current_mainline_v2\fixed_split_benchmark\tabular_baseline\baseline_compare_summary.json --graph-summary-path outputs\current_mainline_v2\fixed_split_benchmark\graph_baseline\graph_specific_baselines_summary.json --ensemble-summary-path outputs\current_mainline_v2\cox_fixed_split_repeat\ensemble_test_summary.json --mainline-model-name gnn_cox_mainline
-```
-
----
-
-### 3. Web payload example | 网页输入示例
-
-The canonical payload accepted by `/analyze` is:
-
-网页 `/analyze` 接口接受的标准输入格式如下：
+`/analyze` 接收标准化 JSON：
 
 ```json
 {
@@ -168,511 +100,163 @@ The canonical payload accepted by `/analyze` is:
 }
 ```
 
-The current research-backed web inference supports the oral taxa used by the mainline training tables:
+输入校验会直接提示非法值：
 
-当前研究模型驱动的网页推理主要支持主线训练表中使用的口腔菌：
+- 菌群丰度和代谢物必须是有限数值且位于 `[0, 1]`
+- `age` 必须位于 `[1, 120]`
+- `bmi` 必须位于 `[5, 100]`
+- `smoking` 与 `family_history` 只能为 `0` 或 `1`
+- `NaN`、`Infinity`、负丰度和非数字字符串会被拒绝
 
-- `Fusobacterium`
-- `Porphyromonas`
-- `Prevotella`
-- `Streptococcus`
-- `Lactobacillus`
+## Model Architecture | 模型结构
 
-Unsupported taxa will not crash the app, but they are ignored by the research GNN backend.
+当前推理链由五个步骤组成：
 
-未支持的菌不会导致网页报错，但不会进入研究 GNN 后端的真实推理。
+1. **Canonical validation**：校验并规范化菌群、临床变量和代谢物。
+2. **Topology inference**：每个 split 使用仅在其训练集 `2160` 个样本上拟合的标准化 Ridge 模型，从 12 个网页可用输入推断 5 个 function scores 和 10 条具名边权。
+3. **Structure-aware GNN**：每个 split 使用 3 个已选 GNN 风险成员，保留节点与边身份信息。
+4. **Temporal-topology AFT expert**：每个 split 使用 5 个 XGBoost AFT 种子模型，直接学习右删失生存时间结构。
+5. **Cross-split consensus**：先将标准化 GNN 风险与 AFT 风险按 `0.37 / 0.63` 融合，再平均 split 42 与 43 的结果。
 
----
+网页输入无法直接测得真实边权或功能分数，因此网页端使用的是 **inferred topology**，不是实验室实测拓扑。响应中会明确返回：
 
-## What This Platform Is | 这个平台是什么
+- `topology_source = inferred_from_web_inputs`
+- `topology_inference_method = split_train_only_standardized_ridge`
+- 推断得到的 function scores 与 edge weights
+- 默认填充值、训练范围外输入与 split disagreement
 
-This repository is a research-oriented oral-gut axis analysis platform built around a conservative graph neural network survival workflow.
+GNN 结构归一化原本会依赖同一批次中的其他样本。网页部署改用每个 split 固定的中位数校准 anchor，使单个受试者的分数不受并发请求内容影响。正式离线复跑仍使用保存的 8 样本评估上下文，两种上下文不能混为同一验证协议。
 
-本仓库是一个面向研究的肠口轴分析平台，其核心是保守、可复现、以图神经网络生存分析为主线的工作流。
+## Formal Evidence | 正式证据
 
-Its current purpose is not clinical deployment and not metric chasing through uncontrolled model complexity. The platform is intended to support:
+权重仅由 validation 选择，test 标签不参与融合权重选择。
 
-当前目标不是临床部署，也不是通过失控的模型堆叠去追逐单次高分。平台主要服务于以下目标：
+| Split | Reference test C-index | Selected test C-index | Delta | Calibrated Cox loss delta |
+|---:|---:|---:|---:|---:|
+| 42 | 0.743263 | 0.760866 | +0.017603 | -0.014535 |
+| 43 | 0.737404 | 0.753247 | +0.015843 | -0.011890 |
+| Mean | 0.740333 | **0.757056** | **+0.016723** | **-0.013212** |
 
-- oral microbiome graph modeling
-- multi-modal survival risk prediction
-- graph contribution verification
-- baseline comparison against simpler tabular models
-- reproducible fixed-split experiments
-- web-based structured risk demonstration
-- future manuscript, patent, and roadshow support
+两个 split 的 C-index 与校准 Cox loss 均改善。保存的 cumulative/dynamic IPCW ROC 诊断为：
 
-对应中文：
+| Horizon | Split 42 AUC | Split 43 AUC |
+|---:|---:|---:|
+| 36 | 0.867920 | 0.842278 |
+| 60 | 0.832749 | 0.815883 |
+| 84 | 0.834438 | 0.826573 |
+| Mean | **0.845035** | **0.828245** |
 
-- 口腔微生物图建模
-- 多模态生存风险预测
-- 图结构贡献验证
-- 与简单表型基线的公平比较
-- 可复现的固定划分实验
-- 基于网页的结构化风险展示
-- 为后续论文、专利和路演提供可解释基础
+### Historical exploration potential | 历史探索潜力
 
----
+早期实验曾出现 `0.8967` 的探索高分。该数值保留为方法潜力与上限线索，但它来自旧探索协议，暴露复跑后降至约 `0.6905`，未通过当前固定划分、无 test 选权和跨 split 共识标准。因此：
 
-## Current Mainline | 当前主线
+- 可以把 `0.8967` 写作历史探索潜力；
+- 不能把它写作当前正式测试成绩；
+- 当前可复现的正式主结果是两 split 平均 `0.757056`。
 
-The default research mainline is:
+### Topology reconstruction boundary | 拓扑推断边界
 
-当前默认研究主线是：
+网页拓扑 Ridge 在各自 held-out 数据上的重建表现：
 
-- `GNN + Cox survival modeling`
-- config: `research_config_v2.yaml`
-- task: right-censored survival risk prediction
-- labels: `time`, `event`
-- primary metric: `c-index`
-- locked release: `cox_fixed_split_ensemble_v1`
-- best inference setup: `5-seed fixed-split ensemble`
+| Split | Function MAE | Function R2 | Edge MAE | Edge R2 |
+|---:|---:|---:|---:|---:|
+| 42 | 0.127786 | 0.339600 | 0.154402 | 0.312421 |
+| 43 | 0.128280 | 0.337292 | 0.152709 | 0.325750 |
 
-This is the paper-facing mainline. Older prototype branches and discarded heavy experiments are preserved only as history or auxiliary references.
+这些指标衡量“由网页字段重建研究表拓扑”的能力，不代表真实生物学边权测量精度。
 
-这是当前面向论文和正式实验的主线。早期原型分支与已废弃的重型路线只作为历史或辅助参考保留。
+## Research Workflow | 研究流程
 
-The repository explicitly does **not** treat the following as the default path:
+基础 GNN + Cox 主干仍保留为 reference：
 
-仓库当前明确 **不** 将下列路线作为默认主线：
+```powershell
+python -m research.train_v2 --config research_config_v2.yaml --split-seed 42 --device cuda
+python -m research.repeat_runs_v2 --config research_config_v2.yaml --seeds 7 21 42 123 2026 --split-seed 42 --device cuda
+python -m research.graph_structure_tests_v2 --config research_config_v2.yaml --seeds 7 21 42 123 2026 --split-seed 42 --device cuda
+```
 
-- contrastive-heavy training
-- deep attention stacks as the default
-- over-constrained graph-only supervision
-- uncontrolled multi-task stacking
-- architecture novelty before baseline validation
+时间拓扑 AFT 独立实验入口：
 
----
+```powershell
+python -m experiments.temporal_independent_v3.seed_sweep `
+  --config research_config_v2.yaml `
+  --mainline-predictions <split-specific-mainline-predictions.npz> `
+  --split-seed 42 `
+  --seeds 7 21 42 123 2026
+```
 
-## Current Evidence Snapshot | 当前证据快照
+正式共识汇总：
 
-Under the fixed-split `topology_v6` workflow currently committed in this repository:
+```text
+outputs/current_mainline_v2/temporal_independent_v3/cross_split_consensus/cross_split_consensus_summary.json
+```
 
-在当前仓库提交的 `topology_v6` 固定划分工作流下：
-
-- `gnn_5seed_ensemble`: `0.74097`
-- `all_tabular_mlp_cox`: `0.73955`
-- `gnn_cox_mainline` mean: `0.73877 ± 0.00290`
-- `graph_summary_mlp_cox`: `0.72708`
-
-The graph perturbation results on the Cox mainline show:
-
-基于 Cox 主线的图扰动结果显示：
-
-- `original`: `0.73783 ± 0.00454`
-- `shuffle_weights`: `0.71463 ± 0.00193`
-- `shuffle_edges`: `0.71330 ± 0.00291`
-- `shuffle_edges_and_weights`: `0.71240 ± 0.00236`
-
-Interpretation:
-
-解释：
-
-- the conservative `GNN + Cox` mainline is competitive with the strongest tabular baseline
-- the 5-seed ensemble is currently the best inference configuration in this repository
-- graph perturbation consistently degrades performance, so the model is using graph structure rather than merely carrying a graph-shaped shell
-
-对应中文：
-
-- 保守版 `GNN + Cox` 主线已经基本追平最强表型基线
-- 5-seed ensemble 是当前仓库内最佳推理配置
-- 图扰动会稳定带来性能下降，说明模型确实在利用图结构，而不是“披着图外壳的表型模型”
-
-Important caveat:
-
-重要前提：
-
-The current mainline uses `topology_v6`, which should be treated as synthetic / expanded research data with noise. These metrics are suitable for method development, not for direct clinical claims.
-
-当前主线使用的是 `topology_v6`，应视为带噪声的合成/扩增研究数据。当前指标适用于方法开发，不足以直接支持临床结论。
-
----
-
-## Scientific Task Definition | 科学任务定义
-
-The platform is built around **right-censored survival risk prediction**, not plain classification.
-
-本平台围绕 **右删失生存风险预测** 构建，而不是普通二分类。
-
-Canonical target semantics:
-
-标准标签语义：
-
-- `time`: observed follow-up duration
-- `event = 1`: event observed at `time`
-- `event = 0`: right-censored sample
-
-The shared evaluation axis is:
-
-统一评价轴是：
-
-- concordance index (`c-index`)
-
-This keeps the GNN mainline, linear Cox baselines, graph-summary baselines, and tabular MLP survival baselines on the same task definition.
-
-这样可以保证 GNN 主线、线性 Cox 基线、graph-summary 基线和 tabular MLP 生存基线处于同一任务定义下进行比较。
-
-For more detail, see:
-
-详见：
-
-- `research/TASK_DEFINITION.md`
-
----
-
-## Platform Mechanism | 平台机制
-
-### A. Data modalities | 数据模态
-
-The current mainline fuses three information sources:
-
-当前主线融合三类信息：
-
-1. oral microbiome graph / node-level features
-2. clinical covariates
-3. metabolite features
-
-即：
-
-1. 口腔微生物图及节点特征
-2. 临床协变量
-3. 代谢特征
-
-### B. Graph branch | 图分支
-
-The graph branch models oral taxa as nodes with node features such as abundance and function score, and edges representing structured relationships in the microbiome graph.
-
-图分支将口腔菌建模为节点，节点特征包括丰度和功能分数，边表示微生物图中的结构关系。
-
-The current research backbone is implemented in:
-
-当前研究主干实现位置：
-
-- `research/model_v2.py`
-
-It is intentionally conservative:
-
-它被刻意控制在保守复杂度范围内：
-
-- moderate graph depth
-- no default attention explosion
-- no default contrastive branch in optimization
-- weak auxiliary structure supervision only
-- Cox head as default survival objective
-
-即：
-
-- 中等深度图网络
-- 不默认堆叠复杂 attention
-- 不把 contrastive 分支作为默认优化目标
-- 仅保留温和的结构辅助监督
-- 默认使用 Cox 生存头
-
-### C. Survival head | 生存头
-
-The default head is Cox-style survival risk modeling:
-
-默认生存头是 Cox 风格风险建模：
-
-- model output: risk score
-- supervision: censored survival objective
-- main metric: c-index
-
-This keeps the project aligned with survival semantics and avoids collapsing the task into an easier but scientifically weaker pseudo-classification setup.
-
-这保证项目始终保持生存分析语义，避免把任务退化为更容易但科学上更弱的伪分类问题。
-
-### D. Web inference mechanism | 网页推理机制
-
-The web app is no longer a toy demo layer. It now performs:
-
-网页端已不再是单纯玩具原型。它现在执行的是：
-
-1. payload validation / raw-to-canonical normalization
-2. structured input construction
-3. microbe graph construction
-4. loading the research model bridge
-5. scoring with the current research checkpoints
-6. percentile-style risk reporting
-7. rule-based recommendation generation on top of model output
-
-核心链路位置：
-
-- `enhanced_app.py`
-- `src/pipeline.py`
-- `src/research_model_bridge.py`
-
-The current default web backend is:
-
-当前网页默认后端是：
-
-- `research_gnn_cox_ensemble`
-- locked release: `cox_fixed_split_ensemble_v1`
-
-This backend is now pinned to the locked `5-seed` Cox ensemble release and performs prediction-level ensemble scoring across those checkpoints.
-
-这个后端现在固定绑定到锁定版 `5-seed` Cox ensemble，并在这些 checkpoint 之间执行预测级 ensemble 评分。
-
-Default lock behavior:
-
-默认锁定行为：
-
-- expected checkpoint count: `5`
-- default fallback: disabled
-- optional override: set `GOA_ALLOW_SINGLE_CHECKPOINT_FALLBACK=1` only for explicit debugging
-
----
+详细实验说明见 `experiments/temporal_independent_v3/README.md`。
 
 ## Repository Structure | 仓库结构
 
-### Top level | 顶层结构
-
 ```text
-gut-oral-axis-analysis-platform/
-├── archive/                       historical branches, failed routes, old outputs
-├── config/                        runtime settings for the web app
-├── data/                          sample tables and rule files
-├── outputs/                       experiment outputs and summaries
-├── research/                      paper-facing research pipeline
-├── src/                           web / prototype / bridge modules
-├── static/                        front-end JavaScript assets
-├── templates/                     Flask HTML templates
-├── tests/                         lightweight test coverage
-├── enhanced_app.py                current Flask entrypoint
-├── research_config_v2.yaml        default GNN + Cox mainline config
-├── CURRENT_MAINLINE.md            concise mainline reference
-└── README.md                      this document
+archive/                              分类保存旧后端、旧配置、旧模型和旧文档
+config/                               网页运行配置与发布指标
+ctm_fusion_experiment/                历史 CTM 实验依赖，不是当前网页主线
+experiments/temporal_independent_v3/  当前时间拓扑 AFT 实验与共识工具
+research/                             GNN、Cox、基线与正式研究流水线
+src/                                  网页预处理、推理桥接、报告与建议
+static/                               前端静态资源
+templates/                            Flask 页面
+tests/                                单元与接口测试
+enhanced_app.py                       当前网页入口
+research_config_v2.yaml               GNN reference 配置
+CURRENT_MAINLINE.md                   当前主线速查
 ```
 
-### `research/` | 研究代码层
+`outputs/` 保存本地模型和实验结果，但不提交到 GitHub。归档分类和兼容状态见 `archive/README.md`。
 
-Key current files:
+## Output Semantics | 输出语义
 
-当前关键文件：
+网页 `risk_score` 与 `risk_percentile` 是相对于 `topology_v6` 参考队列的百分位，不是个体绝对发病概率。主要字段包括：
 
-- `research/model_v2.py`: current conservative GNN + Cox backbone
-- `research/train_v2.py`: single-run training
-- `research/repeat_runs_v2.py`: repeated-run evaluation
-- `research/graph_structure_tests_v2.py`: graph perturbation tests
-- `research/ensemble_v2.py`: checkpoint ensemble evaluation
-- `research/fixed_split_benchmark.py`: unified benchmark summary builder
-- `research/baseline_compare.py`: tabular survival baselines
-- `research/graph_specific_baselines.py`: graph-summary baselines
-- `research/graph_preprocess_sweep.py`: graph preprocessing sweep
-- `research/TASK_DEFINITION.md`: task semantics
+- `risk_score`, `risk_level`, `risk_percentile`, `raw_model_risk`
+- `split_consensus_risks`, `split_disagreement`, `prediction_reliability`
+- `backend`, `model_release`, `ensemble_size`
+- inferred topology、输入范围提示、建议与结构化报告
 
-### `src/` | 网页与桥接层
-
-Key current files:
-
-当前关键文件：
-
-- `src/pipeline.py`: high-level inference pipeline
-- `src/research_model_bridge.py`: loads research checkpoints for web inference
-- `src/preprocess.py`: payload structuring
-- `src/graph_builder.py`: graph construction and topology features
-- `src/recommendation.py`: recommendation generation
-- `src/report.py`: structured report assembly
-- `src/clinical_standardizer.py`: raw clinical JSON normalization
-
-### `outputs/` | 输出目录
-
-Important output groups:
-
-当前重要输出组：
-
-- `outputs/current_mainline_v2/cox_fixed_split_repeat/`
-- `outputs/current_mainline_v2/cox_fixed_split_graph_structure_tests/`
-- `outputs/current_mainline_v2/cox_fixed_split_benchmark/`
-- `outputs/current_mainline_v2/fixed_split_benchmark/`
-
-These folders store the benchmark evidence currently reflected in the repository.
-
-这些目录保存了当前仓库中已经沉淀下来的主线证据。
-
----
-
-## Recommended Workflow | 推荐工作流
-
-### For web demonstration | 用于网页演示
-
-Use:
-
-使用：
-
-- `enhanced_app.py`
-
-This path is appropriate when you need:
-
-适用场景：
-
-- manual form input
-- JSON upload / JSON paste
-- quick risk demonstration
-- structured report export
-
-### For formal experiments | 用于正式实验
-
-Use the `research/` pipeline with `research_config_v2.yaml`.
-
-使用 `research/` 管线，并以 `research_config_v2.yaml` 为默认主线。
-
-Recommended order:
-
-建议顺序：
-
-1. `research.train_v2`
-2. `research.repeat_runs_v2`
-3. `research.graph_structure_tests_v2`
-4. `research.ensemble_v2`
-5. `research.fixed_split_benchmark`
-
-### For baseline-first audit | 用于保守 benchmark 审核
-
-Run:
-
-运行：
-
-- `research.baseline_compare`
-- `research.graph_specific_baselines`
-- `research.fixed_split_benchmark`
-
-This is the correct path when you need a defensible claim about whether the GNN is truly adding value over simpler alternatives.
-
-当你需要对“GNN 是否真正优于更简单基线”做出可辩护结论时，这条路径才是正确路径。
-
----
-
-## Input and Output Semantics | 输入输出语义
-
-### Research input tables | 研究输入表
-
-The formal research workflow expects aligned CSV tables indexed by `sample_id`.
-
-正式研究流程要求按 `sample_id` 对齐的多张 CSV 表。
-
-Required tables:
-
-必需表：
-
-- graph table
-- clinical table
-- metabolite table
-- label table
-
-Typical label columns:
-
-典型标签列：
-
-```text
-sample_id,time,event
-```
-
-### Web output | 网页输出
-
-The web app returns:
-
-网页端输出：
-
-- `risk_score`
-- `risk_level`
-- `risk_percentile`
-- `raw_model_risk`
-- `backend`
-- `model_release`
-- recommendations
-- structured report JSON
-
-The most important practical point is that the displayed risk is currently percentile-style cohort-relative risk derived from the research model reference cohort.
-
-最重要的实际含义是：网页显示的风险值本质上是基于研究参考队列计算出来的百分位风险，而不是直接可解释为临床绝对发生率。
-
----
+完整响应示例见 `API_RESPONSE_EXAMPLE.md`。
 
 ## Reproducibility Rules | 可复现性约束
 
-The repository now follows a conservative experiment discipline:
+- 固定模型种子：`7, 21, 42, 123, 2026`
+- 固定 split：`42`, `43`
+- 仅使用 validation 选择共识权重
+- test 标签不参与模型或融合选择
+- 同时报告 C-index、Cox loss 与时间依赖 AUC
+- 网页 inferred-topology 结果与研究表 measured-topology 结果分开陈述
+- 报告时必须注明 `topology_v6` 是 synthetic/noisy augmented 数据
 
-仓库当前遵循保守实验纪律：
+## Scope and Limitations | 适用边界
 
-- fixed seeds: `7, 21, 42, 123, 2026`
-- fixed split benchmark support
-- unified task semantics across baselines and GNN
-- explicit graph perturbation tests
-- preserved ensemble summary
-- config-driven training
+当前证据支持：
 
-When reporting results, always state:
+- 时间拓扑 AFT 专家为 GNN reference 提供了独立信息；
+- 在两个预先定义 split 上均提高 C-index 并降低校准 Cox loss；
+- 图结构扰动会损害旧 GNN reference，说明图分支不是纯装饰；
+- 网页已连接当前研究模型，而不是手工规则打分器。
 
-汇报结果时应始终说明：
+当前证据不支持：
 
-- dataset version
-- split seed
-- model family
-- whether the score is single-run, repeated-run mean, or ensemble
-- whether the data are synthetic / expanded
-
----
-
-## What This Platform Can and Cannot Claim | 平台当前能支持与不能支持的主张
-
-### Supported claims | 当前可支持的主张
-
-- the project has a stable `GNN + Cox` mainline
-- the mainline is competitive with strong tabular survival baselines on the current synthetic benchmark
-- the graph branch contributes meaningful information under perturbation tests
-- the web demo is now connected to the research model rather than a toy scorer
-
-### Unsupported claims | 当前不能支持的主张
-
-- direct clinical deployment
-- prescribing decisions without clinician oversight
-- external generalization to real cohorts not represented in this repository
-- strong translational claims from `topology_v6` synthetic data alone
-
----
-
-## Key Files to Read Next | 建议继续阅读的关键文件
-
-If you are new to this repository, read in this order:
-
-如果你刚接手仓库，建议按这个顺序阅读：
-
-1. `README.md`
-2. `CURRENT_MAINLINE.md`
-3. `research/TASK_DEFINITION.md`
-4. `research_config_v2.yaml`
-5. `research/train_v2.py`
-6. `research/model_v2.py`
-7. `src/research_model_bridge.py`
-
----
-
-## Final Notes | 最后说明
-
-This repository intentionally keeps historical branches, abandoned routes, and archived outputs because the project has gone through multiple rounds of trial and rollback. Those files are useful as history, but they are not the mainline.
-
-本仓库保留了历史分支、废弃路线和归档输出，因为项目经历过多轮试错与回退。这些内容对追溯历史有价值，但它们不是当前主线。
-
-If you only need the current defensible path, use this rule:
-
-如果你只关心当前最可辩护的路径，可以记住这条规则：
-
-> Web entry: `enhanced_app.py`  
-> Research mainline: `research_config_v2.yaml` + `research/*_v2.py`  
-> Default modeling claim: conservative `GNN + Cox`  
-> Best inference setup: `5-seed ensemble`
-
-Clinical disclaimer:
-
-临床免责声明：
-
-This repository is a research and demonstration platform. It is not a validated clinical decision system. Any medically meaningful conclusion requires real cohort design, external validation, and clinician review.
-
-本仓库是研究与演示平台，不是经过验证的临床决策系统。任何具有医学意义的结论都必须依赖真实队列设计、外部验证与临床审核。
+- 将 `0.757056` 直接称为网页部署模型的临床 C-index；
+- 将 inferred edge weights 或 function scores 称为实测生物标志物；
+- 从 synthetic/noisy augmented 数据推导临床诊断、处方或外部泛化结论；
+- 在缺少真实独立队列和外部验证时宣称可用于临床决策。
 
 ## Funding Support | 基金支持
 
-This research was supported by the Undergraduate Talented Innovation Education Program of Shenyang Pharmaceutical University, with the project number XH2025-06. We would like to express our gratitude.
+This research was supported by the Undergraduate Talented Innovation Education Program of Shenyang Pharmaceutical University, project XH2025-06.
 
-本研究受到沈阳药科大学本科生拔尖创新人才培养计划支持，项目编号XH2025-06，特此感谢。
+本研究受沈阳药科大学本科生拔尖创新人才培养计划支持，项目编号 XH2025-06。
+
+## Clinical Disclaimer | 临床声明
+
+This repository is a research and demonstration platform, not a validated clinical decision system. Medically meaningful conclusions require real-cohort design, external validation, and clinician review.
+
+本仓库仅用于研究与演示，不是经过临床验证的决策系统。任何医学结论都需要真实队列、外部验证和临床审核。
