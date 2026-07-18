@@ -15,7 +15,7 @@
 | `legacy_models_and_configs/` | Coupled legacy model/config snapshots | Archived |
 | `legacy_trainers/` | Trainers and repeat/structure-test runners for old variants | Archived |
 | `legacy_research_scripts/` | Superseded experiment scripts grouped by prior research route | Archived |
-| `legacy_configs/` | Older edge-aware, small-sample, and structure-aware configs | Archived |
+| `legacy_configs/` | Older edge-aware, small-sample, structure-aware, and prototype pharmacy-rule configs | Archived |
 | `legacy_scripts/` | Previous app and batch entrypoints | Archived |
 | `legacy_tools/` | Old tuning utilities | Archived |
 | `legacy_examples/` | Previous request and API examples | Archived |
@@ -26,6 +26,8 @@
 The active release is documented in the root `CURRENT_MAINLINE.md`. The default web bridge is `src/temporal_topology_bridge.py`.
 
 The root `ctm_fusion_experiment/` directory is intentionally not moved here because several reproducibility scripts still import it. It remains a historical research dependency, not the production web backend.
+
+The former `data/microbe_drug_rules.json` is retained as `legacy_configs/microbe_drug_rules_prototype.json`. The active pharmacy rule base is `data/pharmacy_rules_v3.json`; versioned medication-label and limited-interaction data live under `data/pharmacy_knowledge/`.
 
 ## Compatibility Rules
 
