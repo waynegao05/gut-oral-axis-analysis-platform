@@ -73,6 +73,7 @@ class _TopologyEstimate:
     function_scores: dict[str, float]
     edge_weights: dict[tuple[str, str], float]
     out_of_training_range: list[str]
+    out_of_training_range_details: list[dict[str, float | str]]
 
 
 class _TopologyInferenceModel:
@@ -168,9 +169,16 @@ class _TopologyInferenceModel:
 
         tolerance = 1e-9
         outside = (row < self.input_minimums - tolerance) | (row > self.input_maximums + tolerance)
-        out_of_range = [
-            self.input_columns[index]
-            for index in np.flatnonzero(outside)
+        outside_indices = np.flatnonzero(outside)
+        out_of_range = [self.input_columns[index] for index in outside_indices]
+        out_of_range_details = [
+            {
+                "field": self.input_columns[index],
+                "value": float(row[index]),
+                "training_minimum": float(self.input_minimums[index]),
+                "training_maximum": float(self.input_maximums[index]),
+            }
+            for index in outside_indices
         ]
 
         function_values = np.asarray(self.function_model.predict(row.reshape(1, -1))[0], dtype=float)
@@ -188,6 +196,7 @@ class _TopologyInferenceModel:
                 for index, edge_pair in enumerate(self.edge_pairs)
             },
             out_of_training_range=out_of_range,
+            out_of_training_range_details=out_of_range_details,
         )
 
 
@@ -577,6 +586,7 @@ class TemporalTopologyModelBridge:
             },
             edge_weights={edge_pair: edge_weight for edge_pair in self.edge_pairs},
             out_of_training_range=[],
+            out_of_training_range_details=[],
         )
         clinical = {
             str(column): runtime.topology_model.default_for(str(column))
@@ -831,6 +841,7 @@ class TemporalTopologyModelBridge:
         estimates: dict[int, _TopologyEstimate] = {}
         defaulted_inputs: set[str] = set()
         out_of_range: set[str] = set()
+        out_of_range_details: dict[str, dict[str, Any]] = {}
 
         for split_seed, runtime in self.runtimes.items():
             resolved_clinical, resolved_metabolites, flat_values, defaulted = self._resolve_split_inputs(
@@ -863,6 +874,27 @@ class TemporalTopologyModelBridge:
             estimates[split_seed] = estimate
             defaulted_inputs.update(defaulted)
             out_of_range.update(estimate.out_of_training_range)
+            for detail in estimate.out_of_training_range_details:
+                field = str(detail["field"])
+                existing = out_of_range_details.get(field)
+                if existing is None:
+                    out_of_range_details[field] = {
+                        "field": field,
+                        "value": float(detail["value"]),
+                        "training_minimum": float(detail["training_minimum"]),
+                        "training_maximum": float(detail["training_maximum"]),
+                        "affected_split_seeds": [int(split_seed)],
+                    }
+                    continue
+                existing["training_minimum"] = max(
+                    float(existing["training_minimum"]),
+                    float(detail["training_minimum"]),
+                )
+                existing["training_maximum"] = min(
+                    float(existing["training_maximum"]),
+                    float(detail["training_maximum"]),
+                )
+                existing["affected_split_seeds"].append(int(split_seed))
 
         ordered_split_scores = [split_scores[int(seed)] for seed in TEMPORAL_TOPOLOGY_SPLIT_SEEDS]
         raw_risk = float(np.mean([row["selected_risk"] for row in ordered_split_scores]))
@@ -949,6 +981,18 @@ class TemporalTopologyModelBridge:
             ),
             "defaulted_inputs": sorted(defaulted_inputs),
             "out_of_training_range_inputs": sorted(out_of_range),
+            "out_of_training_range_details": [
+                {
+                    "field": field,
+                    "value": round(float(detail["value"]), 6),
+                    "training_minimum": round(float(detail["training_minimum"]), 6),
+                    "training_maximum": round(float(detail["training_maximum"]), 6),
+                    "affected_split_seeds": sorted(
+                        set(int(seed) for seed in detail["affected_split_seeds"])
+                    ),
+                }
+                for field, detail in sorted(out_of_range_details.items())
+            ],
             "supported_microbes": self.node_order,
             "supported_microbe_input": {
                 key: round(value, 6) for key, value in scaled_microbes.items()

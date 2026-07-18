@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import math
+import re
 from typing import Any, Dict, List, Tuple
 
 
@@ -19,6 +20,23 @@ METABOLITE_FIELDS: dict[str, str] = {
     "scfa": "短链脂肪酸（SCFA）",
     "tryptophan_metabolism": "色氨酸代谢",
 }
+METADATA_BINARY_FIELDS: dict[str, str] = {
+    "recent_antibiotics": "近期抗生素暴露",
+    "recent_probiotics": "近期益生菌暴露",
+    "renal_impairment": "肾功能异常",
+    "hepatic_impairment": "肝功能异常",
+    "pregnancy": "妊娠状态",
+}
+METADATA_LIST_FIELDS: dict[str, str] = {
+    "current_medications": "当前用药清单",
+    "drug_allergies": "药物过敏史",
+}
+MAX_METADATA_LIST_ITEMS = 100
+MAX_METADATA_TEXT_LENGTH = 500
+NEGATIVE_MEDICATION_QUANTITY = re.compile(
+    r"(?<![\w.])-\s*\d+(?:\.\d+)?\s*(?:mcg|μg|ug|mg|g|ml|iu|units?)\b",
+    flags=re.IGNORECASE,
+)
 
 
 def _finite_number(value: Any, field_path: str, errors: List[str]) -> float | None:
@@ -103,6 +121,41 @@ def _validate_metabolites(metabolites: Dict[str, Any], errors: List[str]) -> Non
             )
 
 
+def _validate_metadata(metadata: Dict[str, Any], errors: List[str]) -> None:
+    for field, label in METADATA_BINARY_FIELDS.items():
+        if field not in metadata:
+            continue
+        field_path = f"metadata.{field}"
+        number = _finite_number(metadata[field], field_path, errors)
+        if number is not None and number not in {0.0, 1.0}:
+            errors.append(f"{field_path}（{label}）只能是 0 或 1，当前值为 {number:g}。")
+
+    for field, label in METADATA_LIST_FIELDS.items():
+        if field not in metadata:
+            continue
+        field_path = f"metadata.{field}"
+        values = metadata[field]
+        if not isinstance(values, list):
+            errors.append(f"{field_path}（{label}）必须是字符串列表。")
+            continue
+        if len(values) > MAX_METADATA_LIST_ITEMS:
+            errors.append(
+                f"{field_path}（{label}）最多允许 {MAX_METADATA_LIST_ITEMS} 项。"
+            )
+        for index, value in enumerate(values):
+            if not isinstance(value, str) or not value.strip():
+                errors.append(f"{field_path}[{index}] 必须是非空文本。")
+                continue
+            if len(value) > MAX_METADATA_TEXT_LENGTH:
+                errors.append(
+                    f"{field_path}[{index}] 最多允许 {MAX_METADATA_TEXT_LENGTH} 个字符。"
+                )
+            if field == "current_medications" and NEGATIVE_MEDICATION_QUANTITY.search(value):
+                errors.append(
+                    f"{field_path}[{index}] 含有负数剂量或规格，当前值为 {value!r}。"
+                )
+
+
 def validate_payload(payload: Dict[str, Any]) -> Tuple[bool, List[str]]:
     errors: List[str] = []
     if not isinstance(payload, dict):
@@ -117,6 +170,7 @@ def validate_payload(payload: Dict[str, Any]) -> Tuple[bool, List[str]]:
     microbes = payload.get("microbes")
     clinical = payload.get("clinical")
     metabolites = payload.get("metabolites")
+    metadata = payload.get("metadata")
 
     if isinstance(microbes, dict):
         _validate_microbes(microbes, errors)
@@ -124,5 +178,9 @@ def validate_payload(payload: Dict[str, Any]) -> Tuple[bool, List[str]]:
         _validate_clinical(clinical, errors)
     if isinstance(metabolites, dict):
         _validate_metabolites(metabolites, errors)
+    if metadata is not None and not isinstance(metadata, dict):
+        errors.append("字段 metadata 必须是 JSON 对象。")
+    elif isinstance(metadata, dict):
+        _validate_metadata(metadata, errors)
 
     return len(errors) == 0, errors

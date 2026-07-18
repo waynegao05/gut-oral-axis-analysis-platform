@@ -8,6 +8,7 @@ def build_report(
     gnn_features: Dict[str, object],
     risk_result: Dict[str, object],
     recommendations: List[Dict[str, object]],
+    pharmacy_assessment: Dict[str, object] | None = None,
 ) -> Dict[str, object]:
     ranked_microbes = sorted(microbes.items(), key=lambda x: x[1], reverse=True)
     return {
@@ -15,4 +16,5 @@ def build_report(
         "gnn_features": gnn_features,
         "risk_result": risk_result,
         "recommendations": recommendations,
+        "pharmacy_assessment": pharmacy_assessment or {},
     }

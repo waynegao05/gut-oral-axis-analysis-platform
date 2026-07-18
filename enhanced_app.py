@@ -89,6 +89,7 @@ def analyze():
             "report": report,
             "risk_result": report.get("risk_result", {}),
             "recommendations": report.get("recommendations", []),
+            "pharmacy_assessment": report.get("pharmacy_assessment", {}),
             "top_microbes": report.get("top_microbes", []),
             "saved_to": output_path,
         }

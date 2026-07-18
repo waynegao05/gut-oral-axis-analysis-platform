@@ -1,18 +1,13 @@
 from __future__ import annotations
 
-import json
-from pathlib import Path
 from typing import Dict, List
 
-
-RULE_PATH = Path(__file__).resolve().parents[1] / "data" / "microbe_drug_rules.json"
+from src.pharmacy_engine import build_pharmacy_assessment, load_pharmacy_knowledge_base
 
 
 def load_rules() -> List[Dict[str, object]]:
-    if not RULE_PATH.exists():
-        return []
-    payload = json.loads(RULE_PATH.read_text(encoding="utf-8"))
-    return payload.get("rules", [])
+    """Return v2 marker rules for compatibility with earlier callers."""
+    return [dict(rule) for rule in load_pharmacy_knowledge_base()["marker_rules"]]
 
 
 def generate_recommendations(
@@ -20,33 +15,21 @@ def generate_recommendations(
     risk_score: float,
     risk_level: str,
 ) -> List[Dict[str, object]]:
-    recommendations: List[Dict[str, object]] = []
-    for rule in load_rules():
-        marker = str(rule.get("marker", ""))
-        direction = str(rule.get("direction", "increase"))
-        abundance = float(microbes.get(marker, 0.0))
-        triggered = abundance > 0.1 if direction == "increase" else abundance < 0.03
-        if triggered:
-            priority = float(rule.get("priority", 0.5)) + (0.2 if risk_level == "high" else 0.0)
-            recommendations.append(
-                {
-                    "marker": marker,
-                    "abundance": round(abundance, 4),
-                    "priority": round(priority, 4),
-                    "suggestion": rule.get("suggestion"),
-                    "rationale": rule.get("rationale"),
-                }
-            )
+    """Compatibility wrapper around the unified pharmacy-assistance engine.
 
-    recommendations.sort(key=lambda x: x["priority"], reverse=True)
-    if not recommendations:
-        recommendations.append(
-            {
-                "marker": "general",
-                "abundance": 0.0,
-                "priority": 0.3,
-                "suggestion": "Maintain routine follow-up and continue longitudinal microbiome monitoring.",
-                "rationale": f"No strong prototype rule was triggered; current risk level is {risk_level}.",
-            }
-        )
-    return recommendations
+    Without model calibration and reliability metadata, marker-driven rules are
+    intentionally withheld. The returned cards remain safe for older callers.
+    """
+    assessment = build_pharmacy_assessment(
+        submitted_microbes=microbes,
+        clinical={},
+        risk_result={
+            "risk_score": risk_score,
+            "risk_percentile": risk_score,
+            "risk_level": risk_level,
+            "prediction_reliability": "unknown",
+        },
+        model_features={},
+        metadata={},
+    )
+    return list(assessment["recommendations"])

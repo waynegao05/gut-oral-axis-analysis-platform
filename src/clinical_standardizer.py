@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import math
+import re
 from typing import Any, Dict
 
 
@@ -8,6 +9,20 @@ SMOKING_TRUE = {"yes", "true", "1", "current", "former", "ever"}
 FAMILY_HISTORY_TRUE = {"yes", "true", "1", "positive"}
 SMOKING_FALSE = {"no", "false", "0", "never"}
 FAMILY_HISTORY_FALSE = {"no", "false", "0", "negative"}
+GENERAL_TRUE = {"yes", "true", "1", "positive", "present"}
+GENERAL_FALSE = {"no", "false", "0", "negative", "absent"}
+EXPLICIT_NONE_VALUES = {
+    "无",
+    "没有",
+    "否认",
+    "none",
+    "no",
+    "nil",
+    "n/a",
+    "na",
+    "no known allergies",
+    "no current medications",
+}
 
 
 def _to_float(value: Any, *, field_name: str, required: bool = False) -> float | None:
@@ -91,12 +106,42 @@ def _set_optional_binary(
     target[key] = _to_binary(value, truthy, falsy, field_name=field_name)
 
 
+def _to_string_list(value: Any, *, field_name: str) -> list[str]:
+    if value is None:
+        return []
+    if isinstance(value, str):
+        values = re.split(r"[,，;；\n]", value)
+    elif isinstance(value, (list, tuple)):
+        values = list(value)
+    else:
+        raise ValueError(f"{field_name} 必须是字符串列表或逗号分隔文本。")
+
+    result: list[str] = []
+    for index, item in enumerate(values):
+        if isinstance(item, (dict, list, tuple)):
+            raise ValueError(f"{field_name}[{index}] 必须是文本。")
+        text = str(item).strip()
+        if text and text.lower() not in EXPLICIT_NONE_VALUES:
+            result.append(text)
+    return result
+
+
+def _object_section(payload: Dict[str, Any], key: str) -> Dict[str, Any]:
+    value = payload.get(key, {})
+    if value is None:
+        return {}
+    if not isinstance(value, dict):
+        raise ValueError(f"{key} 必须是 JSON 对象。")
+    return value
+
+
 def standardize_raw_payload(payload: Dict[str, Any]) -> Dict[str, Any]:
-    demographics = payload.get("demographics", {})
-    history = payload.get("history", {})
-    oral_microbiome = payload.get("oral_microbiome", {})
-    metabolites_raw = payload.get("metabolites", {})
-    context = payload.get("clinical_context", {})
+    demographics = _object_section(payload, "demographics")
+    history = _object_section(payload, "history")
+    oral_microbiome = _object_section(payload, "oral_microbiome")
+    metabolites_raw = _object_section(payload, "metabolites")
+    context = _object_section(payload, "clinical_context")
+    medication_context = _object_section(payload, "medication_context")
 
     microbes = _normalize_microbe_payload(oral_microbiome.get("taxa", oral_microbiome))
 
@@ -135,24 +180,47 @@ def standardize_raw_payload(payload: Dict[str, Any]) -> Dict[str, Any]:
         "metabolites.tryptophan_metabolism",
     )
 
-    metadata = {
+    metadata: Dict[str, Any] = {
         "sample_id": str(payload.get("sample_id", context.get("sample_id", "unknown"))),
         "sex": demographics.get("sex", "unknown"),
         "chief_complaint": context.get("chief_complaint", ""),
         "suspected_condition": context.get("suspected_condition", "gut_risk_screening"),
-        "recent_antibiotics": _to_binary(
-            history.get("recent_antibiotics", "no"),
-            SMOKING_TRUE,
-            SMOKING_FALSE,
-            field_name="history.recent_antibiotics",
+    }
+
+    list_fields = {
+        "current_medications": medication_context.get(
+            "current_medications", history.get("current_medications")
         ),
-        "recent_probiotics": _to_binary(
-            history.get("recent_probiotics", "no"),
-            SMOKING_TRUE,
-            SMOKING_FALSE,
-            field_name="history.recent_probiotics",
+        "drug_allergies": medication_context.get(
+            "drug_allergies", history.get("drug_allergies")
         ),
     }
+    for field, value in list_fields.items():
+        if value is not None:
+            metadata[field] = _to_string_list(
+                value,
+                field_name=f"medication_context.{field}",
+            )
+
+    binary_fields = {
+        "recent_antibiotics": history.get("recent_antibiotics"),
+        "recent_probiotics": history.get("recent_probiotics"),
+        "renal_impairment": medication_context.get(
+            "renal_impairment", history.get("renal_impairment")
+        ),
+        "hepatic_impairment": medication_context.get(
+            "hepatic_impairment", history.get("hepatic_impairment")
+        ),
+        "pregnancy": medication_context.get("pregnancy", demographics.get("pregnancy")),
+    }
+    for field, value in binary_fields.items():
+        if value is not None and value != "":
+            metadata[field] = _to_binary(
+                value,
+                GENERAL_TRUE,
+                GENERAL_FALSE,
+                field_name=f"medication_context.{field}",
+            )
 
     return {
         "microbes": microbes,
