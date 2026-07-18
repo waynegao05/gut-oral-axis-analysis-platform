@@ -13,6 +13,7 @@
 | Model seeds | `7`, `21`, `42`, `123`, `2026` |
 | Members | 6 GNN models + 10 AFT models |
 | Consensus | validation-selected shared `alpha = 0.63` |
+| Pharmacy layer | `pharmacy_assistance_v3` |
 | Primary metric | C-index |
 | Dataset | `topology_v6` synthetic/noisy augmented research data |
 
@@ -64,6 +65,15 @@ python enhanced_app.py
     "bile_acids": 0.74,
     "scfa": 0.35,
     "tryptophan_metabolism": 0.68
+  },
+  "metadata": {
+    "current_medications": [],
+    "drug_allergies": [],
+    "recent_antibiotics": 0,
+    "recent_probiotics": 0,
+    "renal_impairment": 0,
+    "hepatic_impairment": 0,
+    "pregnancy": 0
   }
 }
 ```
@@ -74,17 +84,20 @@ python enhanced_app.py
 - `age` 必须位于 `[1, 120]`
 - `bmi` 必须位于 `[5, 100]`
 - `smoking` 与 `family_history` 只能为 `0` 或 `1`
+- 药学背景的状态字段只能为 `0` 或 `1`，用药和过敏史必须为字符串列表
+- 未知药学背景应省略；明确无用药或无过敏时提交空列表
 - `NaN`、`Infinity`、负丰度和非数字字符串会被拒绝
 
 ## Model Architecture | 模型结构
 
-当前推理链由五个步骤组成：
+当前推理链由六个步骤组成：
 
 1. **Canonical validation**：校验并规范化菌群、临床变量和代谢物。
 2. **Topology inference**：每个 split 使用仅在其训练集 `2160` 个样本上拟合的标准化 Ridge 模型，从 12 个网页可用输入推断 5 个 function scores 和 10 条具名边权。
 3. **Structure-aware GNN**：每个 split 使用 3 个已选 GNN 风险成员，保留节点与边身份信息。
 4. **Temporal-topology AFT expert**：每个 split 使用 5 个 XGBoost AFT 种子模型，直接学习右删失生存时间结构。
 5. **Cross-split consensus**：先将标准化 GNN 风险与 AFT 风险按 `0.37 / 0.63` 融合，再平均 split 42 与 43 的结果。
+6. **Pharmacy assistance v3**：标准化用药名称，检索产品说明书，筛查最小高危相互作用子集，并结合模型可靠性、用药背景和指南生成只供临床复核的结构化卡片。
 
 网页输入无法直接测得真实边权或功能分数，因此网页端使用的是 **inferred topology**，不是实验室实测拓扑。响应中会明确返回：
 
@@ -94,6 +107,28 @@ python enhanced_app.py
 - 默认填充值、训练范围外输入与 split disagreement
 
 GNN 结构归一化原本会依赖同一批次中的其他样本。网页部署改用每个 split 固定的中位数校准 anchor，使单个受试者的分数不受并发请求内容影响。正式离线复跑仍使用保存的 8 样本评估上下文，两种上下文不能混为同一验证协议。
+
+## Pharmacy Assistance v3 | 药学辅助决策层
+
+正式网页和 `clinical_workflow.py` 现在共用 `src/pharmacy_engine.py`，不再各自维护薄弱的硬编码建议。该层提供：
+
+- `standard / limited / withheld` 三级质量门控；
+- 缺失菌不按零处理，完整五菌面板才允许菌群阈值复核；
+- 当前用药、药物过敏、近期抗生素/益生菌、肝肾功能和妊娠背景校验；
+- 46 个首批药物的 RxNorm 标准化与产品特异性 openFDA / DailyMed 标签证据；
+- 2012 ONC 最小高危相互作用集中的 14 组可执行筛查，并显式保留 1 组 QT 规则缺口；
+- 精确成分过敏命中，以及 AGA 特定适应证下的菌株级益生菌候选；
+- 面向网页首屏的通俗行动摘要，并把建议分成“现在先做什么”和“后续核对”；
+- 每条建议明确列出下一步准备材料、联系对象和不能自行执行的用药动作；
+- 每条卡片的触发值、阈值、理由、证据等级和来源链接；
+- 知识库版本、复核日期和 SHA-256 摘要；
+- 明确禁止根据输出自动启停药、换药或调剂量；菌株候选也必须由临床人员核对适应证、产品、剂量和疗程。
+
+`interaction_screening_performed` 只表示是否完成最小高危子集的成对筛查；`comprehensive_interaction_screening_performed` 仍为 `false`。说明书中的用法用量可以作为证据展示，但 `patient_specific_dose_selected` 与 `treatment_duration_selected` 固定为 `false`。完整字段契约和边界见 `PHARMACY_ASSISTANCE.md`。
+
+网页默认只展示通俗行动和原因；规则编号、证据等级、RxCUI、SPL SET ID、模型指标与完整 JSON 收入折叠的研究/审计详情，不占据主要阅读区域。
+
+药学背景可以省略，但只有七项均明确提供且模型可靠性通过时，状态才可能为 `standard`；缺失信息会降级为 `limited`，旧后端等无法提供可验证可靠性状态的场景会暂缓菌群阈值卡片。
 
 ## Formal Evidence | 正式证据
 
@@ -169,7 +204,10 @@ config/                               网页运行配置与发布指标
 ctm_fusion_experiment/                历史 CTM 实验依赖，不是当前网页主线
 experiments/temporal_independent_v3/  当前时间拓扑 AFT 实验与共识工具
 research/                             GNN、Cox、基线与正式研究流水线
-src/                                  网页预处理、推理桥接、报告与建议
+data/pharmacy_rules_v3.json           当前版本化药学规则与证据登记表
+data/pharmacy_knowledge/              RxNorm/FDA 标签、有限 DDI 与益生菌指南数据
+research/build_drug_knowledge_v1.py   官方药品数据重建工具
+src/                                  网页预处理、推理桥接、报告与药学辅助引擎
 static/                               前端静态资源
 templates/                            Flask 页面
 tests/                                单元与接口测试
@@ -188,6 +226,7 @@ CURRENT_MAINLINE.md                   当前主线速查
 - `split_consensus_risks`, `split_disagreement`, `prediction_reliability`
 - `backend`, `model_release`, `ensemble_size`
 - inferred topology、输入范围提示、建议与结构化报告
+- `pharmacy_assessment`：质量状态、用药背景、建议摘要、证据和禁止操作
 
 完整响应示例见 `API_RESPONSE_EXAMPLE.md`。
 
@@ -215,11 +254,12 @@ CURRENT_MAINLINE.md                   当前主线速查
 - 将 `0.757056` 直接称为网页部署模型的临床 C-index；
 - 将 inferred edge weights 或 function scores 称为实测生物标志物；
 - 从 synthetic/noisy augmented 数据推导临床诊断、处方或外部泛化结论；
+- 将药学辅助卡片解释为已完成药物相互作用、剂量或禁忌证审核；
 - 在缺少真实独立队列和外部验证时宣称可用于临床决策。
 
 ## License | 许可证
 
-本项目采用 Apache License 2.0 许可证。具体条款请参阅 [LICENSE](LICENSE) 文件。
+本项目采用 Apache License 2.0 许可证。具体条款请参阅 [LICENCE](LICENCE) 文件。
 
 ## Funding Support | 基金支持
 

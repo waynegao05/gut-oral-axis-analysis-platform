@@ -8,6 +8,7 @@
 - labels: `time`, `event`
 - primary metric: C-index
 - dataset: `topology_v6` synthetic/noisy augmented research data
+- pharmacy layer: `pharmacy_assistance_v3`
 
 ## Architecture
 
@@ -52,7 +53,15 @@ These values are labeled as inferred topology in every response. Fixed median ba
 - AFT fusion: `experiments/temporal_independent_v3/topology_aft_fusion.py`
 - five-seed runner: `experiments/temporal_independent_v3/seed_sweep.py`
 - split consensus: `experiments/temporal_independent_v3/cross_split_consensus.py`
+- pharmacy engine: `src/pharmacy_engine.py`
+- drug knowledge runtime: `src/drug_knowledge.py`
+- pharmacy knowledge base: `data/pharmacy_rules_v3.json`
+- medication label and limited DDI data: `data/pharmacy_knowledge/`
 - config: `research_config_v2.yaml`
+
+## Pharmacy Assistance
+
+The web and raw-clinical workflows share one versioned pharmacy-assistance engine. It gates marker interpretation, normalizes submitted medications with a local RxNorm snapshot, returns product-specific openFDA/DailyMed label evidence, screens 14 implementable rules from a 15-rule minimum high-priority DDI set, and can expose indication-gated probiotic strain options. It does not perform comprehensive interaction screening, patient-specific dose adjustment, prescribing, or clinical diagnosis. See `PHARMACY_ASSISTANCE.md` for the active contract and limitations.
 
 ## Required Local Artifacts
 
