@@ -44,3 +44,26 @@ def test_web_score_uses_inferred_topology_and_latest_release(bridge) -> None:
         runtime.topology_model.training_size == 2160
         for runtime in bridge.runtimes.values()
     )
+
+
+def test_web_score_reports_out_of_range_value_and_supported_range(bridge) -> None:
+    prediction = bridge.score(
+        {
+            "Fusobacterium": 0.18,
+            "Porphyromonas": 0.15,
+            "Prevotella": 0.10,
+            "Streptococcus": 0.09,
+            "Lactobacillus": 0.02,
+        },
+        {"age": 120.0, "bmi": 24.5, "smoking": 1.0, "family_history": 1.0},
+        {"bile_acids": 0.8, "scfa": 0.3, "tryptophan_metabolism": 0.7},
+    )
+
+    details = prediction.model_features["out_of_training_range_details"]
+    age_detail = next(detail for detail in details if detail["field"] == "age")
+
+    assert prediction.risk_result["prediction_reliability"] == "caution_out_of_training_range"
+    assert age_detail["value"] == 120.0
+    assert age_detail["training_minimum"] < age_detail["training_maximum"]
+    assert age_detail["training_maximum"] < age_detail["value"]
+    assert age_detail["affected_split_seeds"] == [42, 43]

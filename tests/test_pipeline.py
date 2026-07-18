@@ -89,8 +89,14 @@ def test_pipeline_output_keys():
     assert "gnn_features" in report
     assert "risk_result" in report
     assert "recommendations" in report
+    assert "pharmacy_assessment" in report
     assert report["risk_result"]["backend"] == "temporal_topology_aft_cross_split_consensus"
     assert report["gnn_features"]["topology_source"] == "inferred_from_web_inputs"
+    assert report["pharmacy_assessment"]["engine_version"] == "pharmacy_assistance_v3"
+    assert all(
+        recommendation["recommendation_id"] != "lactobacillus_lower_quartile_review"
+        for recommendation in report["recommendations"]
+    )
 
 
 def test_archived_legacy_cox_bridge_remains_importable():
