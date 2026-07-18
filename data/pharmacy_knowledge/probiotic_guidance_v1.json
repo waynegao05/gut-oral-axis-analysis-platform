@@ -1,0 +1,73 @@
+{
+  "schema_version": "1.0",
+  "dataset_id": "aga_probiotic_guidance_guarded_v1",
+  "last_reviewed": "2026-07-18",
+  "source": {
+    "source_id": "AGA_PROBIOTICS_2020",
+    "organization": "American Gastroenterological Association",
+    "title": "Role of probiotics in the management of gastrointestinal disorders",
+    "published_date": "2020-06-09",
+    "doi": "10.1053/j.gastro.2020.05.059",
+    "url": "https://gastro.org/clinical-guidance/role-of-probiotics-in-the-management-of-gastrointestinal-disorders/"
+  },
+  "safety_contract": {
+    "microbiome_marker_alone_is_an_indication": false,
+    "products_are_interchangeable": false,
+    "patient_specific_dose_selected": false,
+    "treatment_duration_selected": false,
+    "allows_automatic_start_or_stop": false
+  },
+  "rules": [
+    {
+      "rule_id": "aga_antibiotic_cdi_prevention_options",
+      "condition_codes": ["antibiotic_c_difficile_prevention", "c_difficile_prevention_during_antibiotics"],
+      "requires_recent_antibiotics": true,
+      "stance": "conditional_guideline_options",
+      "evidence_scope_zh": "仅限正在接受抗生素治疗时预防艰难梭菌感染的指南情境，不适用于治疗已发生的感染，也不由菌群丰度单独触发。",
+      "candidates": [
+        {"candidate_id": "s_boulardii", "strains": ["Saccharomyces boulardii"]},
+        {"candidate_id": "la_cl1285_lc_lbc80r", "strains": ["Lactobacillus acidophilus CL1285", "Lacticaseibacillus casei LBC80R"]},
+        {"candidate_id": "aga_three_strain_cdi_prevention", "strains": ["Lactobacillus acidophilus", "Lactobacillus delbrueckii subsp. bulgaricus", "Bifidobacterium bifidum"]},
+        {"candidate_id": "aga_four_strain_cdi_prevention", "strains": ["Lactobacillus acidophilus", "Lactobacillus delbrueckii subsp. bulgaricus", "Bifidobacterium bifidum", "Streptococcus salivarius subsp. thermophilus"]}
+      ]
+    },
+    {
+      "rule_id": "aga_pouchitis_options",
+      "condition_codes": ["pouchitis"],
+      "requires_recent_antibiotics": false,
+      "stance": "conditional_guideline_option",
+      "evidence_scope_zh": "仅限经临床确认的储袋炎管理情境；产品必须核对到具体菌株组合，不能用任意多菌产品替代。",
+      "candidates": [
+        {
+          "candidate_id": "aga_eight_strain_pouchitis",
+          "strains": [
+            "Lacticaseibacillus paracasei subsp. paracasei",
+            "Lactiplantibacillus plantarum",
+            "Lactobacillus acidophilus",
+            "Lactobacillus delbrueckii subsp. bulgaricus",
+            "Bifidobacterium longum subsp. longum",
+            "Bifidobacterium breve",
+            "Bifidobacterium longum subsp. infantis",
+            "Streptococcus salivarius subsp. thermophilus"
+          ]
+        }
+      ]
+    },
+    {
+      "rule_id": "aga_trial_only_conditions",
+      "condition_codes": ["c_difficile_infection", "crohns_disease", "ulcerative_colitis", "irritable_bowel_syndrome", "ibs"],
+      "requires_recent_antibiotics": false,
+      "stance": "clinical_trial_only",
+      "evidence_scope_zh": "AGA 指南在该情境下仅支持临床试验内使用，系统不生成常规益生菌候选。",
+      "candidates": []
+    },
+    {
+      "rule_id": "aga_against_pediatric_infectious_gastroenteritis",
+      "condition_codes": ["pediatric_acute_infectious_gastroenteritis"],
+      "requires_recent_antibiotics": false,
+      "stance": "suggest_against",
+      "evidence_scope_zh": "AGA 指南建议儿童急性感染性胃肠炎不常规使用益生菌。",
+      "candidates": []
+    }
+  ]
+}

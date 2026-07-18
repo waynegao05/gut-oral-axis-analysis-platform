@@ -1,0 +1,180 @@
+{
+  "schema_version": "3.0",
+  "engine_version": "pharmacy_assistance_v3",
+  "last_reviewed": "2026-07-18",
+  "intended_use": "Research-oriented clinician and pharmacist decision support with medication-name normalization, product-specific label evidence, a limited high-priority interaction subset, and guarded probiotic guideline options. The engine does not diagnose disease, select a patient-specific drug, dose, or duration, or authorize a medication change.",
+  "calibration": {
+    "dataset": "topology_v6",
+    "dataset_scope": "synthetic_noisy_augmented_research_data",
+    "value_scale": "five_marker_panel_composition",
+    "sample_count": 3600,
+    "quantile_method": "empirical reference-cohort within-panel composition",
+    "quantile_interpolation": "linear",
+    "normalization": "marker abundance divided by the sum of the five required marker abundances",
+    "source_table": "data/research/topology_v6_sample_graph_table.csv",
+    "required_marker_panel": [
+      "Fusobacterium",
+      "Porphyromonas",
+      "Prevotella",
+      "Streptococcus",
+      "Lactobacillus"
+    ]
+  },
+  "marker_rules": [
+    {
+      "rule_id": "fusobacterium_upper_quartile_review",
+      "marker": "Fusobacterium",
+      "operator": "gt",
+      "threshold": 0.268132,
+      "threshold_quantile": "q75",
+      "category": "marker_review",
+      "title": "Fusobacterium 偏高，建议重点核对肠道症状与筛查记录",
+      "suggestion": "记录近期消化道症状、既往肠道检查和家族史，并交给消化专科核对是否需要进一步评估。",
+      "rationale": "该菌在五项指标中的比例高于研究队列常见范围，但单独偏高不能证明感染、肿瘤或需要用药。",
+      "action_steps": [
+        "记录近期消化道症状、体重变化和症状开始时间。",
+        "准备既往肠道检查结果、结直肠癌筛查记录和家族史。",
+        "把资料交给消化专科判断是否需要进一步评估；不要只凭该菌结果自行使用抗生素或抗炎药。"
+      ],
+      "base_priority": 0.78,
+      "urgency": "priority",
+      "action_type": "clinician_review_only",
+      "evidence_level": "internal_exploratory",
+      "evidence_source_ids": ["INTERNAL_TOPOLOGY_V6", "FDA_CDS_2026", "USPSTF_CRC_2021"]
+    },
+    {
+      "rule_id": "porphyromonas_upper_quartile_review",
+      "marker": "Porphyromonas",
+      "operator": "gt",
+      "threshold": 0.25246,
+      "threshold_quantile": "q75",
+      "category": "marker_review",
+      "title": "Porphyromonas 偏高，先核对口腔情况和采样背景",
+      "suggestion": "记录牙龈出血、牙周问题、近期口腔治疗和抗生素使用，再判断是否需要口腔科复核。",
+      "rationale": "该菌在五项指标中的比例高于研究队列常见范围，但这不能单独证明感染，也不能直接支持抗菌治疗。",
+      "action_steps": [
+        "记录是否有牙龈出血、牙龈肿痛、牙周病或近期口腔治疗。",
+        "核对采样日期附近是否使用过抗生素、漱口水或益生菌。",
+        "如有持续口腔症状，把结果交给口腔科或牙周专科复核；不要自行使用抗生素。"
+      ],
+      "base_priority": 0.72,
+      "urgency": "routine",
+      "action_type": "clinician_review_only",
+      "evidence_level": "internal_exploratory",
+      "evidence_source_ids": ["INTERNAL_TOPOLOGY_V6", "FDA_CDS_2026", "CDC_ANTIBIOTIC_STEWARDSHIP_2025"]
+    },
+    {
+      "rule_id": "lactobacillus_lower_quartile_review",
+      "marker": "Lactobacillus",
+      "operator": "lt",
+      "threshold": 0.103096,
+      "threshold_quantile": "q25",
+      "category": "microecology_review",
+      "title": "Lactobacillus 偏低，不等于需要补益生菌",
+      "suggestion": "先核对近期抗生素、益生菌、采样情况和完整菌群面板；只有明确临床用途时才讨论具体菌株。",
+      "rationale": "该菌在五项指标中的比例低于研究队列常见范围，但低比例本身不是“缺乏益生菌”，也不是补充指征。",
+      "action_steps": [
+        "核对采样前后是否使用过抗生素、益生菌或明显改变饮食。",
+        "确认样本质量和其他菌群指标，不要只看这一项。",
+        "如有明确疾病或治疗目的，再由临床人员按指南核对具体菌株、产品、剂量和疗程。"
+      ],
+      "base_priority": 0.68,
+      "urgency": "routine",
+      "action_type": "clinician_review_only",
+      "evidence_level": "guideline_caution_plus_internal_exploratory",
+      "evidence_source_ids": ["INTERNAL_TOPOLOGY_V6", "AGA_PROBIOTICS_2020", "FDA_CDS_2026"]
+    }
+  ],
+  "evidence_sources": [
+    {
+      "source_id": "INTERNAL_TOPOLOGY_V6",
+      "organization": "Gut-Oral Axis Analysis Platform",
+      "title": "topology_v6 internal abundance calibration",
+      "year": 2026,
+      "source_type": "internal_synthetic_research_dataset",
+      "url": null,
+      "scope_note": "Synthetic/noisy augmented data for method development; not a clinical threshold source."
+    },
+    {
+      "source_id": "FDA_CDS_2026",
+      "organization": "U.S. Food and Drug Administration",
+      "title": "Clinical Decision Support Software: Guidance for Industry and FDA Staff",
+      "year": 2026,
+      "source_type": "regulatory_guidance",
+      "url": "https://www.fda.gov/regulatory-information/search-fda-guidance-documents/clinical-decision-support-software",
+      "scope_note": "Supports transparent inputs, logic, validation boundaries, and independent clinician review of recommendation basis."
+    },
+    {
+      "source_id": "CDC_ANTIBIOTIC_STEWARDSHIP_2025",
+      "organization": "U.S. Centers for Disease Control and Prevention",
+      "title": "Core Elements of Antibiotic Stewardship",
+      "year": 2025,
+      "source_type": "public_health_guidance",
+      "url": "https://www.cdc.gov/antibiotic-use/hcp/core-elements/",
+      "scope_note": "Supports avoiding unsupported antimicrobial action and documenting indication, exposure, and review."
+    },
+    {
+      "source_id": "AGA_PROBIOTICS_2020",
+      "organization": "American Gastroenterological Association",
+      "title": "Role of probiotics in the management of gastrointestinal disorders",
+      "year": 2020,
+      "source_type": "clinical_guideline",
+      "url": "https://gastro.org/clinical-guidance/role-of-probiotics-in-the-management-of-gastrointestinal-disorders/",
+      "scope_note": "Probiotic recommendations are condition-, strain-, and combination-specific; evidence is insufficient for many digestive conditions."
+    },
+    {
+      "source_id": "USPSTF_CRC_2021",
+      "organization": "U.S. Preventive Services Task Force",
+      "title": "Colorectal Cancer: Screening",
+      "year": 2021,
+      "source_type": "preventive_guideline",
+      "url": "https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/colorectal-cancer-screening",
+      "scope_note": "Provides age-based screening context; microbial model output is not itself a screening indication."
+    },
+    {
+      "source_id": "WHO_MEDICATION_RECONCILIATION",
+      "organization": "World Health Organization",
+      "title": "The High 5s Project Medication Reconciliation Implementation Guide",
+      "year": 2014,
+      "source_type": "medication_safety_guidance",
+      "url": "https://www.who.int/docs/default-source/patient-safety/high5s/h5s-guide.pdf",
+      "scope_note": "Supports maintaining an accurate medication and allergy history before medication decisions."
+    },
+    {
+      "source_id": "RXNORM_API_CURRENT",
+      "organization": "U.S. National Library of Medicine",
+      "title": "RxNorm API",
+      "year": 2026,
+      "source_type": "medication_terminology_api",
+      "url": "https://lhncbc.nlm.nih.gov/RxNav/APIs/RxNormAPIs.html",
+      "scope_note": "Provides normalized U.S. medication concepts and RXCUIs; does not provide a current comprehensive interaction checker."
+    },
+    {
+      "source_id": "OPENFDA_LABEL_CURRENT",
+      "organization": "U.S. Food and Drug Administration",
+      "title": "openFDA Drug Product Labeling API",
+      "year": 2026,
+      "source_type": "regulatory_label_api_snapshot",
+      "url": "https://open.fda.gov/apis/drug/label/",
+      "scope_note": "Provides product-specific SPL label sections. A selected label may not represent every formulation, manufacturer, route, or current product."
+    },
+    {
+      "source_id": "DAILYMED_SPL_CURRENT",
+      "organization": "U.S. National Library of Medicine",
+      "title": "DailyMed Current Structured Product Label Repository",
+      "year": 2026,
+      "source_type": "regulatory_label_repository",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/app-support-web-services.cfm",
+      "scope_note": "Provides human-readable current SPL records linked by SET ID for independent review."
+    },
+    {
+      "source_id": "ONC_HIGH_PRIORITY_DDI_2012",
+      "organization": "Office of the National Coordinator expert panel",
+      "title": "High-priority drug-drug interactions for use in electronic health records",
+      "year": 2012,
+      "source_type": "expert_consensus_starter_set",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3422823/",
+      "scope_note": "A historical minimum set of 15 high-priority interaction classes; 14 are locally screenable and the set is not comprehensive or sufficient for a negative safety conclusion."
+    }
+  ]
+}

@@ -1,0 +1,141 @@
+{
+  "schema_version": "2.0",
+  "engine_version": "pharmacy_assistance_v2",
+  "last_reviewed": "2026-07-18",
+  "intended_use": "Research-oriented clinician and pharmacist decision support. The engine does not diagnose disease, select a drug, or authorize a medication change.",
+  "calibration": {
+    "dataset": "topology_v6",
+    "dataset_scope": "synthetic_noisy_augmented_research_data",
+    "value_scale": "five_marker_panel_composition",
+    "sample_count": 3600,
+    "quantile_method": "empirical reference-cohort within-panel composition",
+    "quantile_interpolation": "linear",
+    "normalization": "marker abundance divided by the sum of the five required marker abundances",
+    "source_table": "data/research/topology_v6_sample_graph_table.csv",
+    "required_marker_panel": [
+      "Fusobacterium",
+      "Porphyromonas",
+      "Prevotella",
+      "Streptococcus",
+      "Lactobacillus"
+    ]
+  },
+  "marker_rules": [
+    {
+      "rule_id": "fusobacterium_upper_quartile_review",
+      "marker": "Fusobacterium",
+      "operator": "gt",
+      "threshold": 0.268132,
+      "threshold_quantile": "q75",
+      "category": "marker_review",
+      "title": "Fusobacterium 高组成比例复核",
+      "suggestion": "结合症状、炎症指标、年龄、家族史和规范筛查状态，由消化专科或临床药师复核；不得仅依据该菌群结果启动抗炎药或抗菌药。",
+      "rationale": "该菌在五菌面板中的组成比例高于 topology_v6 研究队列的上四分位数，只能作为研究性风险解释，不能确定病因或药物适应证。",
+      "base_priority": 0.78,
+      "urgency": "priority",
+      "action_type": "clinician_review_only",
+      "evidence_level": "internal_exploratory",
+      "evidence_source_ids": [
+        "INTERNAL_TOPOLOGY_V6",
+        "FDA_CDS_2026",
+        "USPSTF_CRC_2021"
+      ]
+    },
+    {
+      "rule_id": "porphyromonas_upper_quartile_review",
+      "marker": "Porphyromonas",
+      "operator": "gt",
+      "threshold": 0.25246,
+      "threshold_quantile": "q75",
+      "category": "marker_review",
+      "title": "Porphyromonas 高组成比例复核",
+      "suggestion": "复核口腔炎症、近期抗菌药暴露和采样条件，并由临床人员判断是否需要进一步口腔或消化系统评估；不自动建议抗菌治疗。",
+      "rationale": "该菌在五菌面板中的组成比例高于 topology_v6 研究队列的上四分位数，但菌群关联不能单独证明感染或支持经验性用药。",
+      "base_priority": 0.72,
+      "urgency": "routine",
+      "action_type": "clinician_review_only",
+      "evidence_level": "internal_exploratory",
+      "evidence_source_ids": [
+        "INTERNAL_TOPOLOGY_V6",
+        "FDA_CDS_2026",
+        "CDC_ANTIBIOTIC_STEWARDSHIP_2025"
+      ]
+    },
+    {
+      "rule_id": "lactobacillus_lower_quartile_review",
+      "marker": "Lactobacillus",
+      "operator": "lt",
+      "threshold": 0.103096,
+      "threshold_quantile": "q25",
+      "category": "microecology_review",
+      "title": "Lactobacillus 低组成比例复核",
+      "suggestion": "先确认样本质量、近期抗生素或益生菌暴露及临床适应证；不得仅因低丰度自动推荐益生菌，具体菌株和用途应按指南由临床人员评估。",
+      "rationale": "该菌在五菌面板中的组成比例低于 topology_v6 研究队列的下四分位数。益生菌效果具有疾病、菌株和组合特异性，低组成比例本身不是补充适应证。",
+      "base_priority": 0.68,
+      "urgency": "routine",
+      "action_type": "clinician_review_only",
+      "evidence_level": "guideline_caution_plus_internal_exploratory",
+      "evidence_source_ids": [
+        "INTERNAL_TOPOLOGY_V6",
+        "AGA_PROBIOTICS_2020",
+        "FDA_CDS_2026"
+      ]
+    }
+  ],
+  "evidence_sources": [
+    {
+      "source_id": "INTERNAL_TOPOLOGY_V6",
+      "organization": "Gut-Oral Axis Analysis Platform",
+      "title": "topology_v6 internal abundance calibration",
+      "year": 2026,
+      "source_type": "internal_synthetic_research_dataset",
+      "url": null,
+      "scope_note": "Synthetic/noisy augmented data for method development; not a clinical threshold source."
+    },
+    {
+      "source_id": "FDA_CDS_2026",
+      "organization": "U.S. Food and Drug Administration",
+      "title": "Clinical Decision Support Software: Guidance for Industry and FDA Staff",
+      "year": 2026,
+      "source_type": "regulatory_guidance",
+      "url": "https://www.fda.gov/regulatory-information/search-fda-guidance-documents/clinical-decision-support-software",
+      "scope_note": "Supports transparent inputs, logic, validation boundaries, and independent clinician review of recommendation basis."
+    },
+    {
+      "source_id": "CDC_ANTIBIOTIC_STEWARDSHIP_2025",
+      "organization": "U.S. Centers for Disease Control and Prevention",
+      "title": "Core Elements of Antibiotic Stewardship",
+      "year": 2025,
+      "source_type": "public_health_guidance",
+      "url": "https://www.cdc.gov/antibiotic-use/hcp/core-elements/",
+      "scope_note": "Supports avoiding unsupported antimicrobial action and documenting indication, exposure, and review."
+    },
+    {
+      "source_id": "AGA_PROBIOTICS_2020",
+      "organization": "American Gastroenterological Association",
+      "title": "Role of probiotics in the management of gastrointestinal disorders",
+      "year": 2020,
+      "source_type": "clinical_guideline",
+      "url": "https://gastro.org/clinical-guidance/role-of-probiotics-in-the-management-of-gastrointestinal-disorders/",
+      "scope_note": "Probiotic recommendations are condition-, strain-, and combination-specific; evidence is insufficient for many digestive conditions."
+    },
+    {
+      "source_id": "USPSTF_CRC_2021",
+      "organization": "U.S. Preventive Services Task Force",
+      "title": "Colorectal Cancer: Screening",
+      "year": 2021,
+      "source_type": "preventive_guideline",
+      "url": "https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/colorectal-cancer-screening",
+      "scope_note": "Provides age-based screening context; microbial model output is not itself a screening indication."
+    },
+    {
+      "source_id": "WHO_MEDICATION_RECONCILIATION",
+      "organization": "World Health Organization",
+      "title": "The High 5s Project Medication Reconciliation Implementation Guide",
+      "year": 2014,
+      "source_type": "medication_safety_guidance",
+      "url": "https://www.who.int/docs/default-source/patient-safety/high5s/h5s-guide.pdf",
+      "scope_note": "Supports maintaining an accurate medication and allergy history before medication decisions."
+    }
+  ]
+}

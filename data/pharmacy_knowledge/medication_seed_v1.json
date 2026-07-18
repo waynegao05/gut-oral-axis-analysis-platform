@@ -1,0 +1,377 @@
+{
+  "schema_version": "1.0",
+  "dataset_id": "goa_medication_label_seed_v1",
+  "last_reviewed": "2026-07-18",
+  "scope_note": "Initial U.S. label-evidence coverage for common medications, gut-related therapies, and representative members of the minimum high-priority interaction set. Coverage is intentionally incomplete.",
+  "medications": [
+    {
+      "drug_id": "metformin",
+      "display_name": "Metformin",
+      "rxnorm_query": "metformin",
+      "openfda_generic_names": ["METFORMIN HYDROCHLORIDE"],
+      "route_preferences": ["ORAL"],
+      "aliases": ["metformin hcl", "二甲双胍"]
+    },
+    {
+      "drug_id": "omeprazole",
+      "display_name": "Omeprazole",
+      "rxnorm_query": "omeprazole",
+      "openfda_generic_names": ["OMEPRAZOLE"],
+      "route_preferences": ["ORAL"],
+      "aliases": ["奥美拉唑"]
+    },
+    {
+      "drug_id": "pantoprazole",
+      "display_name": "Pantoprazole",
+      "rxnorm_query": "pantoprazole",
+      "openfda_generic_names": ["PANTOPRAZOLE SODIUM"],
+      "route_preferences": ["ORAL"],
+      "aliases": ["pantoprazole sodium", "泮托拉唑"]
+    },
+    {
+      "drug_id": "aspirin",
+      "display_name": "Aspirin",
+      "rxnorm_query": "aspirin",
+      "openfda_generic_names": ["ASPIRIN"],
+      "product_types": ["HUMAN OTC DRUG", "HUMAN PRESCRIPTION DRUG"],
+      "route_preferences": ["ORAL"],
+      "aliases": ["acetylsalicylic acid", "asa", "阿司匹林"]
+    },
+    {
+      "drug_id": "warfarin",
+      "display_name": "Warfarin",
+      "rxnorm_query": "warfarin",
+      "openfda_generic_names": ["WARFARIN SODIUM"],
+      "route_preferences": ["ORAL"],
+      "aliases": ["warfarin sodium", "华法林"]
+    },
+    {
+      "drug_id": "apixaban",
+      "display_name": "Apixaban",
+      "rxnorm_query": "apixaban",
+      "openfda_generic_names": ["APIXABAN"],
+      "route_preferences": ["ORAL"],
+      "aliases": ["eliquis", "阿哌沙班"]
+    },
+    {
+      "drug_id": "rivaroxaban",
+      "display_name": "Rivaroxaban",
+      "rxnorm_query": "rivaroxaban",
+      "openfda_generic_names": ["RIVAROXABAN"],
+      "route_preferences": ["ORAL"],
+      "aliases": ["xarelto", "利伐沙班"]
+    },
+    {
+      "drug_id": "clopidogrel",
+      "display_name": "Clopidogrel",
+      "rxnorm_query": "clopidogrel",
+      "openfda_generic_names": ["CLOPIDOGREL BISULFATE"],
+      "route_preferences": ["ORAL"],
+      "aliases": ["clopidogrel bisulfate", "plavix", "氯吡格雷"]
+    },
+    {
+      "drug_id": "amoxicillin",
+      "display_name": "Amoxicillin",
+      "rxnorm_query": "amoxicillin",
+      "openfda_generic_names": ["AMOXICILLIN"],
+      "route_preferences": ["ORAL"],
+      "aliases": ["阿莫西林"]
+    },
+    {
+      "drug_id": "clarithromycin",
+      "display_name": "Clarithromycin",
+      "rxnorm_query": "clarithromycin",
+      "openfda_generic_names": ["CLARITHROMYCIN"],
+      "route_preferences": ["ORAL"],
+      "aliases": ["克拉霉素"]
+    },
+    {
+      "drug_id": "ciprofloxacin",
+      "display_name": "Ciprofloxacin",
+      "rxnorm_query": "ciprofloxacin",
+      "openfda_generic_names": ["CIPROFLOXACIN", "CIPROFLOXACIN HYDROCHLORIDE"],
+      "route_preferences": ["ORAL"],
+      "aliases": ["ciprofloxacin hcl", "环丙沙星"]
+    },
+    {
+      "drug_id": "metronidazole",
+      "display_name": "Metronidazole",
+      "rxnorm_query": "metronidazole",
+      "openfda_generic_names": ["METRONIDAZOLE"],
+      "route_preferences": ["ORAL"],
+      "aliases": ["甲硝唑"]
+    },
+    {
+      "drug_id": "rifampin",
+      "display_name": "Rifampin",
+      "rxnorm_query": "rifampin",
+      "openfda_generic_names": ["RIFAMPIN"],
+      "route_preferences": ["ORAL"],
+      "aliases": ["rifampicin", "利福平"]
+    },
+    {
+      "drug_id": "trimethoprim_sulfamethoxazole",
+      "display_name": "Trimethoprim/sulfamethoxazole",
+      "rxnorm_query": "trimethoprim sulfamethoxazole",
+      "openfda_generic_names": ["SULFAMETHOXAZOLE AND TRIMETHOPRIM"],
+      "route_preferences": ["ORAL"],
+      "aliases": ["co-trimoxazole", "cotrimoxazole", "tmp smx", "bactrim", "复方新诺明", "甲氧苄啶磺胺甲恶唑"]
+    },
+    {
+      "drug_id": "methotrexate",
+      "display_name": "Methotrexate",
+      "rxnorm_query": "methotrexate",
+      "openfda_generic_names": ["METHOTREXATE"],
+      "route_preferences": ["ORAL"],
+      "aliases": ["甲氨蝶呤"]
+    },
+    {
+      "drug_id": "digoxin",
+      "display_name": "Digoxin",
+      "rxnorm_query": "digoxin",
+      "openfda_generic_names": ["DIGOXIN"],
+      "route_preferences": ["ORAL"],
+      "aliases": ["地高辛"]
+    },
+    {
+      "drug_id": "amiodarone",
+      "display_name": "Amiodarone",
+      "rxnorm_query": "amiodarone",
+      "openfda_generic_names": ["AMIODARONE HYDROCHLORIDE"],
+      "route_preferences": ["ORAL"],
+      "aliases": ["amiodarone hcl", "胺碘酮"]
+    },
+    {
+      "drug_id": "simvastatin",
+      "display_name": "Simvastatin",
+      "rxnorm_query": "simvastatin",
+      "openfda_generic_names": ["SIMVASTATIN"],
+      "route_preferences": ["ORAL"],
+      "aliases": ["辛伐他汀"]
+    },
+    {
+      "drug_id": "atorvastatin",
+      "display_name": "Atorvastatin",
+      "rxnorm_query": "atorvastatin",
+      "openfda_generic_names": ["ATORVASTATIN CALCIUM"],
+      "route_preferences": ["ORAL"],
+      "aliases": ["atorvastatin calcium", "lipitor", "阿托伐他汀"]
+    },
+    {
+      "drug_id": "fluconazole",
+      "display_name": "Fluconazole",
+      "rxnorm_query": "fluconazole",
+      "openfda_generic_names": ["FLUCONAZOLE"],
+      "route_preferences": ["ORAL"],
+      "aliases": ["氟康唑"]
+    },
+    {
+      "drug_id": "itraconazole",
+      "display_name": "Itraconazole",
+      "rxnorm_query": "itraconazole",
+      "openfda_generic_names": ["ITRACONAZOLE"],
+      "route_preferences": ["ORAL"],
+      "aliases": ["伊曲康唑"]
+    },
+    {
+      "drug_id": "carbamazepine",
+      "display_name": "Carbamazepine",
+      "rxnorm_query": "carbamazepine",
+      "openfda_generic_names": ["CARBAMAZEPINE"],
+      "route_preferences": ["ORAL"],
+      "aliases": ["卡马西平"]
+    },
+    {
+      "drug_id": "phenytoin",
+      "display_name": "Phenytoin",
+      "rxnorm_query": "phenytoin",
+      "openfda_generic_names": ["PHENYTOIN", "PHENYTOIN SODIUM"],
+      "route_preferences": ["ORAL"],
+      "aliases": ["phenytoin sodium", "苯妥英"]
+    },
+    {
+      "drug_id": "sertraline",
+      "display_name": "Sertraline",
+      "rxnorm_query": "sertraline",
+      "openfda_generic_names": ["SERTRALINE HYDROCHLORIDE"],
+      "route_preferences": ["ORAL"],
+      "aliases": ["sertraline hcl", "zoloft", "舍曲林"]
+    },
+    {
+      "drug_id": "fluoxetine",
+      "display_name": "Fluoxetine",
+      "rxnorm_query": "fluoxetine",
+      "openfda_generic_names": ["FLUOXETINE HYDROCHLORIDE"],
+      "route_preferences": ["ORAL"],
+      "aliases": ["fluoxetine hcl", "prozac", "氟西汀"]
+    },
+    {
+      "drug_id": "linezolid",
+      "display_name": "Linezolid",
+      "rxnorm_query": "linezolid",
+      "openfda_generic_names": ["LINEZOLID"],
+      "route_preferences": ["ORAL"],
+      "aliases": ["利奈唑胺"]
+    },
+    {
+      "drug_id": "tramadol",
+      "display_name": "Tramadol",
+      "rxnorm_query": "tramadol",
+      "openfda_generic_names": ["TRAMADOL HYDROCHLORIDE"],
+      "route_preferences": ["ORAL"],
+      "aliases": ["tramadol hcl", "曲马多"]
+    },
+    {
+      "drug_id": "sildenafil",
+      "display_name": "Sildenafil",
+      "rxnorm_query": "sildenafil",
+      "openfda_generic_names": ["SILDENAFIL CITRATE"],
+      "route_preferences": ["ORAL"],
+      "aliases": ["viagra", "revatio", "西地那非"]
+    },
+    {
+      "drug_id": "nitroglycerin",
+      "display_name": "Nitroglycerin",
+      "rxnorm_query": "nitroglycerin",
+      "openfda_generic_names": ["NITROGLYCERIN"],
+      "route_preferences": ["SUBLINGUAL", "TRANSLINGUAL", "ORAL"],
+      "aliases": ["glyceryl trinitrate", "硝酸甘油"]
+    },
+    {
+      "drug_id": "spironolactone",
+      "display_name": "Spironolactone",
+      "rxnorm_query": "spironolactone",
+      "openfda_generic_names": ["SPIRONOLACTONE"],
+      "route_preferences": ["ORAL"],
+      "aliases": ["螺内酯"]
+    },
+    {
+      "drug_id": "lisinopril",
+      "display_name": "Lisinopril",
+      "rxnorm_query": "lisinopril",
+      "openfda_generic_names": ["LISINOPRIL"],
+      "route_preferences": ["ORAL"],
+      "aliases": ["赖诺普利"]
+    },
+    {
+      "drug_id": "potassium_chloride",
+      "display_name": "Potassium chloride",
+      "rxnorm_query": "potassium chloride",
+      "openfda_generic_names": ["POTASSIUM CHLORIDE"],
+      "route_preferences": ["ORAL"],
+      "aliases": ["kcl", "氯化钾"]
+    },
+    {
+      "drug_id": "tacrolimus",
+      "display_name": "Tacrolimus",
+      "rxnorm_query": "tacrolimus",
+      "openfda_generic_names": ["TACROLIMUS"],
+      "route_preferences": ["ORAL"],
+      "aliases": ["prograf", "他克莫司"]
+    },
+    {
+      "drug_id": "cyclosporine",
+      "display_name": "Cyclosporine",
+      "rxnorm_query": "cyclosporine",
+      "openfda_generic_names": ["CYCLOSPORINE"],
+      "route_preferences": ["ORAL"],
+      "aliases": ["ciclosporin", "环孢素"]
+    },
+    {
+      "drug_id": "prednisone",
+      "display_name": "Prednisone",
+      "rxnorm_query": "prednisone",
+      "openfda_generic_names": ["PREDNISONE"],
+      "route_preferences": ["ORAL"],
+      "aliases": ["泼尼松"]
+    },
+    {
+      "drug_id": "tizanidine",
+      "display_name": "Tizanidine",
+      "rxnorm_query": "tizanidine",
+      "openfda_generic_names": ["TIZANIDINE", "TIZANIDINE HYDROCHLORIDE"],
+      "route_preferences": ["ORAL"],
+      "aliases": ["tizanidine hcl", "替扎尼定"]
+    },
+    {
+      "drug_id": "ramelteon",
+      "display_name": "Ramelteon",
+      "rxnorm_query": "ramelteon",
+      "openfda_generic_names": ["RAMELTEON"],
+      "route_preferences": ["ORAL"],
+      "aliases": ["rozerem", "雷美替胺"]
+    },
+    {
+      "drug_id": "atazanavir",
+      "display_name": "Atazanavir",
+      "rxnorm_query": "atazanavir",
+      "openfda_generic_names": ["ATAZANAVIR SULFATE"],
+      "route_preferences": ["ORAL"],
+      "aliases": ["reyataz", "阿扎那韦"]
+    },
+    {
+      "drug_id": "febuxostat",
+      "display_name": "Febuxostat",
+      "rxnorm_query": "febuxostat",
+      "openfda_generic_names": ["FEBUXOSTAT"],
+      "route_preferences": ["ORAL"],
+      "aliases": ["uloric", "非布司他"]
+    },
+    {
+      "drug_id": "azathioprine",
+      "display_name": "Azathioprine",
+      "rxnorm_query": "azathioprine",
+      "openfda_generic_names": ["AZATHIOPRINE"],
+      "route_preferences": ["ORAL"],
+      "aliases": ["imuran", "硫唑嘌呤"]
+    },
+    {
+      "drug_id": "mercaptopurine",
+      "display_name": "Mercaptopurine",
+      "rxnorm_query": "mercaptopurine",
+      "openfda_generic_names": ["MERCAPTOPURINE"],
+      "route_preferences": ["ORAL"],
+      "aliases": ["6-mercaptopurine", "6 mp", "巯嘌呤"]
+    },
+    {
+      "drug_id": "irinotecan",
+      "display_name": "Irinotecan",
+      "rxnorm_query": "irinotecan",
+      "openfda_generic_names": ["IRINOTECAN HYDROCHLORIDE"],
+      "route_preferences": ["INTRAVENOUS"],
+      "aliases": ["irinotecan hcl", "伊立替康"]
+    },
+    {
+      "drug_id": "rifaximin",
+      "display_name": "Rifaximin",
+      "rxnorm_query": "rifaximin",
+      "openfda_generic_names": ["RIFAXIMIN"],
+      "route_preferences": ["ORAL"],
+      "aliases": ["xifaxan", "利福昔明"]
+    },
+    {
+      "drug_id": "vancomycin",
+      "display_name": "Vancomycin",
+      "rxnorm_query": "vancomycin",
+      "openfda_generic_names": ["VANCOMYCIN HYDROCHLORIDE"],
+      "route_preferences": ["ORAL"],
+      "aliases": ["vancomycin hcl", "万古霉素"]
+    },
+    {
+      "drug_id": "mesalamine",
+      "display_name": "Mesalamine",
+      "rxnorm_query": "mesalamine",
+      "openfda_generic_names": ["MESALAMINE"],
+      "route_preferences": ["ORAL"],
+      "aliases": ["mesalazine", "5-aminosalicylic acid", "5 asa", "美沙拉嗪"]
+    },
+    {
+      "drug_id": "budesonide",
+      "display_name": "Budesonide",
+      "rxnorm_query": "budesonide",
+      "openfda_generic_names": ["BUDESONIDE"],
+      "route_preferences": ["ORAL"],
+      "aliases": ["布地奈德"]
+    }
+  ]
+}

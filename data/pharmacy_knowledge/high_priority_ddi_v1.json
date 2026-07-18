@@ -1,0 +1,63 @@
+{
+  "schema_version": "1.0",
+  "dataset_id": "onc_high_priority_ddi_minimum_v1",
+  "published_date": "2012-04-26",
+  "last_reviewed": "2026-07-18",
+  "scope_note": "Normalized implementation of the 2012 ONC expert-panel minimum high-priority DDI starter set. It is historical, intentionally small, and not a comprehensive or current drug-interaction database.",
+  "source": {
+    "source_id": "ONC_HIGH_PRIORITY_DDI_2012",
+    "title": "High-priority drug-drug interactions for use in electronic health records",
+    "doi": "10.1136/amiajnl-2011-000612",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3422823/",
+    "attribution_note": "Drug and class memberships were normalized from the published accepted-interaction table. Narrative text is not reproduced."
+  },
+  "screening_contract": {
+    "severity": "contraindicated_concurrent_use_consensus_2012",
+    "negative_result_excludes_other_interactions": false,
+    "requires_current_label_and_clinician_review": true,
+    "allows_automatic_medication_change": false
+  },
+  "drug_groups": [
+    {"group_id": "amphetamine_derivatives", "members": ["dexmethylphenidate", "dextroamphetamine", "methylphenidate", "lisdexamfetamine", "methamphetamine", "phendimetrazine", "pseudoephedrine", "amphetamine", "benzphetamine", "diethylpropion", "phentermine", "atomoxetine"]},
+    {"group_id": "maoi_consensus", "members": ["tranylcypromine", "phenelzine", "isocarboxazid", "procarbazine", "selegiline"]},
+    {"group_id": "atazanavir", "members": ["atazanavir"]},
+    {"group_id": "proton_pump_inhibitors", "members": ["omeprazole", "lansoprazole", "pantoprazole", "rabeprazole", "esomeprazole", "dexlansoprazole"]},
+    {"group_id": "febuxostat", "members": ["febuxostat"]},
+    {"group_id": "thiopurines", "members": ["azathioprine", "mercaptopurine"]},
+    {"group_id": "serotonergic_antidepressants_consensus", "members": ["fluoxetine", "paroxetine", "citalopram", "escitalopram", "sertraline", "fluvoxamine", "duloxetine", "nefazodone", "desvenlafaxine", "milnacipran", "venlafaxine"]},
+    {"group_id": "irinotecan", "members": ["irinotecan"]},
+    {"group_id": "cyp3a4_inhibitors_consensus", "members": ["ritonavir", "nelfinavir", "atazanavir", "indinavir", "saquinavir", "amprenavir", "darunavir", "lopinavir", "tipranavir", "fosamprenavir", "clarithromycin", "erythromycin", "telithromycin", "amiodarone", "verapamil", "diltiazem", "ketoconazole", "itraconazole", "fluconazole", "voriconazole", "nefazodone", "aprepitant", "cimetidine"]},
+    {"group_id": "narcotic_analgesics_consensus", "members": ["meperidine", "methadone", "tapentadol", "fentanyl", "tramadol", "dextromethorphan"]},
+    {"group_id": "tricyclic_antidepressants", "members": ["amitriptyline", "nortriptyline", "imipramine", "desipramine", "clomipramine", "doxepin", "trimipramine", "protriptyline"]},
+    {"group_id": "ramelteon", "members": ["ramelteon"]},
+    {"group_id": "cyp1a2_inhibitors_ramelteon_consensus", "members": ["fluvoxamine", "amiodarone", "ticlopidine", "ciprofloxacin"]},
+    {"group_id": "strong_cyp3a4_inducers_consensus", "members": ["bosentan", "rifapentine", "carbamazepine", "rifabutin", "rifampin", "st johns wort", "st. john's wort"]},
+    {"group_id": "protease_inhibitors_consensus", "members": ["ritonavir", "amprenavir", "atazanavir", "darunavir", "fosamprenavir", "indinavir", "lopinavir", "nelfinavir", "saquinavir", "tipranavir"]},
+    {"group_id": "simvastatin_lovastatin", "members": ["simvastatin", "lovastatin"]},
+    {"group_id": "cyp3a4_inhibitors_ergot_consensus", "members": ["indinavir", "saquinavir", "tipranavir", "ritonavir", "nelfinavir", "atazanavir", "amprenavir", "darunavir", "lopinavir", "clarithromycin", "erythromycin", "telithromycin", "ketoconazole", "itraconazole", "voriconazole"]},
+    {"group_id": "ergot_alkaloids", "members": ["ergotamine", "methylergonovine", "dihydroergotamine", "ergonovine"]},
+    {"group_id": "tizanidine", "members": ["tizanidine"]},
+    {"group_id": "cyp1a2_inhibitors_tizanidine_consensus", "members": ["ciprofloxacin", "fluvoxamine", "mexiletine", "propafenone", "zileuton", "amiodarone", "ticlopidine"]},
+    {"group_id": "tranylcypromine", "members": ["tranylcypromine"]},
+    {"group_id": "procarbazine", "members": ["procarbazine"]},
+    {"group_id": "selected_triptans", "members": ["sumatriptan", "zolmitriptan", "rizatriptan"]},
+    {"group_id": "maoi_triptan_consensus", "members": ["tranylcypromine", "phenelzine", "isocarboxazid", "moclobemide", "methylene blue"]}
+  ],
+  "rules": [
+    {"rule_id": "onc_ddi_03_amphetamine_maoi", "source_number": 3, "left_group_id": "amphetamine_derivatives", "right_group_id": "maoi_consensus", "alert_title_zh": "兴奋剂类与单胺氧化酶抑制剂高危组合", "screening_supported": true},
+    {"rule_id": "onc_ddi_04_atazanavir_ppi", "source_number": 4, "left_group_id": "atazanavir", "right_group_id": "proton_pump_inhibitors", "alert_title_zh": "阿扎那韦与质子泵抑制剂高危组合", "screening_supported": true},
+    {"rule_id": "onc_ddi_06_febuxostat_thiopurine", "source_number": 6, "left_group_id": "febuxostat", "right_group_id": "thiopurines", "alert_title_zh": "非布司他与硫嘌呤类高危组合", "screening_supported": true},
+    {"rule_id": "onc_ddi_08_antidepressant_maoi", "source_number": 8, "left_group_id": "serotonergic_antidepressants_consensus", "right_group_id": "maoi_consensus", "alert_title_zh": "血清素能抗抑郁药与单胺氧化酶抑制剂高危组合", "screening_supported": true},
+    {"rule_id": "onc_ddi_11_irinotecan_cyp3a4_inhibitor", "source_number": 11, "left_group_id": "irinotecan", "right_group_id": "cyp3a4_inhibitors_consensus", "alert_title_zh": "伊立替康与 CYP3A4 抑制剂高危组合", "screening_supported": true},
+    {"rule_id": "onc_ddi_16_opioid_maoi", "source_number": 16, "left_group_id": "narcotic_analgesics_consensus", "right_group_id": "maoi_consensus", "alert_title_zh": "部分阿片类药物与单胺氧化酶抑制剂高危组合", "screening_supported": true},
+    {"rule_id": "onc_ddi_20_tca_maoi", "source_number": 20, "left_group_id": "tricyclic_antidepressants", "right_group_id": "maoi_consensus", "alert_title_zh": "三环类抗抑郁药与单胺氧化酶抑制剂高危组合", "screening_supported": true},
+    {"rule_id": "onc_ddi_21_qt_qt", "source_number": 21, "left_group_id": null, "right_group_id": null, "alert_title_zh": "高危 QT 延长药物联用", "screening_supported": false, "unsupported_reason": "The source delegates membership to an external QT-risk list whose current complete membership is not redistributed in this project."},
+    {"rule_id": "onc_ddi_22_ramelteon_cyp1a2_inhibitor", "source_number": 22, "left_group_id": "ramelteon", "right_group_id": "cyp1a2_inhibitors_ramelteon_consensus", "alert_title_zh": "雷美替胺与部分 CYP1A2 抑制剂高危组合", "screening_supported": true},
+    {"rule_id": "onc_ddi_23_cyp3a4_inducer_protease_inhibitor", "source_number": 23, "left_group_id": "strong_cyp3a4_inducers_consensus", "right_group_id": "protease_inhibitors_consensus", "alert_title_zh": "强 CYP3A4 诱导剂与蛋白酶抑制剂高危组合", "screening_supported": true},
+    {"rule_id": "onc_ddi_25_statins_cyp3a4_inhibitor", "source_number": 25, "left_group_id": "simvastatin_lovastatin", "right_group_id": "cyp3a4_inhibitors_consensus", "alert_title_zh": "辛伐他汀或洛伐他汀与 CYP3A4 抑制剂高危组合", "screening_supported": true},
+    {"rule_id": "onc_ddi_27_cyp3a4_inhibitor_ergot", "source_number": 27, "left_group_id": "cyp3a4_inhibitors_ergot_consensus", "right_group_id": "ergot_alkaloids", "alert_title_zh": "部分 CYP3A4 抑制剂与麦角生物碱高危组合", "screening_supported": true},
+    {"rule_id": "onc_ddi_28_tizanidine_cyp1a2_inhibitor", "source_number": 28, "left_group_id": "tizanidine", "right_group_id": "cyp1a2_inhibitors_tizanidine_consensus", "alert_title_zh": "替扎尼定与部分 CYP1A2 抑制剂高危组合", "screening_supported": true},
+    {"rule_id": "onc_ddi_30_tranylcypromine_procarbazine", "source_number": 30, "left_group_id": "tranylcypromine", "right_group_id": "procarbazine", "alert_title_zh": "反苯环丙胺与丙卡巴肼高危组合", "screening_supported": true},
+    {"rule_id": "onc_ddi_31_triptan_maoi", "source_number": 31, "left_group_id": "selected_triptans", "right_group_id": "maoi_triptan_consensus", "alert_title_zh": "部分曲普坦类与单胺氧化酶抑制剂高危组合", "screening_supported": true}
+  ]
+}
