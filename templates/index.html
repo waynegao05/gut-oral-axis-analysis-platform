@@ -10,16 +10,16 @@
     <div class="page-shell">
       <header class="hero">
         <div class="hero-copy">
-          <p class="eyebrow">Research Prototype</p>
+          <p class="eyebrow">Research Decision Support</p>
           <h1>{{ app_name }}</h1>
           <p class="hero-text">
-            用于肠口轴风险演示的轻量可视化页面。支持上传 JSON 自动回填，也支持手动填写微生物、临床和代谢特征后直接生成风险值与建议内容。
+            用于整理肠口轴风险和用药安全信息。填写微生物、健康情况和当前用药后，页面会列出需要优先核对的事项。
           </p>
         </div>
         <div class="hero-stat">
           <span class="hero-stat-label">当前输出</span>
-          <strong>风险值 + 风险分层 + 建议内容</strong>
-          <p>适合作为演示页、汇报页和研究原型交互层，不替代正式临床决策。</p>
+          <strong>风险提示 + 用药核对 + 下一步行动</strong>
+          <p>先说明该做什么，再按需查看依据；最终用药决定仍由医生或药师完成。</p>
         </div>
       </header>
 
@@ -137,6 +137,74 @@
             </div>
           </div>
 
+          <div class="section-block">
+            <h3>用药与健康背景（建议填写）</h3>
+            <p class="section-help">这些信息用来检查是否有需要优先核对的问题，不会自动开药。明确没有用药或过敏时填写“无”，不清楚可留空。</p>
+            <div class="field-grid">
+              <label class="input-card">
+                <span>当前用药清单</span>
+                <textarea id="metadata-current-medications" rows="3" placeholder="每行或逗号分隔；无则填写：无"></textarea>
+              </label>
+              <label class="input-card">
+                <span>药物过敏史</span>
+                <textarea id="metadata-drug-allergies" rows="3" placeholder="药物及反应；无则填写：无"></textarea>
+              </label>
+              <label class="input-card">
+                <span>目前已经明确的临床情况</span>
+                <select id="metadata-suspected-condition">
+                  <option value="gut_risk_screening">一般风险筛查 / 还没有明确诊断或用药目的</option>
+                  <option value="c_difficile_prevention_during_antibiotics">抗生素治疗期间预防艰难梭菌感染</option>
+                  <option value="pouchitis">已确认储袋炎</option>
+                  <option value="c_difficile_infection">已确认艰难梭菌感染</option>
+                  <option value="crohns_disease">已确认克罗恩病</option>
+                  <option value="ulcerative_colitis">已确认溃疡性结肠炎</option>
+                  <option value="irritable_bowel_syndrome">已确认肠易激综合征</option>
+                  <option value="pediatric_acute_infectious_gastroenteritis">儿童急性感染性胃肠炎</option>
+                </select>
+              </label>
+              <label class="input-card">
+                <span>近期抗生素</span>
+                <select id="metadata-recent-antibiotics">
+                  <option value="">未提供</option>
+                  <option value="0">否</option>
+                  <option value="1">是</option>
+                </select>
+              </label>
+              <label class="input-card">
+                <span>近期益生菌</span>
+                <select id="metadata-recent-probiotics">
+                  <option value="">未提供</option>
+                  <option value="0">否</option>
+                  <option value="1">是</option>
+                </select>
+              </label>
+              <label class="input-card">
+                <span>肾功能异常</span>
+                <select id="metadata-renal-impairment">
+                  <option value="">未提供</option>
+                  <option value="0">否</option>
+                  <option value="1">是</option>
+                </select>
+              </label>
+              <label class="input-card">
+                <span>肝功能异常</span>
+                <select id="metadata-hepatic-impairment">
+                  <option value="">未提供</option>
+                  <option value="0">否</option>
+                  <option value="1">是</option>
+                </select>
+              </label>
+              <label class="input-card">
+                <span>妊娠状态</span>
+                <select id="metadata-pregnancy">
+                  <option value="">未提供</option>
+                  <option value="0">否</option>
+                  <option value="1">是</option>
+                </select>
+              </label>
+            </div>
+          </div>
+
           <div class="button-row">
             <button type="button" class="primary-button" id="analyze-form">运行分析</button>
             <button type="button" class="secondary-button" id="reset-form">重置为标准示例</button>
@@ -146,41 +214,75 @@
         <section class="panel panel-result">
           <div class="panel-header">
             <h2>结果输出</h2>
-            <p>页面会展示风险值、风险等级、关键菌群和原型建议内容。</p>
+            <p>先看需要采取的行动，再按需查看说明书和技术依据。</p>
           </div>
 
           <div class="risk-banner risk-banner-empty" id="risk-banner">
-            <span class="risk-kicker">尚未分析</span>
+            <span class="risk-kicker" id="risk-kicker">尚未分析</span>
             <strong id="risk-score">--</strong>
             <span id="risk-level">等待输入</span>
           </div>
 
-          <div class="summary-grid">
-            <article class="summary-card">
-              <span class="summary-label">建议条目数</span>
-              <strong id="recommendation-count">0</strong>
-              <p id="analysis-source">尚未生成结果。</p>
+          <article class="action-summary-card" id="pharmacy-action-summary">
+            <div class="action-summary-heading">
+              <span class="summary-label">先看这里</span>
+              <span class="action-count-badge"><span id="recommendation-count">0</span> 项待处理</span>
+            </div>
+            <h3 id="pharmacy-headline">等待分析</h3>
+            <ol id="pharmacy-now-list" class="action-checklist">
+              <li>提交数据后，这里会列出最需要先完成的事项。</li>
+            </ol>
+            <p id="pharmacy-safety-note" class="action-safety-note">网页只提供复核清单，不替代医生或药师作出用药决定。</p>
+          </article>
+
+          <div class="summary-grid guidance-summary-grid">
+            <article class="summary-card pharmacy-status-card" id="pharmacy-status-card">
+              <span class="summary-label">这份结果能否直接用于复核</span>
+              <strong id="pharmacy-status">等待分析</strong>
+              <p id="pharmacy-status-reason">系统会先检查输入是否完整，再决定能展示哪些内容。</p>
             </article>
-            <article class="summary-card">
-              <span class="summary-label">报告保存位置</span>
-              <strong id="saved-path">--</strong>
-              <p>调用现有后端分析流程并保留导出能力。</p>
+            <article class="summary-card" id="drug-knowledge-card">
+              <span class="summary-label">用药核对结果</span>
+              <strong id="drug-knowledge-coverage">等待分析</strong>
+              <p id="drug-knowledge-detail">填写当前用药后，这里会说明识别和核对情况。</p>
             </article>
           </div>
 
-          <div class="result-columns">
-            <div class="result-card">
-              <h3>建议内容</h3>
-              <ul id="recommendation-list" class="result-list"></ul>
-            </div>
-            <div class="result-card">
-              <h3>Top 微生物</h3>
-              <ul id="microbe-list" class="result-list compact-list"></ul>
-            </div>
+          <div class="action-columns">
+            <section class="result-card action-result-card priority-actions-card">
+              <div class="result-card-heading">
+                <h3>现在先做什么</h3>
+                <span class="urgency-badge urgency-priority">优先处理</span>
+              </div>
+              <p class="section-note">先完成这些信息核对或联系动作，不要自行改药。</p>
+              <ul id="priority-recommendation-list" class="result-list guidance-list"></ul>
+            </section>
+            <section class="result-card action-result-card">
+              <div class="result-card-heading">
+                <h3>后续核对</h3>
+                <span class="urgency-badge urgency-routine">随访处理</span>
+              </div>
+              <p class="section-note">可在复诊、随访或资料补充时逐项完成。</p>
+              <ul id="routine-recommendation-list" class="result-list guidance-list"></ul>
+            </section>
           </div>
 
-          <details class="details-panel" open>
-            <summary>原始返回 JSON</summary>
+          <div class="result-card medication-evidence-card">
+            <h3>当前用药资料</h3>
+            <p class="section-note">先核对实际药名、剂型、规格和每天用法，再查看对应的官方说明书。</p>
+            <div id="medication-label-list" class="label-evidence-list"></div>
+            <p class="source-attribution">药名标准化使用美国国家医学图书馆公开数据；NLM 不对本产品负责，也不表示认可或推荐。</p>
+          </div>
+
+          <details class="details-panel technical-record-panel">
+            <summary>查看模型指标与完整技术记录</summary>
+            <div class="technical-record-summary">
+              <p><strong>输入来源：</strong><span id="analysis-source">尚未生成结果。</span></p>
+              <p><strong>报告保存位置：</strong><code id="saved-path">--</code></p>
+            </div>
+            <h3>模型关注的微生物</h3>
+            <ul id="microbe-list" class="result-list compact-list"></ul>
+            <h3>完整返回 JSON（供研究与审计）</h3>
             <pre id="result-json" class="code-block"></pre>
           </details>
         </section>

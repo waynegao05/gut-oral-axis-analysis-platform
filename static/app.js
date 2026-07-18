@@ -16,6 +16,16 @@ const CANONICAL_EXAMPLE = {
     bile_acids: 0.8,
     scfa: 0.3,
     tryptophan_metabolism: 0.7
+  },
+  metadata: {
+    current_medications: [],
+    drug_allergies: [],
+    recent_antibiotics: 0,
+    recent_probiotics: 0,
+    renal_impairment: 0,
+    hepatic_impairment: 0,
+    pregnancy: 0,
+    suspected_condition: "gut_risk_screening"
   }
 };
 
@@ -31,6 +41,13 @@ const RAW_CLINICAL_EXAMPLE = {
     family_history_colorectal_or_ibd: "positive",
     recent_antibiotics: "no",
     recent_probiotics: "yes"
+  },
+  medication_context: {
+    current_medications: ["metformin 500 mg twice daily"],
+    drug_allergies: ["penicillin: rash"],
+    renal_impairment: "no",
+    hepatic_impairment: "no",
+    pregnancy: "no"
   },
   oral_microbiome: {
     taxa: [
@@ -78,6 +95,35 @@ function readNumberInput(input, label, { emptyValue = null } = {}) {
     throw new Error(`${label} 输入非法：${input.validationMessage}`);
   }
   return parsed;
+}
+
+function readOptionalListInput(input) {
+  const rawValue = input.value.trim();
+  if (rawValue === "") {
+    return null;
+  }
+  if (["无", "none", "no"].includes(rawValue.toLowerCase())) {
+    return [];
+  }
+  return rawValue
+    .split(/[,，;；\n]/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function readOptionalBinarySelect(input) {
+  if (input.value === "") {
+    return null;
+  }
+  return Number(input.value);
+}
+
+function formatOptionalList(metadata, key) {
+  if (!Object.prototype.hasOwnProperty.call(metadata, key)) {
+    return "";
+  }
+  const values = Array.isArray(metadata[key]) ? metadata[key] : [];
+  return values.length ? values.join("\n") : "无";
 }
 
 async function postJson(url, payload) {
@@ -141,6 +187,7 @@ function populateForm(payload) {
   const microbes = payload.microbes || {};
   const clinical = payload.clinical || {};
   const metabolites = payload.metabolites || {};
+  const metadata = payload.metadata || {};
 
   PRESET_MICROBES.forEach((name) => {
     const input = document.getElementById(`microbe-${name}`);
@@ -160,16 +207,33 @@ function populateForm(payload) {
   document.getElementById("metabolite-bile-acids").value = metabolites.bile_acids ?? "";
   document.getElementById("metabolite-scfa").value = metabolites.scfa ?? "";
   document.getElementById("metabolite-tryptophan").value = metabolites.tryptophan_metabolism ?? "";
+  document.getElementById("metadata-current-medications").value = formatOptionalList(metadata, "current_medications");
+  document.getElementById("metadata-drug-allergies").value = formatOptionalList(metadata, "drug_allergies");
+  document.getElementById("metadata-suspected-condition").value =
+    metadata.suspected_condition || "gut_risk_screening";
+  [
+    "recent-antibiotics",
+    "recent-probiotics",
+    "renal-impairment",
+    "hepatic-impairment",
+    "pregnancy"
+  ].forEach((field) => {
+    const key = field.replaceAll("-", "_");
+    document.getElementById(`metadata-${field}`).value =
+      Object.prototype.hasOwnProperty.call(metadata, key) ? String(metadata[key]) : "";
+  });
 }
 
 function buildCanonicalPayloadFromForm() {
   const microbes = {};
   PRESET_MICROBES.forEach((name) => {
-    microbes[name] = readNumberInput(
+    const value = readNumberInput(
       document.getElementById(`microbe-${name}`),
-      `${name} 丰度`,
-      { emptyValue: 0 }
+      `${name} 丰度`
     );
+    if (value !== null) {
+      microbes[name] = value;
+    }
   });
 
   document.querySelectorAll("#extra-microbe-rows .microbe-row").forEach((row) => {
@@ -216,10 +280,39 @@ function buildCanonicalPayloadFromForm() {
     metabolites.tryptophan_metabolism = tryptophan;
   }
 
+  const metadata = {};
+  const currentMedications = readOptionalListInput(
+    document.getElementById("metadata-current-medications")
+  );
+  const drugAllergies = readOptionalListInput(
+    document.getElementById("metadata-drug-allergies")
+  );
+  if (currentMedications !== null) {
+    metadata.current_medications = currentMedications;
+  }
+  if (drugAllergies !== null) {
+    metadata.drug_allergies = drugAllergies;
+  }
+  metadata.suspected_condition =
+    document.getElementById("metadata-suspected-condition").value || "gut_risk_screening";
+  [
+    "recent-antibiotics",
+    "recent-probiotics",
+    "renal-impairment",
+    "hepatic-impairment",
+    "pregnancy"
+  ].forEach((field) => {
+    const value = readOptionalBinarySelect(document.getElementById(`metadata-${field}`));
+    if (value !== null) {
+      metadata[field.replaceAll("-", "_")] = value;
+    }
+  });
+
   return {
     microbes,
     clinical,
-    metabolites
+    metabolites,
+    metadata
   };
 }
 
@@ -230,25 +323,313 @@ function renderStandardizedPreview(payload, sourceFormat) {
   });
 }
 
-function renderRecommendations(items) {
-  const list = document.getElementById("recommendation-list");
-  list.innerHTML = "";
+function renderPlainLanguageSummary(assessment) {
+  const summary = assessment.plain_language_summary || {};
+  const headline = document.getElementById("pharmacy-headline");
+  const actionList = document.getElementById("pharmacy-now-list");
+  const safetyNote = document.getElementById("pharmacy-safety-note");
+  const actions = Array.isArray(summary.what_to_do_now) ? summary.what_to_do_now : [];
+
+  headline.textContent = summary.headline || "结果已生成，请按优先级逐项核对";
+  actionList.innerHTML = "";
+  if (!actions.length) {
+    const item = document.createElement("li");
+    item.textContent = "当前没有可展示的行动项，请查看输入完整性或稍后重新分析。";
+    actionList.appendChild(item);
+  } else {
+    actions.forEach((action) => {
+      const item = document.createElement("li");
+      item.textContent = action;
+      actionList.appendChild(item);
+    });
+  }
+  safetyNote.textContent = summary.safety_note
+    || "这是给医生或药师复核的辅助清单，不是诊断或处方。";
+}
+
+function renderPharmacyStatus(assessment) {
+  const card = document.getElementById("pharmacy-status-card");
+  const statusNode = document.getElementById("pharmacy-status");
+  const reasonNode = document.getElementById("pharmacy-status-reason");
+  const status = String(assessment.status || "withheld");
+  const reasons = assessment.quality?.status_reasons || [];
+
+  if (!assessment.engine_version) {
+    statusNode.textContent = "药学结果暂时不可用";
+    reasonNode.textContent = "请重新分析；如仍失败，改由医生或药师人工核对。";
+  } else if (status === "standard") {
+    statusNode.textContent = assessment.status_label || "信息较完整，可供医生或药师参考";
+    reasonNode.textContent = "当前输入未触发可靠性限制，但结果仍不能替代病历、检查和人工判断。";
+  } else {
+    statusNode.textContent = assessment.status_label || "信息不完整，请先补充或核对";
+    const readableReasons = reasons
+      .map((reason) => reason.message)
+      .filter(Boolean)
+      .slice(0, 3);
+    reasonNode.textContent = readableReasons.length
+      ? `先处理：${readableReasons.join("；")}`
+      : "先按优先行动补全信息或修正异常值，然后重新分析。";
+  }
+
+  card.className = `summary-card pharmacy-status-card status-${status}`;
+}
+
+function renderDrugKnowledgeSummary(assessment) {
+  const valueNode = document.getElementById("drug-knowledge-coverage");
+  const detailNode = document.getElementById("drug-knowledge-detail");
+  const knowledge = assessment.drug_knowledge || {};
+  const medicationContext = assessment.medication_context || {};
+  const normalization = knowledge.normalization || {};
+  const interaction = knowledge.interaction_screening || {};
+
+  if (!knowledge.available) {
+    valueNode.textContent = "药品资料暂时无法读取";
+    detailNode.textContent = "请把完整用药和过敏清单交给医生或药师人工核对。";
+    return;
+  }
+
+  const inputCount = Number(normalization.input_count || 0);
+  const matchedCount = Number(normalization.matched_count || 0);
+  const matchCount = Number(interaction.match_count || 0);
+  const labelCount = Number(knowledge.label_lookup?.record_count || 0);
+  if (!inputCount && medicationContext.medication_list_available === true) {
+    valueNode.textContent = "当前记录：没有在用药物";
+    detailNode.textContent = "如果这是真实情况，无需补填；因为没有用药组合，所以不会进行相互作用核对。";
+  } else if (!inputCount) {
+    valueNode.textContent = "尚未填写当前用药";
+    detailNode.textContent = "填写药盒或处方上的通用名、剂型、规格和每天用法后再核对。";
+  } else if (matchCount > 0) {
+    valueNode.textContent = `发现 ${matchCount} 组需要优先核对的用药组合`;
+    detailNode.textContent = `${matchedCount}/${inputCount} 项药名已识别，${labelCount} 份说明书可查看。`;
+  } else if (interaction.interaction_screening_performed === true) {
+    valueNode.textContent = "未发现已收录的最高风险用药组合";
+    detailNode.textContent = `${matchedCount}/${inputCount} 项药名已识别，${labelCount} 份说明书可查看；这不等于没有其他相互作用。`;
+  } else {
+    valueNode.textContent = "尚未完成用药组合核对";
+    detailNode.textContent = `${matchedCount}/${inputCount} 项药名已识别，${labelCount} 份说明书可查看；请补全未识别药名或至少填写两项用药。`;
+  }
+}
+
+function renderMedicationLabelEvidence(assessment) {
+  const container = document.getElementById("medication-label-list");
+  const records = assessment.drug_knowledge?.label_lookup?.records || [];
+  container.innerHTML = "";
+
+  if (!records.length) {
+    const empty = document.createElement("p");
+    empty.className = "empty-evidence-note";
+    empty.textContent = "未匹配到可展示的产品说明书。请补充通用名、剂型、规格和给药途径。";
+    container.appendChild(empty);
+    return;
+  }
+
+  records.forEach((record) => {
+    const article = document.createElement("article");
+    article.className = "label-evidence-item";
+
+    const heading = document.createElement("strong");
+    heading.textContent = `当前用药：${record.input || record.display_name || record.drug_id}`;
+    article.appendChild(heading);
+
+    const matchedName = document.createElement("p");
+    matchedName.className = "label-matched-name";
+    matchedName.textContent = `系统识别为：${record.display_name || record.drug_id}`;
+    article.appendChild(matchedName);
+
+    const prompt = document.createElement("p");
+    prompt.className = "label-review-prompt";
+    prompt.textContent = record.review_prompt
+      || "先核对实际药名、剂型、规格和每天用法是否与这份说明书一致。";
+    article.appendChild(prompt);
+
+    const identity = record.label_identity || {};
+    const links = document.createElement("div");
+    links.className = "label-source-links";
+    const source = record.source || {};
+    [
+      ["查看 DailyMed 官方说明书", source.dailymed_url],
+      ["查看 openFDA 记录", source.openfda_query_url]
+    ].forEach(([label, href]) => {
+      if (!href) {
+        return;
+      }
+      const link = document.createElement("a");
+      link.textContent = label;
+      link.className = "evidence-link-button";
+      link.href = href;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      links.appendChild(link);
+    });
+    if (links.childNodes.length) {
+      article.appendChild(links);
+    }
+
+    Object.entries(record.sections || {}).forEach(([sectionName, section]) => {
+      const details = document.createElement("details");
+      details.className = "label-section";
+      const summary = document.createElement("summary");
+      summary.textContent = `查看英文说明书原文：${section.label_zh || sectionName}`;
+      const text = document.createElement("p");
+      text.textContent = section.excerpt || "";
+      details.appendChild(summary);
+      details.appendChild(text);
+      article.appendChild(details);
+    });
+
+    const technical = document.createElement("details");
+    technical.className = "label-section label-technical-details";
+    const technicalSummary = document.createElement("summary");
+    technicalSummary.textContent = "技术信息";
+    const meta = document.createElement("p");
+    meta.textContent = [
+      `RxCUI: ${record.rxcui || "-"}`,
+      `标签日期: ${identity.effective_time || "-"}`,
+      `给药途径: ${(identity.routes || []).join(", ") || "-"}`,
+      `SPL SET ID: ${identity.spl_set_id || "-"}`
+    ].join(" | ");
+    technical.appendChild(technicalSummary);
+    technical.appendChild(meta);
+    article.appendChild(technical);
+
+    const boundary = document.createElement("p");
+    boundary.className = "safety-boundary-note";
+    boundary.textContent = "说明书中的一般用法不是当前患者的具体剂量或疗程，不要据此自行改药。";
+    article.appendChild(boundary);
+    container.appendChild(article);
+  });
+}
+
+function buildRecommendationItem(item, sourceIndex) {
+  const li = document.createElement("li");
+  li.className = `result-item guidance-item guidance-${item.urgency || "routine"}`;
+
+  const heading = document.createElement("div");
+  heading.className = "guidance-item-heading";
+  const title = document.createElement("strong");
+  title.textContent = item.title || item.suggestion || "需要进一步核对";
+  const badge = document.createElement("span");
+  const independentGuidance = item.independent_of_model_result === true;
+  badge.className = independentGuidance
+    ? "urgency-badge urgency-independent"
+    : `urgency-badge urgency-${item.urgency || "routine"}`;
+  badge.textContent = independentGuidance
+    ? "独立指南提醒"
+    : item.urgency_label || (item.urgency === "priority" ? "优先处理" : "后续核对");
+  heading.appendChild(title);
+  heading.appendChild(badge);
+  li.appendChild(heading);
+
+  if (independentGuidance && item.decision_basis) {
+    const basis = document.createElement("p");
+    basis.className = "guidance-basis-note";
+    basis.textContent = item.decision_basis;
+    li.appendChild(basis);
+  }
+
+  const actionBlock = document.createElement("div");
+  actionBlock.className = "guidance-action-block";
+  const actionLabel = document.createElement("span");
+  actionLabel.className = "guidance-label";
+  actionLabel.textContent = "下一步";
+  const actionList = document.createElement("ol");
+  actionList.className = "guidance-steps";
+  const actions = Array.isArray(item.action_steps) && item.action_steps.length
+    ? item.action_steps
+    : [item.suggestion || "请由医生或药师进一步核对。"];
+  actions.forEach((action) => {
+    const step = document.createElement("li");
+    step.textContent = action;
+    actionList.appendChild(step);
+  });
+  actionBlock.appendChild(actionLabel);
+  actionBlock.appendChild(actionList);
+  li.appendChild(actionBlock);
+
+  const rationale = document.createElement("p");
+  rationale.className = "guidance-rationale";
+  const rationaleLabel = document.createElement("strong");
+  rationaleLabel.textContent = "为什么：";
+  rationale.appendChild(rationaleLabel);
+  rationale.appendChild(document.createTextNode(item.rationale || "需要结合完整临床资料判断。"));
+  li.appendChild(rationale);
+
+  if (Array.isArray(item.probiotic_candidates) && item.probiotic_candidates.length) {
+    const candidates = document.createElement("details");
+    candidates.className = "recommendation-details probiotic-candidates";
+    const candidateSummary = document.createElement("summary");
+    candidateSummary.textContent = "查看可供临床人员核对的菌株组合";
+    candidates.appendChild(candidateSummary);
+    item.probiotic_candidates.forEach((candidate) => {
+      const candidateNode = document.createElement("p");
+      candidateNode.textContent = (candidate.strains || []).join(" + ") || candidate.candidate_id;
+      candidates.appendChild(candidateNode);
+    });
+    li.appendChild(candidates);
+  }
+
+  const technical = document.createElement("details");
+  technical.className = "recommendation-details";
+  const technicalSummary = document.createElement("summary");
+  technicalSummary.textContent = "查看依据与技术信息";
+  technical.appendChild(technicalSummary);
+
+  const evidence = document.createElement("div");
+  evidence.className = "result-item-evidence";
+  (item.evidence_source_ids || []).forEach((sourceId) => {
+    const source = sourceIndex.get(sourceId);
+    const node = source?.url ? document.createElement("a") : document.createElement("span");
+    node.textContent = source?.organization ? `${source.organization} (${source.year})` : sourceId;
+    if (source?.url) {
+      node.href = source.url;
+      node.target = "_blank";
+      node.rel = "noopener noreferrer";
+    }
+    evidence.appendChild(node);
+  });
+  if (evidence.childNodes.length) {
+    technical.appendChild(evidence);
+  }
+
+  const meta = document.createElement("p");
+  meta.className = "result-item-meta";
+  meta.textContent = [
+    `规则: ${item.recommendation_id || "-"}`,
+    `类别: ${item.category || "-"}`,
+    `标志物: ${item.marker || "-"}`,
+    `证据等级: ${item.evidence_level || "-"}`
+  ].join(" | ");
+  technical.appendChild(meta);
+  li.appendChild(technical);
+  return li;
+}
+
+function renderGuidanceEmptyState(list, text) {
+  const item = document.createElement("li");
+  item.className = "guidance-empty-state";
+  item.textContent = text;
+  list.appendChild(item);
+}
+
+function renderRecommendations(items, assessment = {}) {
+  const priorityList = document.getElementById("priority-recommendation-list");
+  const routineList = document.getElementById("routine-recommendation-list");
+  priorityList.innerHTML = "";
+  routineList.innerHTML = "";
+  const sourceIndex = new Map(
+    (assessment.evidence_sources || []).map((source) => [source.source_id, source])
+  );
 
   items.forEach((item) => {
-    const li = document.createElement("li");
-    li.className = "result-item";
-    const title = document.createElement("strong");
-    title.textContent = item.suggestion || "未提供建议文本";
-    const rationale = document.createElement("p");
-    rationale.textContent = item.rationale || "未提供解释";
-    const meta = document.createElement("span");
-    meta.className = "result-item-meta";
-    meta.textContent = `marker: ${item.marker || "-"} | priority: ${item.priority ?? "-"}`;
-    li.appendChild(title);
-    li.appendChild(rationale);
-    li.appendChild(meta);
-    list.appendChild(li);
+    const target = item.urgency === "priority" ? priorityList : routineList;
+    target.appendChild(buildRecommendationItem(item, sourceIndex));
   });
+  if (!priorityList.childNodes.length) {
+    renderGuidanceEmptyState(priorityList, "当前没有需要优先处理的已识别事项。");
+  }
+  if (!routineList.childNodes.length) {
+    renderGuidanceEmptyState(routineList, "当前没有后续核对事项。");
+  }
 }
 
 function renderTopMicrobes(items) {
@@ -283,14 +664,23 @@ function formatRiskLevel(level) {
   return "未识别";
 }
 
-function renderRiskBanner(riskResult) {
+function renderRiskBanner(riskResult, assessment = {}) {
   const banner = document.getElementById("risk-banner");
+  const riskKicker = document.getElementById("risk-kicker");
   const riskScore = document.getElementById("risk-score");
   const riskLevel = document.getElementById("risk-level");
   const level = String(riskResult.risk_level || "unknown").toLowerCase();
   const percentile = riskResult.risk_percentile;
 
   banner.className = "risk-banner";
+  if (assessment.status === "withheld") {
+    banner.classList.add("risk-banner-withheld");
+    riskKicker.textContent = "当前输入超出模型适用范围";
+    riskScore.textContent = "--";
+    riskLevel.textContent = "先核对输入，再查看风险";
+    return;
+  }
+  riskKicker.textContent = "研究队列中的相对位置";
   if (level === "low") {
     banner.classList.add("risk-banner-low");
   } else if (level === "medium") {
@@ -310,11 +700,22 @@ function renderRiskBanner(riskResult) {
 }
 
 function renderResult(data) {
-  renderRiskBanner(data.risk_result || {});
-  renderRecommendations(data.recommendations || []);
+  const pharmacyAssessment = data.pharmacy_assessment || data.report?.pharmacy_assessment || {};
+  const recommendations = data.recommendations || pharmacyAssessment.recommendations || [];
+  renderRiskBanner(data.risk_result || {}, pharmacyAssessment);
+  renderPlainLanguageSummary(pharmacyAssessment);
+  renderPharmacyStatus(pharmacyAssessment);
+  renderDrugKnowledgeSummary(pharmacyAssessment);
+  renderRecommendations(recommendations, pharmacyAssessment);
+  renderMedicationLabelEvidence(pharmacyAssessment);
   renderTopMicrobes(data.top_microbes || []);
 
-  document.getElementById("recommendation-count").textContent = String((data.recommendations || []).length);
+  const actionSummary = pharmacyAssessment.plain_language_summary || {};
+  const actionableCount = Number.isFinite(Number(actionSummary.urgent_count))
+    && Number.isFinite(Number(actionSummary.routine_count))
+    ? Number(actionSummary.urgent_count) + Number(actionSummary.routine_count)
+    : recommendations.filter((item) => item.independent_of_model_result !== true).length;
+  document.getElementById("recommendation-count").textContent = String(actionableCount);
   document.getElementById("analysis-source").textContent =
     data.source_format === "raw_standardized"
       ? "输入来自原始临床 JSON，已自动标准化。"
