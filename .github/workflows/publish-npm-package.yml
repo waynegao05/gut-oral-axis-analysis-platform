@@ -1,0 +1,68 @@
+name: Publish npm package
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "npm-v*"
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: npm-package-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/client
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 20
+          registry-url: https://npm.pkg.github.com
+          scope: "@waynegao05"
+          cache: npm
+          cache-dependency-path: packages/client/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Test package
+        run: npm test
+
+      - name: Audit package contents
+        run: npm pack --dry-run
+
+      - name: Check published version
+        id: package
+        shell: bash
+        run: |
+          name=$(node -p "require('./package.json').name")
+          version=$(node -p "require('./package.json').version")
+          if npm view "$name@$version" version --registry=https://npm.pkg.github.com >/dev/null 2>&1; then
+            echo "already_published=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "already_published=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Publish package
+        if: steps.package.outputs.already_published != 'true'
+        run: npm publish --registry=https://npm.pkg.github.com
+
+      - name: Verify published package
+        run: |
+          name=$(node -p "require('./package.json').name")
+          version=$(node -p "require('./package.json').version")
+          published=$(npm view "$name@$version" version --registry=https://npm.pkg.github.com)
+          test "$published" = "$version"

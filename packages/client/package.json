@@ -1,0 +1,55 @@
+{
+  "name": "@waynegao05/gut-oral-axis-client",
+  "version": "2.0.0",
+  "description": "Typed API client for the Gut-Oral Axis Analysis Platform.",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/waynegao05/gut-oral-axis-analysis-platform.git",
+    "directory": "packages/client"
+  },
+  "homepage": "https://github.com/waynegao05/gut-oral-axis-analysis-platform#readme",
+  "bugs": {
+    "url": "https://github.com/waynegao05/gut-oral-axis-analysis-platform/issues"
+  },
+  "keywords": [
+    "gut-oral-axis",
+    "survival-analysis",
+    "microbiome",
+    "typescript",
+    "api-client"
+  ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://npm.pkg.github.com"
+  },
+  "scripts": {
+    "clean": "node scripts/clean.mjs",
+    "typecheck": "tsc --project tsconfig.json --noEmit",
+    "build": "npm run clean && tsc --project tsconfig.json",
+    "test": "npm run build && node --test test/*.test.mjs",
+    "prepack": "npm run build",
+    "prepublishOnly": "npm test"
+  },
+  "devDependencies": {
+    "typescript": "5.9.2"
+  }
+}

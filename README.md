@@ -48,6 +48,25 @@ python enhanced_app.py
 访问 `http://127.0.0.1:8765`。
 
 
+## npm Client Package | npm 客户端包
+
+The typed API client is published through GitHub Packages as
+`@waynegao05/gut-oral-axis-client`. It contains request helpers and TypeScript
+types only; datasets, generated outputs, plotting files, and trained weights are
+not included.
+
+```ini
+@waynegao05:registry=https://npm.pkg.github.com
+```
+
+```bash
+npm install @waynegao05/gut-oral-axis-client
+```
+
+GitHub Packages requires an authenticated token with `read:packages` for
+installation. Package source and usage examples are in
+[`packages/client`](packages/client).
+
 ## Web Input | 网页输入
 
 `/analyze` 接收标准化 JSON：

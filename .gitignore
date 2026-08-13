@@ -139,6 +139,7 @@ celerybeat.pid
 .envrc
 node_modules/
 /.npmrc
+*.tgz
 .venv
 env/
 venv/
@@ -223,6 +224,7 @@ cython_debug/
 **/checkpoints/
 /config/releases/*.json
 /archive/model_releases/
+/packages/client/dist/
 
 # Abstra
 # Abstra is an AI-powered process automation framework.
