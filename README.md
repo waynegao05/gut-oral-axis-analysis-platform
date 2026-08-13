@@ -51,9 +51,7 @@ python enhanced_app.py
 ## npm Client Package | npm 客户端包
 
 The typed API client is published through GitHub Packages as
-`@waynegao05/gut-oral-axis-client`. It contains request helpers and TypeScript
-types only; datasets, generated outputs, plotting files, and trained weights are
-not included.
+`@waynegao05/gut-oral-axis-client`.
 
 ```ini
 @waynegao05:registry=https://npm.pkg.github.com
