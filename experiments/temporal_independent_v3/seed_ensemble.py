@@ -40,6 +40,7 @@ def build_seed_ensemble(
     output_dir: str | Path,
     minimum_c_index_delta: float = 0.0003,
     maximum_alpha: float = 1.0,
+    emit_json: bool = True,
 ) -> dict[str, Any]:
     if len(run_dirs) < 2:
         raise ValueError("At least two completed seed runs are required for a seed ensemble.")
@@ -179,7 +180,8 @@ def build_seed_ensemble(
     }
     summary_path = output_path / "seed_ensemble_summary.json"
     summary_path.write_text(json.dumps(result, indent=2), encoding="utf-8")
-    print(json.dumps(result, indent=2))
+    if emit_json:
+        print(json.dumps(result, indent=2))
     return result
 
 
@@ -195,6 +197,7 @@ def main() -> None:
         output_dir=args.output_dir,
         minimum_c_index_delta=args.minimum_c_index_delta,
         maximum_alpha=args.maximum_alpha,
+        emit_json=True,
     )
 
 

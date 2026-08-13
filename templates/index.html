@@ -13,13 +13,13 @@
           <p class="eyebrow">Research Decision Support</p>
           <h1>{{ app_name }}</h1>
           <p class="hero-text">
-            用于整理肠口轴风险和用药安全信息。填写微生物、健康情况和当前用药后，页面会列出需要优先核对的事项。
+            基于 AC-ICAM 真实随访结局估计结直肠癌患者的相对无进展生存风险，并整理菌群与用药安全核对事项。
           </p>
         </div>
         <div class="hero-stat">
-          <span class="hero-stat-label">当前输出</span>
-          <strong>风险提示 + 用药核对 + 下一步行动</strong>
-          <p>先说明该做什么，再按需查看依据；最终用药决定仍由医生或药师完成。</p>
+          <span class="hero-stat-label">当前模型</span>
+          <strong>{{ model_release }}</strong>
+          <p>研究决策支持，不用于癌症筛查、诊断或替代医生制定治疗方案。</p>
         </div>
       </header>
 
@@ -63,9 +63,12 @@
 
           <div class="section-block">
             <div class="section-title-row">
-              <h3>口腔微生物</h3>
+              <h3>菌群信息（可选）</h3>
               <button type="button" class="ghost-button small-button" id="add-microbe-row">添加自定义菌种</button>
             </div>
+            <p class="section-help">
+              五项核心菌群全部填写后，无完整病理资料的用户可获得独立的研究风险参考分位。菌群数据不改变正式 V8 PFS 分数，缺失菌也不会被当作 0。
+            </p>
             <div class="field-grid microbes-grid">
               <label class="input-card">
                 <span>Fusobacterium</span>
@@ -92,12 +95,99 @@
           </div>
 
           <div class="section-block">
-            <h3>临床特征</h3>
+            <h3>基础信息与结直肠癌病理资料</h3>
+            <p class="section-help">
+              年龄和生物学性别必填，年龄范围为 18–75 岁。其余肿瘤病理资料均为选填：
+              没有癌症诊断或病理资料时可以全部留空；只有资料完整时才计算 V8 PFS，
+              空白字段不会被当作正常分期或补成默认值。ICR 必须来自肿瘤 RNA 实测。
+            </p>
             <div class="field-grid">
               <label class="input-card">
                 <span>年龄</span>
-                <input type="number" id="clinical-age" step="1" min="1" max="120">
+                <input type="number" id="clinical-age" step="1" min="18" max="75" required>
               </label>
+              <label class="input-card">
+                <span>生物学性别</span>
+                <select id="clinical-sex" required>
+                  <option value="">请选择</option>
+                  <option value="Female">女</option>
+                  <option value="Male">男</option>
+                </select>
+              </label>
+              <label class="input-card">
+                <span>AJCC 分期（选填）</span>
+                <select id="clinical-stage">
+                  <option value="">未提供 / 不适用</option>
+                  <option value="1">I 期</option>
+                  <option value="2">II 期</option>
+                  <option value="3">III 期</option>
+                  <option value="4">IV 期</option>
+                </select>
+              </label>
+              <label class="input-card">
+                <span>病理 T 分期（选填）</span>
+                <select id="clinical-path-t">
+                  <option value="">未提供 / 不适用</option>
+                  <option value="1">T1</option>
+                  <option value="2">T2</option>
+                  <option value="3">T3</option>
+                  <option value="4">T4</option>
+                </select>
+              </label>
+              <label class="input-card">
+                <span>病理 N 分期（选填）</span>
+                <select id="clinical-path-n">
+                  <option value="">未提供 / 不适用</option>
+                  <option value="0">N0</option>
+                  <option value="1">N1</option>
+                  <option value="2">N2</option>
+                </select>
+              </label>
+              <label class="input-card">
+                <span>病理 M 分期（选填）</span>
+                <select id="clinical-path-m">
+                  <option value="">未提供 / 不适用</option>
+                  <option value="0">M0</option>
+                  <option value="1">M1</option>
+                </select>
+              </label>
+              <label class="input-card">
+                <span>肿瘤部位（选填）</span>
+                <select id="clinical-tumor-location">
+                  <option value="">未提供 / 不适用</option>
+                  <option value="Ceceum">盲肠</option>
+                  <option value="Colon Ascendens">升结肠</option>
+                  <option value="Flexura Hepatica">结肠肝曲</option>
+                  <option value="Colon Transversum">横结肠</option>
+                  <option value="Flexura Lienalis">结肠脾曲</option>
+                  <option value="Colon Descendens">降结肠</option>
+                  <option value="Colon Sigmoideum">乙状结肠</option>
+                  <option value="Rectosigmoideum">直乙交界</option>
+                </select>
+              </label>
+              <label class="input-card">
+                <span>肿瘤形态学（选填）</span>
+                <select id="clinical-tumor-morphology">
+                  <option value="">未提供 / 不适用</option>
+                  <option value="Adenocarcinoma">腺癌</option>
+                  <option value="Adenocarcinoma Intestinal Type">肠型腺癌</option>
+                  <option value="Mucineus Adenocarcinoma">黏液腺癌</option>
+                  <option value="Signet Ring Cell Carcinoma">印戒细胞癌</option>
+                  <option value="Cribriform Carcinoma">筛状癌</option>
+                  <option value="Adenocarcinoma In Villeus Adenoma">绒毛状腺瘤伴腺癌</option>
+                  <option value="Adenocarcinoma With Mixed Subtypes">混合亚型腺癌</option>
+                </select>
+              </label>
+              <label class="input-card">
+                <span>肿瘤 RNA ICR 评分（可选）</span>
+                <input type="number" id="clinical-icr-score" step="0.0001" min="0" max="20">
+              </label>
+            </div>
+          </div>
+
+          <div class="section-block">
+            <h3>其他健康信息</h3>
+            <div class="field-grid">
               <label class="input-card">
                 <span>BMI</span>
                 <input type="number" id="clinical-bmi" step="0.1" min="5" max="100">
@@ -153,6 +243,7 @@
                 <span>目前已经明确的临床情况</span>
                 <select id="metadata-suspected-condition">
                   <option value="gut_risk_screening">一般风险筛查 / 还没有明确诊断或用药目的</option>
+                  <option value="colorectal_cancer_followup">已确诊结直肠癌 / 术后随访</option>
                   <option value="c_difficile_prevention_during_antibiotics">抗生素治疗期间预防艰难梭菌感染</option>
                   <option value="pouchitis">已确认储袋炎</option>
                   <option value="c_difficile_infection">已确认艰难梭菌感染</option>
@@ -211,6 +302,79 @@
           </div>
         </section>
 
+        {% if internal_oral_adenoma_enabled %}
+        <section class="panel panel-internal" id="oral-adenoma-panel">
+          <div class="panel-header">
+            <p class="eyebrow">Internal Research Only</p>
+            <h2>口腔菌群腺瘤内部筛查</h2>
+            <p>
+              独立运行，不改变现有 AC-ICAM V8 PFS 结果。仅接受完整的口腔拭子或唾液菌属百分比，
+              不接受粪便、血液或组织数据。
+            </p>
+          </div>
+
+          <div class="internal-model-meta">
+            <span>模型：<strong id="oral-adenoma-release">加载中</strong></span>
+            <span>必需菌属：<strong id="oral-adenoma-feature-count">381</strong></span>
+          </div>
+
+          <div class="field-grid internal-input-grid">
+            <label class="input-card">
+              <span>样本类型</span>
+              <select id="oral-adenoma-sample-type">
+                <option value="oral_swab">口腔拭子</option>
+                <option value="buccal_swab">颊黏膜拭子</option>
+                <option value="saliva">唾液</option>
+              </select>
+            </label>
+            <label class="file-trigger internal-file-trigger">
+              <input type="file" id="oral-adenoma-file" accept=".json,application/json">
+              <span>上传381菌属JSON</span>
+            </label>
+          </div>
+
+          <label class="field-label" for="oral-adenoma-json">菌属百分比 JSON</label>
+          <textarea
+            id="oral-adenoma-json"
+            class="json-textarea oral-adenoma-textarea"
+            spellcheck="false"
+            placeholder='{"g__Streptococcus": 12.5, "g__Prevotella": 8.2}'
+          ></textarea>
+
+          <div class="button-row">
+            <button type="button" class="primary-button" id="run-oral-adenoma">运行内部筛查</button>
+            <button type="button" class="secondary-button" id="download-oral-template">下载输入模板</button>
+          </div>
+          <div class="status-box" id="oral-adenoma-status">正在加载内部模型信息。</div>
+
+          <div class="oral-adenoma-result" id="oral-adenoma-result" hidden>
+            <div class="summary-grid guidance-summary-grid">
+              <article class="summary-card">
+                <span>内部研究结果</span>
+                <strong id="oral-adenoma-decision">--</strong>
+                <p>模型概率 <span id="oral-adenoma-probability">--</span>；阈值 <span id="oral-adenoma-threshold">--</span></p>
+              </article>
+              <article class="summary-card">
+                <span>内部验证灵敏度</span>
+                <strong id="oral-adenoma-sensitivity">--</strong>
+                <p>腺瘤对健康对照，非专门的 ≤5 mm 微小腺瘤终点。</p>
+              </article>
+              <article class="summary-card">
+                <span>内部验证假阳性率</span>
+                <strong id="oral-adenoma-fpr">--</strong>
+                <p>来自58名健康对照的重复嵌套OOF结果。</p>
+              </article>
+              <article class="summary-card">
+                <span>内部验证 ROC AUC</span>
+                <strong id="oral-adenoma-auc">--</strong>
+                <p>单中心回顾性内部研究，不代表临床诊断性能。</p>
+              </article>
+            </div>
+            <p class="internal-boundary" id="oral-adenoma-boundary"></p>
+          </div>
+        </section>
+        {% endif %}
+
         <section class="panel panel-result">
           <div class="panel-header">
             <h2>结果输出</h2>
@@ -221,6 +385,45 @@
             <span class="risk-kicker" id="risk-kicker">尚未分析</span>
             <strong id="risk-score">--</strong>
             <span id="risk-level">等待输入</span>
+            <div
+              class="risk-scale"
+              id="risk-scale"
+              role="img"
+              aria-label="风险参考分位尚未生成"
+            >
+              <div class="risk-scale-track">
+                <span class="risk-scale-fill" id="risk-scale-fill"></span>
+                <span class="risk-scale-marker" id="risk-scale-marker"></span>
+              </div>
+              <div class="risk-scale-labels" aria-hidden="true">
+                <span>0</span>
+                <span>参考分位</span>
+                <span>100</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="summary-grid guidance-summary-grid" id="v8-outcome-summary">
+            <article class="summary-card">
+              <span>36 月无进展生存概率</span>
+              <strong id="pfs-probability-36">--</strong>
+              <p>基于 AC-ICAM 队列的模型估计，不是个体预后保证。</p>
+            </article>
+            <article class="summary-card">
+              <span>60 月无进展生存概率</span>
+              <strong id="pfs-probability-60">--</strong>
+              <p>需结合病理、影像、治疗过程和随访结果解释。</p>
+            </article>
+            <article class="summary-card">
+              <span>本次使用的模型</span>
+              <strong id="v8-model-variant">等待分析</strong>
+              <p id="v8-model-scope">适用于已确诊 AJCC I-IV 期结直肠癌患者。</p>
+            </article>
+            <article class="summary-card">
+              <span>模型边界</span>
+              <strong>研究用途</strong>
+              <p>不是筛查、诊断、医嘱或治疗决策工具。</p>
+            </article>
           </div>
 
           <article class="action-summary-card" id="pharmacy-action-summary">
@@ -289,6 +492,6 @@
       </main>
     </div>
 
-    <script src="{{ url_for('static', filename='app.js') }}"></script>
+    <script src="{{ url_for('static', filename='generated/app.js') }}" defer></script>
   </body>
 </html>

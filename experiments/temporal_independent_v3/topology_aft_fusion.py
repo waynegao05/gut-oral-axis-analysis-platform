@@ -251,7 +251,7 @@ def build_topology_fingerprint_from_frames(
         merged["axis_pathogen_function_mean"] = merged[pathogen_function].mean(axis=1)
         merged["axis_dysbiosis_function"] = merged["axis_pathogen_function_mean"] - merged[protective_function]
 
-    excluded = {"sample_id", "time", "event"}
+    excluded = {"sample_id", "time", "event", "generation_group_id"}
     feature_columns = [column for column in merged.columns if column not in excluded]
     numeric = merged[feature_columns].apply(pd.to_numeric, errors="coerce")
     merged.loc[:, feature_columns] = numeric.replace([np.inf, -np.inf], np.nan)

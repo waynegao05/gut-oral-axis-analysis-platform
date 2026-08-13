@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any, Dict, List, Tuple
 import numpy as np
 import pandas as pd
 import torch
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import GroupShuffleSplit, train_test_split
 
 from research.task import (
     get_survival_task_definition,
@@ -29,6 +29,8 @@ class DatasetBundle:
     node_feature_dim: int
     clinical_dim: int
     metabolite_dim: int
+    num_node_types: int
+    node_type_names: List[str]
     task_definition: dict[str, Any]
     data_summary: dict[str, Any]
     split_summary: dict[str, Any]
@@ -263,10 +265,29 @@ def load_research_tables(
     metabolite_df = metabolite_df.loc[metabolite_df["sample_id"].astype(str).isin(shared_sample_ids)].copy()
     label_df = label_df.loc[label_df["sample_id"].astype(str).isin(shared_sample_ids)].copy()
 
+    dataset_origin = infer_dataset_origin(graph_csv, clinical_csv, metabolite_csv, label_csv)
+    strict_assumptions = [
+        "All modalities are inner-joined on sample_id before splitting.",
+        "Evaluation remains survival-style and uses the same time/event semantics across deep models and baselines.",
+    ]
+    if dataset_origin["dataset_version"] == "topology_v7":
+        strict_assumptions.extend(
+            [
+                "topology_v7 contains model-generated development samples anchored to a 42-patient public paired oral-gut cohort.",
+                "Clinical variables, metabolites, topology targets, and survival labels are generated proxies rather than observed patient measurements.",
+                "generation_group_id must remain disjoint across train, validation, and test splits.",
+                "Performance on topology_v7 measures generator recovery and is not external clinical validation.",
+            ]
+        )
+    else:
+        strict_assumptions.append(
+            "topology_v6 is synthetic/noisy augmented research data and is not an external clinical benchmark."
+        )
+
     data_summary = {
         "task_definition": get_survival_task_definition(),
         "label_summary": summarize_survival_labels(label_df),
-        "dataset_origin": infer_dataset_origin(graph_csv, clinical_csv, metabolite_csv, label_csv),
+        "dataset_origin": dataset_origin,
         "modalities": {
             "graph_num_rows": int(len(graph_df)),
             "graph_num_samples": int(graph_df["sample_id"].nunique()),
@@ -276,11 +297,7 @@ def load_research_tables(
         },
         "dropped_sample_id_examples": dropped,
         "data_quality": data_quality,
-        "strict_assumptions": [
-            "All modalities are inner-joined on sample_id before splitting.",
-            "Current repository dataset version is inferred from file names; topology_v6 is treated as synthetic/noisy augmented research data.",
-            "Evaluation remains survival-style and uses the same time/event semantics across deep models and baselines.",
-        ],
+        "strict_assumptions": strict_assumptions,
     }
     return graph_df, clinical_df, metabolite_df, label_df, data_summary
 
@@ -359,11 +376,25 @@ def _event_stratify_labels(sample_df: pd.DataFrame) -> np.ndarray | None:
     return event_values
 
 
+def _canonical_group_value(value: Any) -> str:
+    if pd.isna(value):
+        raise ValueError("generation_group_id cannot contain missing values.")
+    try:
+        numeric = float(value)
+    except (TypeError, ValueError):
+        return str(value)
+    if np.isfinite(numeric) and numeric.is_integer():
+        return str(int(numeric))
+    return str(value)
+
+
 def split_sample_table(
     sample_df: pd.DataFrame,
     seed: int,
     val_ratio: float,
     test_ratio: float,
+    validation_group: str | int | None = None,
+    test_group: str | int | None = None,
 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, dict[str, Any]]:
     if val_ratio <= 0 or test_ratio <= 0 or (val_ratio + test_ratio) >= 1.0:
         raise ValueError("val_ratio and test_ratio must be positive and sum to less than 1.")
@@ -372,25 +403,67 @@ def split_sample_table(
     if total < 5:
         raise ValueError("At least 5 samples are required for reproducible train/val/test splitting.")
 
-    effective_test_ratio = test_ratio
-    stratify = _event_stratify_labels(sample_df)
-    train_val_df, test_df = train_test_split(
-        sample_df,
-        test_size=effective_test_ratio,
-        random_state=seed,
-        shuffle=True,
-        stratify=stratify,
-    )
-
+    group_column = "generation_group_id" if "generation_group_id" in sample_df.columns else None
     effective_val_ratio = val_ratio / (1.0 - test_ratio)
-    stratify_train_val = _event_stratify_labels(train_val_df)
-    train_df, val_df = train_test_split(
-        train_val_df,
-        test_size=effective_val_ratio,
-        random_state=seed,
-        shuffle=True,
-        stratify=stratify_train_val,
-    )
+    explicit_group_split = validation_group is not None or test_group is not None
+    if explicit_group_split and (validation_group is None or test_group is None):
+        raise ValueError("validation_group and test_group must be provided together.")
+    if explicit_group_split and group_column is None:
+        raise ValueError("Explicit LOGO splitting requires generation_group_id.")
+
+    if explicit_group_split:
+        group_values = sample_df[group_column].map(_canonical_group_value)
+        requested_validation_group = _canonical_group_value(validation_group)
+        requested_test_group = _canonical_group_value(test_group)
+        if requested_validation_group == requested_test_group:
+            raise ValueError("validation_group and test_group must be distinct.")
+        available_groups = set(group_values.unique().tolist())
+        missing_groups = sorted(
+            {requested_validation_group, requested_test_group}.difference(available_groups)
+        )
+        if missing_groups:
+            raise ValueError(f"Explicit LOGO groups are absent from the dataset: {missing_groups}")
+
+        val_df = sample_df.loc[group_values == requested_validation_group].copy()
+        test_df = sample_df.loc[group_values == requested_test_group].copy()
+        train_df = sample_df.loc[
+            ~group_values.isin([requested_validation_group, requested_test_group])
+        ].copy()
+        split_strategy = "generation_group_explicit_logo_train_val_test_split"
+    elif group_column is not None:
+        group_values = sample_df[group_column].map(_canonical_group_value).to_numpy()
+        if len(np.unique(group_values)) < 3:
+            raise ValueError("Grouped splitting requires at least three distinct generation groups.")
+        outer = GroupShuffleSplit(n_splits=1, test_size=test_ratio, random_state=seed)
+        train_val_indices, test_indices = next(outer.split(sample_df, groups=group_values))
+        train_val_df = sample_df.iloc[train_val_indices].copy()
+        test_df = sample_df.iloc[test_indices].copy()
+
+        train_val_groups = train_val_df[group_column].map(_canonical_group_value).to_numpy()
+        inner = GroupShuffleSplit(n_splits=1, test_size=effective_val_ratio, random_state=seed + 1)
+        train_indices, val_indices = next(inner.split(train_val_df, groups=train_val_groups))
+        train_df = train_val_df.iloc[train_indices].copy()
+        val_df = train_val_df.iloc[val_indices].copy()
+        split_strategy = "generation_group_disjoint_train_val_test_split"
+    else:
+        stratify = _event_stratify_labels(sample_df)
+        train_val_df, test_df = train_test_split(
+            sample_df,
+            test_size=test_ratio,
+            random_state=seed,
+            shuffle=True,
+            stratify=stratify,
+        )
+
+        stratify_train_val = _event_stratify_labels(train_val_df)
+        train_df, val_df = train_test_split(
+            train_val_df,
+            test_size=effective_val_ratio,
+            random_state=seed,
+            shuffle=True,
+            stratify=stratify_train_val,
+        )
+        split_strategy = "event_stratified_train_val_test_split"
 
     for split_name, split_df in [("train", train_df), ("val", val_df), ("test", test_df)]:
         if split_df.empty:
@@ -404,7 +477,7 @@ def split_sample_table(
 
     split_summary = {
         "split_seed": int(seed),
-        "split_strategy": "event_stratified_train_val_test_split",
+        "split_strategy": split_strategy,
         "num_total_samples": int(total),
         "train": summarize_survival_labels(train_df[["sample_id", "time", "event"]]),
         "val": summarize_survival_labels(val_df[["sample_id", "time", "event"]]),
@@ -413,6 +486,17 @@ def split_sample_table(
         "val_sample_ids_preview": val_df["sample_id"].astype(str).head(10).tolist(),
         "test_sample_ids_preview": test_df["sample_id"].astype(str).head(10).tolist(),
     }
+    if group_column is not None:
+        split_summary["group_column"] = group_column
+        split_summary["train_groups"] = sorted(
+            train_df[group_column].map(_canonical_group_value).unique().tolist()
+        )
+        split_summary["val_groups"] = sorted(
+            val_df[group_column].map(_canonical_group_value).unique().tolist()
+        )
+        split_summary["test_groups"] = sorted(
+            test_df[group_column].map(_canonical_group_value).unique().tolist()
+        )
 
     return (
         train_df.reset_index(drop=True),
@@ -437,8 +521,11 @@ def build_dataset_from_csv(
     standardize_tabular: bool = False,
     val_ratio: float = 0.2,
     test_ratio: float = 0.1,
+    validation_group: str | int | None = None,
+    test_group: str | int | None = None,
 ) -> DatasetBundle:
     from torch_geometric.data import Data
+    from research.model_v2 import compute_single_graph_structure
 
     graph_df, clinical_df, metabolite_df, label_df, data_summary = load_research_tables(
         graph_csv=graph_csv,
@@ -454,6 +541,8 @@ def build_dataset_from_csv(
         seed=effective_split_seed,
         val_ratio=val_ratio,
         test_ratio=test_ratio,
+        validation_group=validation_group,
+        test_group=test_group,
     )
 
     if standardize_tabular:
@@ -481,6 +570,8 @@ def build_dataset_from_csv(
         "test": set(test_df["sample_id"].astype(str).tolist()),
     }
     merged_by_id = sample_table.set_index("sample_id")
+    node_type_names = sorted(graph_df["node_name"].astype(str).unique().tolist())
+    node_type_to_index = {name: index for index, name in enumerate(node_type_names)}
 
     data_list_by_split: dict[str, List[Data]] = {"train": [], "val": [], "test": []}
 
@@ -499,6 +590,10 @@ def build_dataset_from_csv(
         if node_feature_rows.isna().any().any():
             raise ValueError(f"Node features contain NaN values for sample {sample_id}.")
         x = torch.tensor(node_feature_rows.to_numpy(dtype=float), dtype=torch.float32)
+        node_type = torch.tensor(
+            [node_type_to_index[str(name)] for name in node_order],
+            dtype=torch.long,
+        )
 
         processed_graph = preprocess_sample_graph(
             sample_graph,
@@ -506,6 +601,11 @@ def build_dataset_from_csv(
             min_edge_weight=min_edge_weight,
         )
         edge_index, edge_attr = _build_edges(processed_graph, node_order)
+        node_struct, node_targets, graph_targets, graph_cluster_targets = compute_single_graph_structure(
+            x=x,
+            edge_index=edge_index,
+            edge_attr=edge_attr,
+        )
         clinical = torch.tensor(sample_meta[clinical_columns].to_numpy(dtype=float), dtype=torch.float32)
         metabolites = torch.tensor(sample_meta[metabolite_columns].to_numpy(dtype=float), dtype=torch.float32)
         time = torch.tensor(float(sample_meta["time"]), dtype=torch.float32)
@@ -515,6 +615,11 @@ def build_dataset_from_csv(
             x=x,
             edge_index=edge_index,
             edge_attr=edge_attr,
+            node_type=node_type,
+            node_struct=node_struct,
+            node_targets=node_targets,
+            graph_targets=graph_targets,
+            graph_cluster_targets=graph_cluster_targets,
             clinical=clinical,
             metabolites=metabolites,
             time=time,
@@ -535,6 +640,9 @@ def build_dataset_from_csv(
         "node_feature_dim": int(len(node_feature_columns)),
         "clinical_dim": int(len(clinical_columns)),
         "metabolite_dim": int(len(metabolite_columns)),
+        "num_node_types": int(len(node_type_names)),
+        "node_type_names": node_type_names,
+        "precomputed_structure_features": True,
     }
     data_summary["graph_preprocess"] = {
         "keep_top_k_edges": keep_top_k_edges,
@@ -550,6 +658,8 @@ def build_dataset_from_csv(
         node_feature_dim=len(node_feature_columns),
         clinical_dim=len(clinical_columns),
         metabolite_dim=len(metabolite_columns),
+        num_node_types=len(node_type_names),
+        node_type_names=node_type_names,
         task_definition=get_survival_task_definition(),
         data_summary=data_summary,
         split_summary=split_summary,

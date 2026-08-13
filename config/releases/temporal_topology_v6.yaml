@@ -1,0 +1,50 @@
+seed: 42
+train:
+  batch_size: 8
+  epochs: 180
+  lr: 0.0003
+  weight_decay: 0.01
+  hidden_dim: 96
+  heads: 4
+  dropout: 0.25
+  edge_hidden_dim: 24
+  num_layers: 4
+  layer_attn_heads: 4
+  use_layer_attention: false
+  contrastive_temperature: 0.2
+  survival_head_type: cox
+  num_time_bins: 12
+  graph_aux_weight: 0.08
+  node_aux_weight: 0.05
+  contrastive_weight: 0.0
+  ranking_weight: 0.0
+  ranking_margin: 0.0
+  ranking_warmup_epochs: 12
+  grad_clip_norm: 1.0
+  warmup_epochs: 10
+  early_stop_patience: 18
+  val_ratio: 0.2
+  test_ratio: 0.2
+  min_delta: 0.0005
+paths:
+  graph_csv: archive/datasets/topology_v6/topology_v6_sample_graph_table.csv
+  clinical_csv: archive/datasets/topology_v6/topology_v6_sample_clinical_table.csv
+  metabolite_csv: archive/datasets/topology_v6/topology_v6_sample_metabolite_table.csv
+  label_csv: archive/datasets/topology_v6/topology_v6_sample_label_table.csv
+  output_dir: outputs/current_mainline_v2/research
+graph_preprocess:
+  keep_top_k_edges:
+  min_edge_weight:
+model:
+  node_feature_columns:
+    - abundance
+    - function_score
+  clinical_columns:
+    - age
+    - bmi
+    - smoking
+    - family_history
+  metabolite_columns:
+    - bile_acids
+    - scfa
+    - tryptophan_metabolism

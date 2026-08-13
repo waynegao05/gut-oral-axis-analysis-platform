@@ -1,23 +1,30 @@
 # Gut-Oral Axis Analysis Platform | 肠口轴分析平台
 
-面向右删失生存风险预测的研究与网页演示平台。当前正式网页后端将结构感知 GNN 与时间拓扑 AFT 专家进行跨划分共识融合。
+面向右删失生存风险预测的研究与网页演示平台。当前正式网页后端使用
+AC-ICAM 真实 PFS/OS 随访数据训练的 V8 PFS 模型；旧的时间拓扑模型继续保留为本地回滚和研究比较路径。
 
 ## Current Release | 当前发布
 
 | Item | Current value |
 |---|---|
+| Platform release | `CTM2.0` |
 | Task | right-censored survival risk prediction (`time`, `event`) |
-| Default backend | `temporal_topology_aft_cross_split_consensus` |
-| Release | `temporal_topology_aft_cross_split_consensus_v1` |
-| Split branches | `42`, `43` |
+| Default backend | `ac_icam_real_outcome_clinical_pfs` |
+| Model release | `ac_icam_real_outcome_pfs_v8` |
+| Primary endpoint | PFS |
+| Cohort | 246 AC-ICAM patients, 71 PFS events |
 | Model seeds | `7`, `21`, `42`, `123`, `2026` |
-| Members | 6 GNN models + 10 AFT models |
-| Consensus | validation-selected shared `alpha = 0.63` |
+| Members | 5 full-cohort ridge-Cox deployment members |
+| Default variant | clinical core |
+| Optional variant | clinical + measured tumor-RNA ICR |
 | Pharmacy layer | `pharmacy_assistance_v3` |
 | Primary metric | C-index |
-| Dataset | `topology_v6` synthetic/noisy augmented research data |
+| Formal PFS C-index | 0.7756 core; 0.7845 with measured ICR |
+| Formal AUC | core: 0.8185 at 36 months; 0.8013 at 60 months |
+| Dataset | measured AC-ICAM clinical outcomes and paired tumor/normal 16S |
 
-网页端会对两个 split 的共识风险再取平均，并输出队列相对风险百分位、split disagreement 与可靠性提示。
+网页端输出 AC-ICAM OOF 参考分布中的相对 PFS 风险百分位、36/60 月 PFS 概率和可靠性提示。
+微生物和辅助治疗字段不改变正式 V8 PFS 分数，因为五种子评估没有证明它们能提高 PFS。
 
 ## Quick Start | 快速启动
 
@@ -28,14 +35,13 @@ cd <repo-root>
 python -m pip install -r requirements.txt
 ```
 
-如使用 CUDA，可将 `GOA_TEMPORAL_DEVICE` 设为 `cuda` 或 `auto`。CPU 是默认部署设备。
+V8 网页推理只需要 CPU。
 
 ### 2. Run the web app
 
 ```powershell
 $env:GOA_PORT = "8765"
-$env:GOA_MODEL_BACKEND = "temporal_topology"
-$env:GOA_TEMPORAL_DEVICE = "cpu"
+$env:GOA_MODEL_BACKEND = "ac_icam_v8"
 python enhanced_app.py
 ```
 
@@ -57,6 +63,13 @@ python enhanced_app.py
   },
   "clinical": {
     "age": 57,
+    "sex": "Female",
+    "stage": 3,
+    "path_t": 3,
+    "path_n": 1,
+    "path_m": 0,
+    "tumor_location": "Colon Sigmoideum",
+    "tumor_morphology": "Adenocarcinoma",
     "bmi": 24.8,
     "smoking": 0,
     "family_history": 1
@@ -73,15 +86,19 @@ python enhanced_app.py
     "recent_probiotics": 0,
     "renal_impairment": 0,
     "hepatic_impairment": 0,
-    "pregnancy": 0
+    "pregnancy": 0,
+    "suspected_condition": "colorectal_cancer_followup"
   }
 }
 ```
 
 输入校验会直接提示非法值：
 
-- 菌群丰度和代谢物必须是有限数值且位于 `[0, 1]`
-- `age` 必须位于 `[1, 120]`
+- 菌群信息不改变 V8 PFS；没有完整病理资料时，五项核心菌群全部填写才会生成独立的研究风险参考分位
+- 网页只强制要求 `age` 和 `sex`；`age` 必须位于 `[18, 75]`
+- AJCC 分期、病理 T/N/M、肿瘤部位和形态学均可留空，适用于没有癌症诊断或病理资料的人群
+- 只有上述肿瘤病理字段全部提供时才计算 V8 PFS；缺失项不会被填成“正常”或默认分期
+- `icr_score` 只接受肿瘤 RNA 实测值；病理资料完整时，提供该值会自动使用 ICR 扩展模型
 - `bmi` 必须位于 `[5, 100]`
 - `smoking` 与 `family_history` 只能为 `0` 或 `1`
 - 药学背景的状态字段只能为 `0` 或 `1`，用药和过敏史必须为字符串列表
@@ -90,23 +107,24 @@ python enhanced_app.py
 
 ## Model Architecture | 模型结构
 
-当前推理链由六个步骤组成：
+当前网页推理链：
 
-1. **Canonical validation**：校验并规范化菌群、临床变量和代谢物。
-2. **Topology inference**：每个 split 使用仅在其训练集 `2160` 个样本上拟合的标准化 Ridge 模型，从 12 个网页可用输入推断 5 个 function scores 和 10 条具名边权。
-3. **Structure-aware GNN**：每个 split 使用 3 个已选 GNN 风险成员，保留节点与边身份信息。
-4. **Temporal-topology AFT expert**：每个 split 使用 5 个 XGBoost AFT 种子模型，直接学习右删失生存时间结构。
-5. **Cross-split consensus**：先将标准化 GNN 风险与 AFT 风险按 `0.37 / 0.63` 融合，再平均 split 42 与 43 的结果。
-6. **Pharmacy assistance v3**：标准化用药名称，检索产品说明书，筛查最小高危相互作用子集，并结合模型可靠性、用药背景和指南生成只供临床复核的结构化卡片。
+1. **基础输入契约**：年龄与性别必填，年龄限制为 18–75 岁；其余资料按实际情况选填。
+2. **PFS 可计算性判断**：只有 AJCC 分期、病理 T/N/M、肿瘤部位和形态学全部提供时才进入 V8；否则明确返回“本次不计算 PFS”。
+3. **无病理研究指数**：病理资料不完整且五项核心菌群齐全时，独立调用保留的时间-拓扑模型，输出 `0-100` 的研究参考分位及刻度图；缺失菌不按 0 处理。
+4. **模型选择**：病理完整时默认使用临床核心模型；只有提供肿瘤 RNA 实测 `icr_score` 时才切换到 ICR 扩展模型。
+5. **五成员 Cox 推理**：每个成员在完整 AC-ICAM PFS 队列上拟合，正则化强度由对应种子的交叉验证选择。
+6. **OOF 风险校准**：将部署风险映射到严格五种子 OOF 参考分布，形成队列相对风险百分位。
+7. **PFS 概率**：使用每个成员的 Breslow 基线累积风险估计 36/60 月 PFS 概率。
+8. **药学辅助**：菌群与用药背景进入独立药学模块，不改变 V8 PFS 风险分数；没有病理资料时该模块仍可运行。
 
-网页输入无法直接测得真实边权或功能分数，因此网页端使用的是 **inferred topology**，不是实验室实测拓扑。响应中会明确返回：
+本地部署工件为 `config/releases/ac_icam_real_outcome_pfs_v8.json`。该文件包含训练后的模型系数，按发布策略不会上传 GitHub；可在具备获准数据的本地环境中通过以下命令重新生成：
 
-- `topology_source = inferred_from_web_inputs`
-- `topology_inference_method = split_train_only_standardized_ridge`
-- 推断得到的 function scores 与 edge weights
-- 默认填充值、训练范围外输入与 split disagreement
+```powershell
+python -m experiments.ac_icam_real_outcome_v8.deployment
+```
 
-GNN 结构归一化原本会依赖同一批次中的其他样本。网页部署改用每个 split 固定的中位数校准 anchor，使单个受试者的分数不受并发请求内容影响。正式离线复跑仍使用保存的 8 样本评估上下文，两种上下文不能混为同一验证协议。
+V8 PFS 模型用于已经确诊的 AJCC I-IV 期结直肠癌患者，不是一般人群筛查模型。36/60 月概率是队列模型估计，不是个体预后保证。无完整病理资料时返回的 `general_risk_result` 来自 synthetic/noisy augmented `topology_v6` 研究参考队列，只表示相对位置，不是患癌概率、筛查结果或诊断。
 
 ## Pharmacy Assistance v3 | 药学辅助决策层
 
@@ -132,22 +150,20 @@ GNN 结构归一化原本会依赖同一批次中的其他样本。网页部署�
 
 ## Formal Evidence | 正式证据
 
-权重仅由 validation 选择，test 标签不参与融合权重选择。
+正式结果来自种子 `7, 21, 42, 123, 2026` 的重复外层五折评估。预处理、特征变换和正则化选择都在训练折内完成。
 
-| Split | Reference test C-index | Selected test C-index | Delta | Calibrated Cox loss delta |
-|---:|---:|---:|---:|---:|
-| 42 | 0.743263 | 0.760866 | +0.017603 | -0.014535 |
-| 43 | 0.737404 | 0.753247 | +0.015843 | -0.011890 |
-| Mean | 0.740333 | **0.757056** | **+0.016723** | **-0.013212** |
+| V8 model | PFS C-index | Bootstrap 95% CI | AUC 36 | AUC 60 |
+|---|---:|---:|---:|---:|
+| Clinical core | **0.7756** | 0.7214-0.8251 | 0.8185 | 0.8013 |
+| Clinical + measured ICR | **0.7845** | 0.7328-0.8323 | **0.8294** | **0.8133** |
+| Clinical + microbiome safe blend | 0.7740 | 0.7197-0.8237 | 0.8177 | 0.7984 |
 
-两个 split 的 C-index 与校准 Cox loss 均改善。保存的 cumulative/dynamic IPCW ROC 诊断为：
+因此网页默认采用临床核心模型，而不是分数更低的微生物融合模型。ICR 扩展成绩只适用于具有肿瘤 RNA 实测 ICR 的输入。
 
-| Horizon | Split 42 AUC | Split 43 AUC |
-|---:|---:|---:|
-| 36 | 0.867920 | 0.842278 |
-| 60 | 0.832749 | 0.815883 |
-| 84 | 0.834438 | 0.826573 |
-| Mean | **0.845035** | **0.828245** |
+### Archived temporal-topology evidence | 旧后端比较
+
+旧 `temporal_topology_aft_cross_split_consensus_v1` 的两 split 平均 held-out C-index 为 `0.757056`。
+它使用 synthetic/noisy augmented `topology_v6`，与 V8 的真实 AC-ICAM PFS 队列不是同一数据和终点协议，不能直接解释为同一测试集上的替换增益。
 
 ### Historical exploration potential | 历史探索潜力
 
@@ -155,9 +171,9 @@ GNN 结构归一化原本会依赖同一批次中的其他样本。网页部署�
 
 - 可以把 `0.8967` 写作历史探索潜力；
 - 不能把它写作当前正式测试成绩；
-- 当前可复现的正式主结果是两 split 平均 `0.757056`。
+- 当前 V8 可复现的正式 PFS 主结果是临床核心 `0.7756`，实测 ICR 扩展 `0.7845`。
 
-### Topology reconstruction boundary | 拓扑推断边界
+### Archived topology reconstruction boundary | 旧拓扑推断边界
 
 网页拓扑 Ridge 在各自 held-out 数据上的重建表现：
 
@@ -202,6 +218,7 @@ outputs/current_mainline_v2/temporal_independent_v3/cross_split_consensus/cross_
 archive/                              分类保存旧后端、旧配置、旧模型和旧文档
 config/                               网页运行配置与发布指标
 ctm_fusion_experiment/                历史 CTM 实验依赖，不是当前网页主线
+experiments/ac_icam_real_outcome_v8/  当前真实结局评估与部署工件生成
 experiments/temporal_independent_v3/  当前时间拓扑 AFT 实验与共识工具
 research/                             GNN、Cox、基线与正式研究流水线
 data/pharmacy_rules_v3.json           当前版本化药学规则与证据登记表
@@ -220,12 +237,13 @@ CURRENT_MAINLINE.md                   当前主线速查
 
 ## Output Semantics | 输出语义
 
-网页 `risk_score` 与 `risk_percentile` 是相对于 `topology_v6` 参考队列的百分位，不是个体绝对发病概率。主要字段包括：
+网页 `risk_score` 与 `risk_percentile` 是相对于 AC-ICAM 五种子 OOF PFS 风险分布的百分位，不是一般人群发病概率。主要字段包括：
 
 - `risk_score`, `risk_level`, `risk_percentile`, `raw_model_risk`
-- `split_consensus_risks`, `split_disagreement`, `prediction_reliability`
-- `backend`, `model_release`, `ensemble_size`
-- inferred topology、输入范围提示、建议与结构化报告
+- `pfs_probability.36`, `pfs_probability.60`, `prediction_reliability`
+- `prediction_available`, `not_available_reason`, `missing_oncology_fields`
+- `backend`, `model_release`, `model_variant`, `ensemble_size`
+- 输入范围提示、模型适用人群、建议与结构化报告
 - `pharmacy_assessment`：质量状态、用药背景、建议摘要、证据和禁止操作
 
 完整响应示例见 `API_RESPONSE_EXAMPLE.md`。
@@ -233,27 +251,28 @@ CURRENT_MAINLINE.md                   当前主线速查
 ## Reproducibility Rules | 可复现性约束
 
 - 固定模型种子：`7, 21, 42, 123, 2026`
-- 固定 split：`42`, `43`
-- 仅使用 validation 选择共识权重
-- test 标签不参与模型或融合选择
-- 同时报告 C-index、Cox loss 与时间依赖 AUC
-- 网页 inferred-topology 结果与研究表 measured-topology 结果分开陈述
-- 报告时必须注明 `topology_v6` 是 synthetic/noisy augmented 数据
+- 外层五折评估与内层正则化选择严格分开
+- 所有预处理和模型选择只在相应训练折中拟合
+- 同时报告 C-index、bootstrap 95% CI 与 36/60 月时间依赖 AUC
+- 部署风险百分位使用五种子 OOF 预测作为参考分布
+- ICR 扩展与常规临床核心成绩分开陈述
+- V8 与 synthetic/noisy augmented V7/旧 topology_v6 结果分开陈述
 
 ## Scope and Limitations | 适用边界
 
 当前证据支持：
 
-- 时间拓扑 AFT 专家为 GNN reference 提供了独立信息；
-- 在两个预先定义 split 上均提高 C-index 并降低校准 Cox loss；
-- 图结构扰动会损害旧 GNN reference，说明图分支不是纯装饰；
-- 网页已连接当前研究模型，而不是手工规则打分器。
+- AC-ICAM 全分期临床核心模型在重复 OOF 评估中达到 PFS C-index `0.7756`；
+- 实测肿瘤 RNA ICR 扩展模型达到 `0.7845`；
+- 网页加载的是序列化 Cox 模型、OOF 校准和 Breslow 基线风险，不是手工规则打分；
+- 微生物和治疗敏感性分支没有提高 PFS，因此未进入正式风险分数。
 
 当前证据不支持：
 
-- 将 `0.757056` 直接称为网页部署模型的临床 C-index；
-- 将 inferred edge weights 或 function scores 称为实测生物标志物；
-- 从 synthetic/noisy augmented 数据推导临床诊断、处方或外部泛化结论；
+- 把内部重复交叉验证称为外部临床验证；
+- 把 36/60 月模型概率解释为个体预后保证；
+- 把 ICR 扩展成绩用于没有肿瘤 RNA 实测 ICR 的输入；
+- 把 V8 用作未确诊人群的癌症筛查或诊断；
 - 将药学辅助卡片解释为已完成药物相互作用、剂量或禁忌证审核；
 - 在缺少真实独立队列和外部验证时宣称可用于临床决策。
 

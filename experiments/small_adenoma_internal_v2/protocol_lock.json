@@ -1,0 +1,77 @@
+{
+  "protocol_id": "small_adenoma_internal_nested_oof_v2",
+  "locked_at": "2026-08-13",
+  "locked_before_formal_run": true,
+  "deployment": "research_only_not_web",
+  "objective": {
+    "task": "small adenoma (<10 mm) versus healthy control",
+    "primary_success_gate": "nested OOF consensus sensitivity > 0.64",
+    "primary_threshold_target": 0.8,
+    "threshold_selection": "maximize inner-OOF specificity while sensitivity is at least 0.80",
+    "mandatory_companion_metrics": [
+      "false_positive_rate",
+      "specificity",
+      "ROC AUC",
+      "95% confidence intervals"
+    ],
+    "previous_fpr_reference": "4/61 = 0.0655737705 from five-genus v1",
+    "fpr_improvement_stretch_gate": "at most 3 false positives among 61 healthy controls",
+    "selection_priority": "meet the sensitivity target first, then minimize false positives"
+  },
+  "cohort": {
+    "study": "ZellerG_2014",
+    "accession": "ERP005534",
+    "formal_groups": {
+      "healthy": 61,
+      "small_adenoma_lt_10_mm": 27
+    },
+    "transfer_only_groups": {
+      "large_adenoma_gt_10_mm": 15,
+      "colorectal_cancer": 53
+    },
+    "one_sample_per_subject_required": true
+  },
+  "cleaning": {
+    "abundance_range_percent": [0.0, 100.0],
+    "taxonomy_ranks": ["genus", "species"],
+    "transform": "log10(relative_abundance_percent / 100 + 1e-6)",
+    "prevalence_filter_train_only": 0.1,
+    "winsorization_train_only": [0.01, 0.99],
+    "clinical_imputation_train_only": "median",
+    "scaling_train_only": true,
+    "feature_selection_train_only": "absolute Mann-Whitney AUC distance from 0.5"
+  },
+  "candidate_space": {
+    "feature_sets": ["genus", "species", "genus_species"],
+    "top_k": [15, 30, 60],
+    "models": [
+      "L2 logistic regression C=0.1",
+      "L2 logistic regression C=1.0",
+      "L1 logistic regression C=0.1",
+      "ExtraTrees min_samples_leaf=3"
+    ],
+    "clinical_covariates": [false, true],
+    "augmentation": ["none", "minority_mixup"]
+  },
+  "augmentation": {
+    "scope": "inner or outer training partition only",
+    "method": "same-class convex interpolation plus small standardized jitter",
+    "purpose": "balance the minority small-adenoma class",
+    "synthetic_samples_allowed_in_validation_or_test": false,
+    "synthetic_samples_allowed_in_reported_denominators": false
+  },
+  "validation": {
+    "outer": "5-fold stratified OOF repeated over five seeds",
+    "inner": "4-fold stratified model and threshold selection",
+    "seeds": [7, 21, 42, 123, 2026],
+    "consensus": "positive when at least 3 of 5 cross-fitted seed predictions are positive",
+    "outer_test_labels_used_for_selection": false,
+    "large_adenoma_or_crc_used_for_selection": false
+  },
+  "final_artifact": {
+    "format": "joblib research bundle",
+    "training_data": "all healthy and small-adenoma samples after nested evaluation",
+    "performance_source": "nested OOF consensus only, never resubstitution"
+  },
+  "claim_boundary": "Internal retrospective research model. Synthetic augmentation is development-only. Performance is not prospective, external, analytical-kit, or clinical validation."
+}

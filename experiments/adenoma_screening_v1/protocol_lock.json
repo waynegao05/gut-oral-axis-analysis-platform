@@ -1,0 +1,67 @@
+{
+  "protocol_id": "zeller_five_genus_screening_nested_oof_v1",
+  "locked_before_formal_run": true,
+  "dataset": {
+    "study": "ZellerG_2014",
+    "accession": "ERP005534",
+    "abundance_resource": "ExperimentHub EH5938 (2021-03-31.ZellerG_2014.relative_abundance)",
+    "metadata_resource": "curatedMetagenomicDataCuration/inst/curated/ZellerG_2014/ZellerG_2014_sample.tsv",
+    "expected_groups": {
+      "healthy": 61,
+      "small_adenoma_lt_10_mm": 27,
+      "large_adenoma_gt_10_mm": 15,
+      "colorectal_cancer": 53
+    }
+  },
+  "task": {
+    "negative_class": "healthy",
+    "positive_class": "small_adenoma + large_adenoma + colorectal_cancer",
+    "small_adenoma_definition": "adenoma smaller than 10 mm in the source study",
+    "primary_requested_metrics": [
+      "false_positive_rate_in_healthy_controls",
+      "sensitivity_in_small_adenomas"
+    ]
+  },
+  "features": {
+    "taxa": [
+      "Fusobacterium",
+      "Porphyromonas",
+      "Prevotella",
+      "Streptococcus",
+      "Lactobacillus"
+    ],
+    "input_unit": "relative abundance percent",
+    "transform": "log10(abundance_percent / 100 + 1e-6)",
+    "clinical_covariates": false
+  },
+  "model": {
+    "family": "L2-regularized logistic regression",
+    "class_weight": "balanced",
+    "c_grid": [0.01, 0.1, 1.0, 10.0, 100.0],
+    "c_selection": "maximum inner out-of-fold ROC AUC; ties prefer smaller C"
+  },
+  "validation": {
+    "outer": "5-fold stratified out-of-fold validation repeated for five seeds",
+    "inner": "4-fold stratified validation within each outer training fold",
+    "seeds": [7, 21, 42, 123, 2026],
+    "ensemble_decision": "majority vote across the five cross-fitted seed predictions",
+    "ensemble_score": "mean cross-fitted probability across the five seeds",
+    "test_labels_used_for_model_or_threshold_selection": false
+  },
+  "operating_points": {
+    "primary": {
+      "name": "specificity_90",
+      "inner_oof_target_specificity": 0.9
+    },
+    "secondary": {
+      "name": "specificity_95",
+      "inner_oof_target_specificity": 0.95
+    },
+    "threshold_rule": "maximize inner-OOF sensitivity subject to target specificity; ties use the specificity closest to target"
+  },
+  "uncertainty": {
+    "binary_rates": "Wilson 95% confidence interval on one consensus prediction per subject",
+    "auc": "2000 subject-level bootstrap replicates"
+  },
+  "reporting_boundary": "Retrospective internal cross-validation of one public stool metagenomic cohort; not prospective clinical validation and not analytical validation of the colorimetric kit."
+}

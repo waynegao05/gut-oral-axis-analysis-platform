@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "status": "development_no_candidate_passed_gate",
+  "plan_sha256": "7dcf15036981db51599ff3884d2d5a27f746dcbacd7f06be9b0f1123bd483415",
+  "development_manifest_sha256": "9e63208833693d14bc235a3bcc589a97bd56b97d6d859d4b8d4eb70e3bd45c81",
+  "baseline_candidate": "legacy_precomputed_edge_gnn",
+  "selected_candidate": {
+    "name": "legacy_precomputed_edge_gnn",
+    "model_family": "existing_v7_gnn",
+    "uses_precomputed_edge_weight": true,
+    "purpose": "paired development baseline only"
+  },
+  "fixed_epochs": 35,
+  "audit_generation_seed": 20261007,
+  "audit_cohort_generated": false
+}

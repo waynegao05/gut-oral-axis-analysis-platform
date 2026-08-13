@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "status": "audit_only",
+  "target_c_index": 0.761,
+  "dataset": "topology_v7_generator_v3_formal",
+  "outer_protocol": "five generation-group leave-one-group-out",
+  "inner_validation_group_rule": "(outer_test_group + 1) modulo 5",
+  "allowed_candidate_features": "all deployable full-topology features",
+  "audit_only_target": "survival_latent_risk",
+  "audit_only_target_source": "topology_v7_sample_provenance.csv",
+  "prohibited_uses": [
+    "deployment",
+    "candidate model selection against observed test outcomes",
+    "reporting as a valid survival model",
+    "exporting latent-risk predictions into the production pipeline"
+  ],
+  "purpose": "Separate feature-representation error from irreducible outcome-generation noise before spending more compute on model architecture."
+}

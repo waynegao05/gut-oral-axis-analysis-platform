@@ -130,6 +130,57 @@ body {
   grid-column: 1 / -1;
 }
 
+.panel-internal {
+  grid-column: 1 / -1;
+  border-color: rgba(184, 92, 56, 0.26);
+  background: linear-gradient(145deg, rgba(255, 250, 242, 0.96), rgba(242, 210, 195, 0.22));
+}
+
+.internal-model-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 22px;
+  margin-bottom: 16px;
+  color: var(--muted);
+}
+
+.internal-input-grid {
+  align-items: end;
+  margin-bottom: 14px;
+}
+
+.internal-file-trigger {
+  align-self: end;
+  width: fit-content;
+}
+
+.oral-adenoma-textarea {
+  min-height: 170px;
+}
+
+.oral-adenoma-result {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(24, 37, 39, 0.1);
+}
+
+.oral-adenoma-result.screen-positive .summary-card:first-child {
+  border-left: 5px solid var(--danger);
+}
+
+.oral-adenoma-result.screen-negative .summary-card:first-child {
+  border-left: 5px solid var(--success);
+}
+
+.internal-boundary {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  background: rgba(154, 60, 48, 0.08);
+  color: #71352c;
+  line-height: 1.6;
+}
+
 .panel-header h2 {
   margin: 0 0 6px;
   font-size: 1.7rem;
@@ -418,6 +469,58 @@ button:hover {
 .risk-banner strong {
   font-size: clamp(2.1rem, 4vw, 3.2rem);
   line-height: 1;
+}
+
+.risk-scale {
+  display: grid;
+  gap: 6px;
+  width: min(100%, 640px);
+  margin-top: 10px;
+}
+
+.risk-scale-track {
+  position: relative;
+  height: 10px;
+  overflow: visible;
+  border: 1px solid rgba(255, 255, 255, 0.38);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.risk-scale-fill {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: rgba(255, 255, 255, 0.78);
+  transition: width 260ms ease;
+}
+
+.risk-scale-marker {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  border: 3px solid currentColor;
+  border-radius: 50%;
+  background: #fffaf3;
+  box-shadow: 0 2px 8px rgba(18, 31, 34, 0.24);
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  transition: left 260ms ease, opacity 160ms ease;
+}
+
+.risk-scale-labels {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 0.75rem;
+  opacity: 0.78;
+}
+
+.risk-scale-unavailable {
+  opacity: 0.42;
 }
 
 .summary-grid,

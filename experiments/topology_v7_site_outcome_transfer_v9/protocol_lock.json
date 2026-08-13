@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "status": "development_locked_before_screen",
+  "dataset": {
+    "development": "outputs/topology_v7_generator_v3_pilots/covariance_compensated",
+    "formal": "data/research/topology_v7_generator_v3"
+  },
+  "target_c_index": 0.761,
+  "development_outer_protocol": "five generation-group leave-one-group-out",
+  "inner_validation_group_rule": "(outer_test_group + 1) modulo 5",
+  "formal_data_may_be_used_for_tuning": false,
+  "public_outcome_prior": {
+    "dataset": "debelius_crc_survival_2023",
+    "endpoint": "long_survival fixed-horizon contrast",
+    "source_url": "https://zenodo.org/records/7690117",
+    "model": "fixed regularized logistic regression on tumour-tissue five-genus CLR",
+    "minimum_repeated_cross_validated_auc": 0.6,
+    "transfer_role": "one fixed stool-microbiome prior score",
+    "claim_boundary": "different tissue and fixed-horizon endpoint; auxiliary prior only"
+  },
+  "candidate_model": {
+    "family": "XGBoost survival:cox",
+    "precomputed_edge_weights_used": false,
+    "edge_relationships": "learned internally as tree interactions",
+    "feature_sets": [
+      "core_no_edges",
+      "site_resolved_no_edges",
+      "site_resolved_public_prior_no_edges"
+    ],
+    "model_seed": 20260723
+  },
+  "development_gate": {
+    "mean_c_index_delta_over_locked_linear_baseline": 0.005,
+    "minimum_improved_outer_groups": 3,
+    "minimum_worst_fold_delta": -0.005
+  },
+  "formal_policy": "Write a separate formal lock only if every development gate passes. Do not run the formal cohort otherwise."
+}

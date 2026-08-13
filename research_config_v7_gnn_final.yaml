@@ -1,0 +1,60 @@
+seed: 42
+train:
+  batch_size: 4096
+  epochs: 120
+  lr: 0.001
+  weight_decay: 0.001
+  hidden_dim: 64
+  heads: 2
+  dropout: 0.1
+  edge_hidden_dim: 16
+  num_layers: 2
+  layer_attn_heads: 2
+  use_layer_attention: false
+  contrastive_temperature: 0.2
+  survival_head_type: cox
+  cox_ties_method: breslow
+  num_time_bins: 12
+  graph_aux_weight: 0.0
+  node_aux_weight: 0.0
+  contrastive_weight: 0.0
+  ranking_weight: 0.0
+  ranking_margin: 0.0
+  ranking_warmup_epochs: 0
+  grad_clip_norm: 2.0
+  warmup_epochs: 10
+  early_stop_patience: 25
+  val_ratio: 0.2
+  test_ratio: 0.2
+  min_delta: 0.0002
+paths:
+  graph_csv: data/research/topology_v7_sample_graph_table.csv
+  clinical_csv: data/research/topology_v7_sample_clinical_table.csv
+  metabolite_csv: data/research/topology_v7_sample_metabolite_table.csv
+  label_csv: data/research/topology_v7_sample_label_table.csv
+  provenance_csv: data/research/topology_v7_sample_provenance.csv
+  manifest_json: data/research/topology_v7_manifest.json
+  output_dir: outputs/current_mainline_v3/topology_v7_generator_v2/gnn_identity_fullrisk_v1/research
+graph_preprocess:
+  keep_top_k_edges:
+  min_edge_weight:
+tabular_preprocess:
+  standardize: true
+model:
+  node_identity_dim: 8
+  identity_readout_dim: 32
+  pool_every_layer: false
+  graph_projection_dim: 0
+  tabular_projection_dim: 0
+  node_feature_columns:
+    - abundance
+    - function_score
+  clinical_columns:
+    - age
+    - bmi
+    - smoking
+    - family_history
+  metabolite_columns:
+    - bile_acids
+    - scfa
+    - tryptophan_metabolism

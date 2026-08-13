@@ -1,0 +1,117 @@
+{
+  "schema_version": 1,
+  "status": "locked_before_development_generation",
+  "scope": "exact_internal_edge_full_inner_logo_rank_objective_development_then_audit",
+  "development_generation_seed": 20261016,
+  "audit_generation_seed": 20261017,
+  "sample_count": 3600,
+  "outer_test_groups": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "inner_validation_rule": "all four non-outer groups are each used once",
+  "model_seed": 42,
+  "development_refit_model_seeds": [
+    42
+  ],
+  "audit_refit_model_seeds": [
+    7,
+    21,
+    42,
+    123,
+    2026
+  ],
+  "base_config": "research_config_v7_v3_gnn_locked.yaml",
+  "training": {
+    "maximum_epochs": 90,
+    "early_stop_patience": 20,
+    "minimum_validation_c_index_delta": 0.0002,
+    "learning_rate": 0.001,
+    "weight_decay": 0.001,
+    "gradient_clip_norm": 2.0,
+    "warmup_epochs": 10,
+    "temperature": 1.0
+  },
+  "metrics": {
+    "report_horizons": [
+      36,
+      60,
+      84
+    ],
+    "integration_grid": [
+      24,
+      36,
+      48,
+      60,
+      72,
+      84,
+      96
+    ],
+    "uno_tau": 96
+  },
+  "candidates": [
+    {
+      "name": "exact_internal_edge_cox",
+      "comparable_rank_weight": 0.0,
+      "horizon_rank_weight": 0.0,
+      "eligible_for_promotion": false
+    },
+    {
+      "name": "exact_internal_edge_cox_horizon_rank_020",
+      "comparable_rank_weight": 0.0,
+      "horizon_rank_weight": 0.2,
+      "eligible_for_promotion": true
+    }
+  ],
+  "edge_fidelity_gate": {
+    "minimum_held_out_r2": 0.999,
+    "maximum_parameters_per_edge": 6,
+    "must_be_outcome_independent": true
+  },
+  "development_gate": {
+    "baseline_candidate": "exact_internal_edge_cox",
+    "minimum_macro_c_index_gain": 0.001,
+    "minimum_integrated_auc_gain": 0.0015,
+    "minimum_improved_outer_groups": 4,
+    "maximum_worst_group_regression": 0.002,
+    "maximum_integrated_brier_increase": 0.0005,
+    "maximum_any_horizon_auc_regression": 0.003
+  },
+  "audit_gate": {
+    "minimum_macro_c_index_gain": 0.0015,
+    "minimum_integrated_auc_gain": 0.003,
+    "minimum_improved_outer_groups": 4,
+    "maximum_worst_group_regression": 0.002,
+    "integrated_brier_must_not_worsen": true,
+    "maximum_any_horizon_auc_regression": 0.003
+  },
+  "inference_contract": {
+    "precomputed_edge_weight_allowed": false,
+    "edge_weights_computed_inside_forward": true,
+    "rank_objectives_used_only_during_training": true,
+    "prediction_inputs": [
+      "node_abundance",
+      "node_function_score",
+      "clinical",
+      "metabolites"
+    ],
+    "prohibited_prediction_inputs": [
+      "time",
+      "event",
+      "generation_group_id",
+      "sample_id",
+      "provenance",
+      "survival_latent_risk",
+      "event_noise",
+      "censor_time"
+    ]
+  },
+  "audit_policy": {
+    "audit_generated_only_after_development_gate": true,
+    "audit_seed_reruns_prohibited": true,
+    "audit_test_labels_used_for_selection": false
+  }
+}

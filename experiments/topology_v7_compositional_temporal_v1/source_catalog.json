@@ -1,0 +1,192 @@
+{
+  "schema_version": 1,
+  "source_policy": {
+    "official_project_page_required": true,
+    "direct_download_manifest_written_after_download": true,
+    "cross_cohort_patient_level_join_prohibited": true,
+    "observed_survival_must_not_be_inferred_when_absent": true
+  },
+  "sources": [
+    {
+      "dataset_id": "russo_crc_oral_gut_2023",
+      "role": "paired_real_oral_gut_representation_and_diagnosis_validation",
+      "official_accessions": [
+        "PRJNA899104",
+        "GSE217490"
+      ],
+      "original_project_urls": [
+        "https://www.ncbi.nlm.nih.gov/bioproject/PRJNA899104",
+        "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE217490"
+      ],
+      "download_entrypoint": "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE217nnn/GSE217490/",
+      "local_manifest": "data/public/russo_crc_oral_gut_2023/cohort_manifest.json",
+      "measured_modalities": [
+        "saliva_microbiome",
+        "stool_microbiome",
+        "colon_biopsy_microbiome",
+        "diagnosis_and_stage"
+      ],
+      "right_censored_survival_available": false,
+      "license_or_access_terms": "NCBI public repository record; study-specific consent and NCBI data-use policies apply.",
+      "limitations": [
+        "Only 42 patients have paired saliva and stool measurements.",
+        "No patient-level right-censored survival outcome is public."
+      ]
+    },
+    {
+      "dataset_id": "uchida_crc_paired_oral_gut_2021",
+      "role": "preferred_real_paired_oral_gut_external_representation_and_diagnosis_validation",
+      "official_accessions": [
+        "PRJDB11845",
+        "DRA012322"
+      ],
+      "original_project_urls": [
+        "https://ddbj.nig.ac.jp/resource/bioproject/PRJDB11845",
+        "https://ddbj.nig.ac.jp/resource/sra-submission/DRA012322",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC8268706/"
+      ],
+      "download_entrypoint": "https://ddbj.nig.ac.jp/public/ddbj_database/dra/fastq/DRA012/DRA012322/",
+      "local_manifest": "data/public/uchida_crc_paired_oral_gut_2021/source_manifest.json",
+      "measured_modalities": [
+        "saliva_microbiome",
+        "stool_microbiome",
+        "crc_diagnosis"
+      ],
+      "right_censored_survival_available": false,
+      "license_or_access_terms": "DDBJ public archive; DDBJ data-use policy and the original study consent apply.",
+      "limitations": [
+        "The cohort contains 103 patients and 206 paired saliva/stool samples, but no public right-censored survival outcome.",
+        "The downloader retrieves official XML metadata by default; large FASTQ files remain explicit opt-in downloads."
+      ]
+    },
+    {
+      "dataset_id": "conde_perez_crc_multisite_2024",
+      "role": "future_multisite_microbiome_representation_pretraining",
+      "official_accessions": [
+        "PRJNA911189"
+      ],
+      "original_project_urls": [
+        "https://www.ncbi.nlm.nih.gov/bioproject/PRJNA911189",
+        "https://www.ebi.ac.uk/ena/browser/view/PRJNA911189",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC11076991/"
+      ],
+      "download_entrypoint": "https://www.ebi.ac.uk/ena/portal/api/filereport?accession=PRJNA911189&result=read_run&fields=run_accession,sample_accession,sample_title,fastq_ftp&format=tsv&download=true",
+      "local_manifest": null,
+      "measured_modalities": [
+        "saliva_microbiome",
+        "subgingival_microbiome",
+        "stool_microbiome",
+        "tumour_tissue_microbiome",
+        "normal_mucosa_microbiome",
+        "diagnosis_and_stage"
+      ],
+      "right_censored_survival_available": false,
+      "license_or_access_terms": "INSDC public archive; ENA data-use policy and the original study consent apply.",
+      "limitations": [
+        "Not every patient has every anatomical site.",
+        "No public right-censored survival outcome is available."
+      ]
+    },
+    {
+      "dataset_id": "yachida_crc_metagenome_metabolome_2019",
+      "role": "future_functional_pathway_and_metabolome_pretraining",
+      "official_accessions": [
+        "DRA006684",
+        "DRA008156"
+      ],
+      "original_project_urls": [
+        "https://ddbj.nig.ac.jp/resource/sra-submission/DRA006684",
+        "https://ddbj.nig.ac.jp/resource/sra-submission/DRA008156",
+        "https://www.nature.com/articles/s41591-019-0458-7"
+      ],
+      "download_entrypoint": "https://ddbj.nig.ac.jp/public/ddbj_database/dra/fastq/DRA006/DRA006684/",
+      "local_manifest": null,
+      "measured_modalities": [
+        "stool_metagenome",
+        "stool_metabolome",
+        "diagnosis_and_stage"
+      ],
+      "right_censored_survival_available": false,
+      "license_or_access_terms": "DDBJ public archive; DDBJ data-use policy and the original study consent apply.",
+      "limitations": [
+        "This cohort has no oral microbiome.",
+        "Shotgun metagenomics cannot be concatenated directly with the current 16S feature matrix."
+      ]
+    },
+    {
+      "dataset_id": "alexander_crc_multiomics_2023",
+      "role": "real_tissue_microbiome_metabolome_pretraining_and_replication",
+      "official_accessions": [
+        "10.5281/zenodo.7326674"
+      ],
+      "original_project_urls": [
+        "https://zenodo.org/records/7326674",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC10165813/"
+      ],
+      "download_entrypoint": "https://zenodo.org/api/records/7326674",
+      "local_manifest": "data/public/alexander_crc_multiomics_2023/source_manifest.json",
+      "measured_modalities": [
+        "tumour_tissue_microbiome",
+        "paired_normal_tissue_microbiome",
+        "uplc_ms_metabolomics"
+      ],
+      "right_censored_survival_available": false,
+      "license_or_access_terms": "Creative Commons Attribution 4.0 International (CC-BY-4.0).",
+      "limitations": [
+        "The public workbooks do not contain individual time and censoring labels.",
+        "Tissue microbiome is not a measured oral or stool microbiome."
+      ]
+    },
+    {
+      "dataset_id": "debelius_crc_survival_2023",
+      "role": "fixed_horizon_survival_external_check_and_representation_pretraining",
+      "official_accessions": [
+        "PRJEB57580",
+        "10.5281/zenodo.7690117"
+      ],
+      "original_project_urls": [
+        "https://www.ebi.ac.uk/ena/browser/view/PRJEB57580",
+        "https://zenodo.org/records/7690117",
+        "https://github.com/ctmrbio/crc-survival"
+      ],
+      "download_entrypoint": "https://zenodo.org/api/records/7690117",
+      "local_manifest": "data/public/debelius_crc_survival_2023/source_manifest.json",
+      "measured_modalities": [
+        "tumour_tissue_microbiome",
+        "adjacent_tissue_microbiome",
+        "clinical_covariates",
+        "binary_long_survival_group"
+      ],
+      "right_censored_survival_available": false,
+      "license_or_access_terms": "Zenodo record metadata reports other-open; repository license is recorded after archive inspection.",
+      "limitations": [
+        "The public task contrasts survival under two years with survival of at least five years.",
+        "Exact follow-up time, event indicator, and censoring are not public."
+      ]
+    },
+    {
+      "dataset_id": "colocare_crc_dfs",
+      "role": "preferred_future_real_right_censored_survival_validation",
+      "official_accessions": [
+        "NCT02328677"
+      ],
+      "original_project_urls": [
+        "https://www.cancer.gov/research/participate/clinical-trials-search/v?id=NCI-2020-11389",
+        "https://uofuhealth.utah.edu/huntsman/labs/colocare-consortium/data-sharing/sharing"
+      ],
+      "download_entrypoint": null,
+      "local_manifest": null,
+      "measured_modalities": [
+        "stool_microbiome",
+        "clinical_covariates",
+        "disease_free_survival"
+      ],
+      "right_censored_survival_available": true,
+      "license_or_access_terms": "Individual-level data require an approved ColoCare data-sharing request.",
+      "limitations": [
+        "Not openly downloadable.",
+        "No matched measured oral microbiome in the current published survival analysis."
+      ]
+    }
+  ]
+}

@@ -27,11 +27,13 @@ train:
   test_ratio: 0.2
   min_delta: 0.0005
 paths:
-  graph_csv: data/research/topology_v6_sample_graph_table.csv
-  clinical_csv: data/research/topology_v6_sample_clinical_table.csv
-  metabolite_csv: data/research/topology_v6_sample_metabolite_table.csv
-  label_csv: data/research/topology_v6_sample_label_table.csv
-  output_dir: outputs/current_mainline_v2/research
+  graph_csv: data/research/topology_v7_sample_graph_table.csv
+  clinical_csv: data/research/topology_v7_sample_clinical_table.csv
+  metabolite_csv: data/research/topology_v7_sample_metabolite_table.csv
+  label_csv: data/research/topology_v7_sample_label_table.csv
+  provenance_csv: data/research/topology_v7_sample_provenance.csv
+  manifest_json: data/research/topology_v7_manifest.json
+  output_dir: outputs/current_mainline_v3/topology_v7_generator_v2/research
 graph_preprocess:
   keep_top_k_edges:
   min_edge_weight:

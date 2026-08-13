@@ -4,7 +4,25 @@ import torch
 import torch.nn.functional as F
 
 
-def cox_ph_loss(risk: torch.Tensor, time: torch.Tensor, event: torch.Tensor) -> torch.Tensor:
+def cox_ph_loss(
+    risk: torch.Tensor,
+    time: torch.Tensor,
+    event: torch.Tensor,
+    ties_method: str = "legacy",
+) -> torch.Tensor:
+    if ties_method == "breslow":
+        observed_times = torch.unique(time[event > 0], sorted=True)
+        log_likelihood = torch.zeros((), device=risk.device, dtype=risk.dtype)
+        for observed_time in observed_times:
+            event_mask = (time == observed_time) & (event > 0)
+            risk_set = time >= observed_time
+            num_events = event_mask.sum().to(risk.dtype)
+            log_likelihood = log_likelihood + risk[event_mask].sum()
+            log_likelihood = log_likelihood - num_events * torch.logsumexp(risk[risk_set], dim=0)
+        return -log_likelihood / torch.clamp(event.sum(), min=1.0)
+    if ties_method != "legacy":
+        raise ValueError(f"Unsupported Cox ties method: {ties_method}")
+
     order = torch.argsort(time, descending=True)
     risk = risk[order]
     event = event[order]
@@ -45,8 +63,9 @@ def combined_survival_loss(
     event: torch.Tensor,
     ranking_weight: float = 0.0,
     ranking_margin: float = 0.0,
+    cox_ties_method: str = "legacy",
 ) -> dict[str, torch.Tensor]:
-    cox_loss = cox_ph_loss(risk, time, event)
+    cox_loss = cox_ph_loss(risk, time, event, ties_method=cox_ties_method)
     ranking_loss = pairwise_ranking_loss(
         risk=risk,
         time=time,

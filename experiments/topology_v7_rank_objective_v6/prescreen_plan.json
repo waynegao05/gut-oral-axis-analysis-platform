@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "status": "locked_before_inner_validation_prescreen",
+  "source_development_cohort_seed": 20261014,
+  "outer_group_never_evaluated": 0,
+  "inner_validation_groups": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "model_seed": 42,
+  "base_config": "research_config_v7_v3_gnn_locked.yaml",
+  "training": {
+    "maximum_epochs": 90,
+    "early_stop_patience": 20,
+    "minimum_validation_c_index_delta": 0.0002,
+    "learning_rate": 0.001,
+    "weight_decay": 0.001,
+    "gradient_clip_norm": 2.0,
+    "warmup_epochs": 10,
+    "temperature": 1.0
+  },
+  "metrics": {
+    "report_horizons": [
+      36,
+      60,
+      84
+    ],
+    "integration_grid": [
+      24,
+      36,
+      48,
+      60,
+      72,
+      84,
+      96
+    ],
+    "uno_tau": 96
+  },
+  "candidates": [
+    {
+      "name": "cox_only",
+      "comparable_rank_weight": 0.0,
+      "horizon_rank_weight": 0.0
+    },
+    {
+      "name": "cox_comparable_rank_020",
+      "comparable_rank_weight": 0.2,
+      "horizon_rank_weight": 0.0
+    },
+    {
+      "name": "cox_comparable_rank_050",
+      "comparable_rank_weight": 0.5,
+      "horizon_rank_weight": 0.0
+    },
+    {
+      "name": "cox_horizon_rank_020",
+      "comparable_rank_weight": 0.0,
+      "horizon_rank_weight": 0.2
+    },
+    {
+      "name": "cox_dual_rank_020_010",
+      "comparable_rank_weight": 0.2,
+      "horizon_rank_weight": 0.1
+    }
+  ],
+  "selection_rule": {
+    "primary": "mean_inner_validation_c_index",
+    "secondary": "mean_inner_validation_integrated_auc",
+    "minimum_c_index_gain_over_cox": 0.0005,
+    "outer_group_zero_predictions_or_labels_must_not_be_read": true
+  }
+}

@@ -13,6 +13,7 @@ from src.drug_knowledge import build_drug_knowledge_review
 KNOWLEDGE_PATH = Path(__file__).resolve().parents[1] / "data" / "pharmacy_rules_v3.json"
 
 _REQUIRED_ENGINE_SOURCE_IDS = {
+    "AC_ICAM_V8_PFS",
     "AGA_PROBIOTICS_2020",
     "CDC_ANTIBIOTIC_STEWARDSHIP_2025",
     "FDA_CDS_2026",
@@ -38,6 +39,14 @@ _MEDICATION_CONTEXT_LABELS = {
 _MODEL_INPUT_LABELS = {
     "age": "年龄",
     "bmi": "BMI",
+    "stage": "AJCC 分期",
+    "path_t": "病理 T 分期",
+    "path_n": "病理 N 分期",
+    "path_m": "病理 M 分期",
+    "icr_score": "肿瘤 RNA ICR 评分",
+    "sex": "生物学性别",
+    "tumor_location": "肿瘤部位",
+    "tumor_morphology": "肿瘤形态学",
     "smoking": "吸烟状态",
     "family_history": "家族史",
     "bile_acids": "胆汁酸指标",
@@ -46,6 +55,7 @@ _MODEL_INPUT_LABELS = {
 }
 
 _CONDITION_LABELS = {
+    "colorectal_cancer_followup": "已确诊结直肠癌 / 术后随访",
     "antibiotic_c_difficile_prevention": "抗生素使用期间预防艰难梭菌感染",
     "c_difficile_prevention_during_antibiotics": "抗生素使用期间预防艰难梭菌感染",
     "pouchitis": "已确认储袋炎",
@@ -378,7 +388,11 @@ def _quality_context(
                 "message": "模型在不同训练版本之间的结果不够一致，请补充资料并由人工复核。",
             }
         )
-    elif reliability not in {"standard", "caution_out_of_training_range"}:
+    elif reliability not in {
+        "standard",
+        "caution_out_of_training_range",
+        "not_applicable_missing_oncology",
+    }:
         hard_limit = True
         reasons.append(
             {
@@ -553,34 +567,185 @@ def _risk_review_card(
             ],
         )
 
+    if (
+        risk_result.get("prediction_available") is False
+        and risk_result.get("not_available_reason")
+        == "missing_oncology_fields"
+    ):
+        missing_fields = _string_list(
+            risk_result.get("missing_oncology_fields", [])
+        )
+        missing_text = "、".join(
+            _model_input_label(field) for field in missing_fields
+        )
+        return _make_card(
+            recommendation_id="pfs_not_calculated_missing_oncology",
+            category="model_scope",
+            title="未提供完整肿瘤病理资料，本次不计算 PFS",
+            suggestion=(
+                "没有结直肠癌诊断或病理资料时可以留空，系统仍会继续菌群展示和"
+                "用药核对，不会把空白字段当作正常分期。"
+            ),
+            rationale=(
+                f"V8 PFS 还缺少：{missing_text}。"
+                if missing_text
+                else "V8 PFS 需要完整的结直肠癌病理资料。"
+            ),
+            priority=0.42,
+            urgency="routine",
+            evidence_level="model_scope",
+            evidence_source_ids=["FDA_CDS_2026", "AC_ICAM_V8_PFS"],
+            action_steps=[
+                "如果没有结直肠癌诊断，不需要为了使用网页而补填肿瘤字段。",
+                "如果已确诊并希望查看 PFS，请根据正式病理报告补齐分期、T/N、部位和形态学。",
+                "本次菌群和用药结果只能按已提供信息解释，不能代替筛查、诊断或随访。",
+            ],
+        )
+
+    is_v8_pfs = (
+        str(risk_result.get("backend", ""))
+        == "ac_icam_real_outcome_clinical_pfs"
+    )
+    is_research_index = (
+        str(risk_result.get("endpoint", "")).lower()
+        == "research_risk_index"
+    )
+    if is_research_index:
+        risk_level_text = {
+            "high": "较高参考位置",
+            "medium": "中等参考位置",
+            "low": "较低参考位置",
+        }.get(risk_level, "未明确参考位置")
     if risk_level == "high":
-        title = "模型提示较高风险，优先安排临床复核"
-        suggestion = "整理症状、既往检查、家族史和完整用药清单，带着本结果咨询消化专科或临床药师。"
+        title = (
+            "PFS 模型提示较高相对风险，优先核对随访计划"
+            if is_v8_pfs
+            else (
+                "研究风险指数处于较高参考位置，优先核对影响因素"
+                if is_research_index
+                else "模型提示较高风险，优先安排临床复核"
+            )
+        )
+        suggestion = (
+            "整理病理、治疗、近期影像和复诊安排，交给肿瘤科核对随访计划。"
+            if is_v8_pfs
+            else (
+                "先核对近期抗生素、采样质量、消化道症状和家族史；"
+                "如有异常，再由临床人员判断是否需要规范筛查。"
+                if is_research_index
+                else "整理症状、既往检查、家族史和完整用药清单，带着本结果咨询消化专科或临床药师。"
+            )
+        )
         action_steps = [
-            "记录目前症状、开始时间以及近期是否加重。",
-            "准备既往检查结果、家族史和完整用药清单。",
-            "把这些资料和本结果交给消化专科或临床药师，判断是否需要进一步检查；不要自行启停药。",
+            (
+                "准备病理分期、手术和后续治疗记录。"
+                if is_v8_pfs
+                else (
+                    "确认采样前后是否使用过抗生素、益生菌或进行了明显饮食调整。"
+                    if is_research_index
+                    else "记录目前症状、开始时间以及近期是否加重。"
+                )
+            ),
+            (
+                "整理近期影像、肿瘤标志物和已安排的复诊时间。"
+                if is_v8_pfs
+                else (
+                    "记录便血、排便习惯改变、体重下降等情况，并整理结直肠癌家族史和既往筛查记录。"
+                    if is_research_index
+                    else "准备既往检查结果、家族史和完整用药清单。"
+                )
+            ),
+            (
+                "把资料和本结果交给肿瘤科核对随访计划；不要仅凭网页结果改变治疗。"
+                if is_v8_pfs
+                else (
+                    "如存在症状、家族史或已到筛查年龄，把资料交给临床人员判断；"
+                    "不要把该分位当作癌症概率或自行购药。"
+                    if is_research_index
+                    else "把这些资料和本结果交给消化专科或临床药师，判断是否需要进一步检查；不要自行启停药。"
+                )
+            ),
         ]
         priority = 0.96
         urgency = "priority"
     elif risk_level == "medium":
-        title = "模型提示中等风险，安排一次有记录的复核"
-        suggestion = "把症状变化、近期用药和既往检查整理在一起，供临床人员判断是否需要复查。"
-        action_steps = [
-            "记录症状变化、近期抗生素或益生菌使用情况。",
-            "整理最近一次相关检查的日期和结果。",
-            "在常规复诊时请临床人员判断是否需要复查或进一步评估。",
-        ]
+        title = (
+            "PFS 模型提示中等相对风险，按计划完成复核"
+            if is_v8_pfs
+            else (
+                "研究风险指数处于中等参考位置，结合个人风险因素复核"
+                if is_research_index
+                else "模型提示中等风险，安排一次有记录的复核"
+            )
+        )
+        suggestion = (
+            "核对病理、治疗记录和下一次肿瘤随访安排，不要仅凭模型自行增加检查。"
+            if is_v8_pfs
+            else (
+                "保留本次结果，并结合症状、家族史、既往筛查和近期用药判断是否需要临床复核。"
+                if is_research_index
+                else "把症状变化、近期用药和既往检查整理在一起，供临床人员判断是否需要复查。"
+            )
+        )
+        action_steps = (
+            [
+                "准备病理分期、手术和后续治疗摘要。",
+                "确认下一次影像、肿瘤标志物检查和肿瘤科复诊时间。",
+                "按原随访计划完成复核；模型本身不能决定检查频率。",
+            ]
+            if is_v8_pfs
+            else [
+                "核对采样前后的抗生素、益生菌和明显饮食变化。",
+                "整理症状、家族史和既往筛查记录。",
+                "按年龄和个人风险因素执行规范筛查，不因本指数单独增加检查。",
+            ]
+            if is_research_index
+            else [
+                "记录症状变化、近期抗生素或益生菌使用情况。",
+                "整理最近一次相关检查的日期和结果。",
+                "在常规复诊时请临床人员判断是否需要复查或进一步评估。",
+            ]
+        )
         priority = 0.76
         urgency = "routine"
     else:
-        title = "当前模型风险较低，继续常规观察"
-        suggestion = "保留本次结果并观察症状变化；低风险不等于排除疾病。"
-        action_steps = [
-            "保留本次结果，作为后续比较的基线。",
-            "如症状持续、加重或近期用药发生变化，重新评估。",
-            "不要因为当前结果较低而跳过原有的复诊或筛查计划。",
-        ]
+        title = (
+            "PFS 模型提示较低相对风险，仍按原计划随访"
+            if is_v8_pfs
+            else (
+                "研究风险指数处于较低参考位置，仍按常规要求管理"
+                if is_research_index
+                else "当前模型风险较低，继续常规观察"
+            )
+        )
+        suggestion = (
+            "较低相对风险不代表不会进展，请继续执行肿瘤科既定随访计划。"
+            if is_v8_pfs
+            else (
+                "较低参考分位不能排除疾病，也不能替代按年龄、症状和家族史安排的筛查。"
+                if is_research_index
+                else "保留本次结果并观察症状变化；低风险不等于排除疾病。"
+            )
+        )
+        action_steps = (
+            [
+                "保留本次结果，供肿瘤科结合病理和随访资料复核。",
+                "继续执行既定影像、实验室检查和复诊安排。",
+                "出现新症状或检查异常时及时联系临床团队；不要因相对风险较低而延后随访。",
+            ]
+            if is_v8_pfs
+            else [
+                "保留本次结果，作为相同检测条件下后续比较的参考。",
+                "仍按年龄、症状和家族史执行常规筛查或复诊。",
+                "出现持续便血、排便习惯改变或不明原因体重下降等情况时及时就医。",
+            ]
+            if is_research_index
+            else [
+                "保留本次结果，作为后续比较的基线。",
+                "如症状持续、加重或近期用药发生变化，重新评估。",
+                "不要因为当前结果较低而跳过原有的复诊或筛查计划。",
+            ]
+        )
         priority = 0.56
         urgency = "routine"
 
@@ -589,11 +754,29 @@ def _risk_review_card(
         category="risk_follow_up",
         title=title,
         suggestion=suggestion,
-        rationale=f"模型结果为{risk_level_text}{percentile_text}。它表示在研究队列中的相对位置，不是诊断，也不是个人绝对发病概率。",
+        rationale=(
+            f"PFS 模型结果为{risk_level_text}{percentile_text}。它表示 AC-ICAM "
+            "队列中的相对进展风险位置，不是个体预后保证或治疗指令。"
+            if is_v8_pfs
+            else (
+                f"研究风险指数为{risk_level_text}{percentile_text}。它来自"
+                " synthetic/noisy augmented topology_v6 参考队列，不是结直肠癌"
+                "概率、筛查结果或诊断。"
+                if is_research_index
+                else f"模型结果为{risk_level_text}{percentile_text}。它表示在研究队列中的相对位置，不是诊断，也不是个人绝对发病概率。"
+            )
+        ),
         priority=priority,
         urgency=urgency,
         evidence_level="model_assisted_review",
-        evidence_source_ids=["FDA_CDS_2026", "INTERNAL_TOPOLOGY_V6"],
+        evidence_source_ids=[
+            "FDA_CDS_2026",
+            (
+                "AC_ICAM_V8_PFS"
+                if is_v8_pfs
+                else "INTERNAL_TOPOLOGY_V6"
+            ),
+        ],
         action_steps=action_steps,
     )
 
@@ -933,7 +1116,12 @@ def _drug_knowledge_cards(drug_review: Mapping[str, Any]) -> list[dict[str, Any]
     return cards
 
 
-def _screening_context_card(clinical: Mapping[str, float]) -> dict[str, Any] | None:
+def _screening_context_card(
+    clinical: Mapping[str, float],
+    metadata: Mapping[str, Any],
+) -> dict[str, Any] | None:
+    if str(metadata.get("suspected_condition", "")).strip() == "colorectal_cancer_followup":
+        return None
     age = _finite_float(clinical.get("age"))
     if age is None or not 45.0 <= age <= 85.0:
         return None
@@ -1170,7 +1358,7 @@ def build_pharmacy_assessment(
     cards = [_risk_review_card(risk_result, quality)]
     cards.extend(medication_cards)
     cards.extend(_drug_knowledge_cards(drug_review))
-    screening_card = _screening_context_card(clinical)
+    screening_card = _screening_context_card(clinical, metadata)
     if screening_card is not None:
         cards.append(screening_card)
     cards.extend(
@@ -1216,6 +1404,10 @@ def build_pharmacy_assessment(
             "risk_percentile": round(risk_percentile, 4) if risk_percentile is not None else None,
             "prediction_reliability": str(
                 risk_result.get("prediction_reliability", "unknown")
+            ),
+            "prediction_available": risk_result.get("prediction_available"),
+            "not_available_reason": risk_result.get(
+                "not_available_reason"
             ),
             "split_disagreement": _finite_float(risk_result.get("split_disagreement")),
             "model_release": risk_result.get("model_release"),

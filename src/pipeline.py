@@ -10,6 +10,10 @@ from src.report import build_report
 
 
 def _get_model_bridge() -> Any:
+    if WEB_MODEL_BACKEND == "ac_icam_v8":
+        from src.ac_icam_v8_bridge import get_ac_icam_v8_model_bridge
+
+        return get_ac_icam_v8_model_bridge()
     if WEB_MODEL_BACKEND == "temporal_topology":
         from src.temporal_topology_bridge import get_temporal_topology_model_bridge
 
@@ -19,7 +23,7 @@ def _get_model_bridge() -> Any:
 
         return get_research_model_bridge()
     raise RuntimeError(
-        "GOA_MODEL_BACKEND must be temporal_topology or legacy_cox; "
+        "GOA_MODEL_BACKEND must be ac_icam_v8, temporal_topology, or legacy_cox; "
         f"received {WEB_MODEL_BACKEND!r}."
     )
 
@@ -41,13 +45,39 @@ def run_pipeline(payload: Dict[str, Any]) -> Dict[str, object]:
         structured.clinical,
         structured.metabolites,
     )
-    gnn_features = {**graph_features, **model_prediction.model_features}
     risk_result = model_prediction.risk_result
+    general_risk_result = getattr(
+        model_prediction,
+        "general_risk_result",
+        None,
+    )
+    general_risk_features = getattr(
+        model_prediction,
+        "general_risk_features",
+        None,
+    )
+    gnn_features = {**graph_features, **model_prediction.model_features}
+    if general_risk_features is not None:
+        gnn_features["general_risk_model"] = general_risk_features
+
+    pharmacy_risk_result = risk_result
+    pharmacy_model_features = gnn_features
+    if (
+        risk_result.get("prediction_available") is False
+        and general_risk_result is not None
+        and general_risk_result.get("not_available_reason")
+        != "incomplete_microbiome_panel"
+    ):
+        pharmacy_risk_result = general_risk_result
+        pharmacy_model_features = {
+            **graph_features,
+            **(general_risk_features or {}),
+        }
     pharmacy_assessment = build_pharmacy_assessment(
         submitted_microbes=submitted_microbes,
         clinical=structured.clinical,
-        risk_result=risk_result,
-        model_features=gnn_features,
+        risk_result=pharmacy_risk_result,
+        model_features=pharmacy_model_features,
         metadata=metadata,
     )
     recommendations = list(pharmacy_assessment["recommendations"])
@@ -57,4 +87,5 @@ def run_pipeline(payload: Dict[str, Any]) -> Dict[str, object]:
         risk_result,
         recommendations,
         pharmacy_assessment=pharmacy_assessment,
+        general_risk_result=general_risk_result,
     )

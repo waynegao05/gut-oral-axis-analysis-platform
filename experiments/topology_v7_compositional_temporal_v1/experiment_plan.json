@@ -1,0 +1,168 @@
+{
+  "schema_version": 1,
+  "status": "candidate_grid_locked_before_development_generation",
+  "scope": "independent_compositional_temporal_survival_experiment",
+  "isolation": {
+    "modify_deployed_backend": false,
+    "modify_existing_v7_formal_models": false,
+    "reuse_seen_audit_for_model_selection": false
+  },
+  "diagnostic_baseline": {
+    "dataset_seed": 20261003,
+    "prediction_root": "outputs/topology_v7_nested_refit_v1/audit/baseline_pooled_cox",
+    "purpose": "metric_and_oracle_ceiling_diagnostics_only"
+  },
+  "future_cohorts": {
+    "development_generation_seed": 20261006,
+    "audit_generation_seed": 20261007,
+    "audit_generated_only_after_candidate_lock": true,
+    "audit_seed_reruns_prohibited": true
+  },
+  "model_seeds": [
+    7,
+    21,
+    42,
+    123,
+    2026
+  ],
+  "metrics": {
+    "primary_c_index": "harrell_macro_logo",
+    "censoring_robust_c_index": "uno_macro_logo_tau_96",
+    "auc_method": "cumulative_dynamic_ipcw",
+    "report_horizons": [
+      36,
+      60,
+      84
+    ],
+    "integration_grid": [
+      24,
+      36,
+      48,
+      60,
+      72,
+      84,
+      96
+    ],
+    "brier_method": "ipcw",
+    "cluster_bootstrap_column": "primary_anchor_patient_id"
+  },
+  "data_source_policy": {
+    "official_source_required": true,
+    "required_metadata": [
+      "dataset_id",
+      "original_project_url",
+      "official_accession",
+      "download_url",
+      "accessed_at_utc",
+      "license_or_access_terms",
+      "sha256"
+    ],
+    "secondary_mirror_as_only_source_prohibited": true,
+    "observed_and_model_generated_fields_must_be_distinguished": true
+  },
+  "internal_edge_policy": {
+    "precomputed_edge_weight_used_as_model_input": false,
+    "computed_inside_forward": true,
+    "allowed_inputs": [
+      "node_abundance",
+      "node_function_score",
+      "clinical_features",
+      "metabolite_features"
+    ],
+    "prohibited_inputs": [
+      "time",
+      "event",
+      "generation_group_id",
+      "sample_id",
+      "provenance",
+      "survival_latent_risk",
+      "survival_event_noise",
+      "survival_event_time",
+      "survival_censor_time"
+    ],
+    "symmetry": "undirected_pairwise_score",
+    "self_edges": false
+  },
+  "candidate_phases": [
+    "compositional_feature_bank",
+    "diverse_survival_baselines",
+    "cox_discrete_time_dual_head",
+    "oof_nonnegative_stacking"
+  ],
+  "development_training": {
+    "model_seed": 42,
+    "maximum_epochs": 100,
+    "early_stop_patience": 20,
+    "minimum_c_index_delta": 0.0002,
+    "hidden_dim": 48,
+    "heads": 2,
+    "dropout": 0.1,
+    "edge_hidden_dim": 16,
+    "node_identity_dim": 8,
+    "num_time_bins": 12,
+    "learning_rate": 0.001,
+    "weight_decay": 0.001,
+    "gradient_clip_norm": 2.0,
+    "warmup_epochs": 10,
+    "full_cohort_batch": true
+  },
+  "candidates": [
+    {
+      "name": "legacy_precomputed_edge_gnn",
+      "model_family": "existing_v7_gnn",
+      "uses_precomputed_edge_weight": true,
+      "purpose": "paired development baseline only"
+    },
+    {
+      "name": "equal_edge_compositional_cox",
+      "model_family": "internal_edge_dual_model",
+      "edge_mode": "equal",
+      "discrete_weight": 0.0
+    },
+    {
+      "name": "equal_edge_compositional_dual015",
+      "model_family": "internal_edge_dual_model",
+      "edge_mode": "equal",
+      "discrete_weight": 0.15
+    },
+    {
+      "name": "node_internal_edge_cox",
+      "model_family": "internal_edge_dual_model",
+      "edge_mode": "node",
+      "discrete_weight": 0.0
+    },
+    {
+      "name": "node_context_internal_edge_cox",
+      "model_family": "internal_edge_dual_model",
+      "edge_mode": "node_context",
+      "discrete_weight": 0.0
+    },
+    {
+      "name": "node_context_internal_edge_dual015",
+      "model_family": "internal_edge_dual_model",
+      "edge_mode": "node_context",
+      "discrete_weight": 0.15
+    },
+    {
+      "name": "node_context_internal_edge_dual030",
+      "model_family": "internal_edge_dual_model",
+      "edge_mode": "node_context",
+      "discrete_weight": 0.3
+    }
+  ],
+  "development_gate": {
+    "baseline_candidate": "legacy_precomputed_edge_gnn",
+    "minimum_macro_c_index_gain": 0.003,
+    "minimum_integrated_auc_gain": 0.008,
+    "minimum_improved_groups": 4,
+    "maximum_worst_group_regression": 0.002
+  },
+  "audit_gate": {
+    "minimum_macro_c_index_gain": 0.002,
+    "minimum_integrated_auc_gain": 0.005,
+    "minimum_improved_groups": 4,
+    "maximum_worst_group_regression": 0.002,
+    "cluster_bootstrap_delta_ci_lower_bound_must_be_positive": true,
+    "integrated_brier_score_must_not_worsen": true
+  }
+}

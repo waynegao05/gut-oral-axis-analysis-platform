@@ -42,7 +42,9 @@ def get_survival_task_definition() -> dict[str, Any]:
 def infer_dataset_origin(*paths: str) -> dict[str, Any]:
     joined = " ".join(str(path).lower() for path in paths)
     dataset_version = "unknown"
-    if "topology_v6" in joined:
+    if "topology_v7" in joined:
+        dataset_version = "topology_v7"
+    elif "topology_v6" in joined:
         dataset_version = "topology_v6"
     elif "expanded_v5" in joined:
         dataset_version = "expanded_v5"
@@ -51,11 +53,15 @@ def infer_dataset_origin(*paths: str) -> dict[str, Any]:
     elif "expanded_v3" in joined:
         dataset_version = "expanded_v3"
 
+    is_v7 = dataset_version == "topology_v7"
     return {
         "dataset_version": dataset_version,
         "is_synthetic": dataset_version != "unknown",
-        "is_augmented": "expanded_" in joined or "topology_v6" in joined,
-        "contains_noise": "noisy" in joined or "topology_v6" in joined,
+        "is_augmented": "expanded_" in joined or "topology_v6" in joined or is_v7,
+        "contains_noise": "noisy" in joined or "topology_v6" in joined or is_v7,
+        "uses_real_cohort_anchors": is_v7,
+        "contains_model_generated_survival_labels": is_v7,
+        "is_external_clinical_validation": False,
         "is_archived_source": "archive" in joined,
         "source_paths": [str(Path(path).as_posix()) for path in paths],
     }

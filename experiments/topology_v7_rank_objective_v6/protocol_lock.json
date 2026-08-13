@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "status": "development_candidate_rejected",
+  "plan_sha256": "ff959025ba6d6c8974ddfefb8a5c9db30f79541f7c5fdf468925c81a77873bca",
+  "development_manifest_sha256": "6d76b3a50aba5a9cccf1e2fdae0ac2d92064e617f8a2ef9bf8d3d4beb7f0f88b",
+  "baseline_candidate": {
+    "name": "exact_internal_edge_cox",
+    "comparable_rank_weight": 0.0,
+    "horizon_rank_weight": 0.0,
+    "eligible_for_promotion": false
+  },
+  "selected_candidate": {
+    "name": "exact_internal_edge_cox",
+    "comparable_rank_weight": 0.0,
+    "horizon_rank_weight": 0.0,
+    "eligible_for_promotion": false
+  },
+  "audit_generation_seed": 20261017,
+  "audit_cohort_generated": false,
+  "development_decision": {
+    "candidate": "exact_internal_edge_cox_horizon_rank_020",
+    "passed": false,
+    "checks": {
+      "macro_c_index_gain": false,
+      "integrated_auc_gain": false,
+      "improved_outer_groups": false,
+      "worst_group_regression": true,
+      "any_horizon_auc_regression": true,
+      "integrated_brier": true
+    },
+    "macro_c_index_gain": -0.0002967208975391822,
+    "macro_integrated_auc_gain": -0.0003714234396352545,
+    "macro_integrated_brier_change": 0.00013006872790169433,
+    "improved_outer_groups": 1,
+    "fold_c_index_deltas": [
+      -0.0002629964057158096,
+      0.00042549133244806914,
+      -0.00044020437029135273,
+      -0.00048088482808361643,
+      -0.0007250102160529792
+    ],
+    "macro_auc_horizon_deltas": [
+      -0.00026762135973257273,
+      -0.0006588803287379541,
+      0.00015772253449497509
+    ],
+    "worst_group_delta": -0.0007250102160529792
+  }
+}

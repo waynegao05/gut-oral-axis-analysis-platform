@@ -1,7 +1,7 @@
 {
   "schema_version": "3.0",
   "engine_version": "pharmacy_assistance_v3",
-  "last_reviewed": "2026-07-18",
+  "last_reviewed": "2026-07-24",
   "intended_use": "Research-oriented clinician and pharmacist decision support with medication-name normalization, product-specific label evidence, a limited high-priority interaction subset, and guarded probiotic guideline options. The engine does not diagnose disease, select a patient-specific drug, dose, or duration, or authorize a medication change.",
   "calibration": {
     "dataset": "topology_v6",
@@ -94,6 +94,15 @@
       "source_type": "internal_synthetic_research_dataset",
       "url": null,
       "scope_note": "Synthetic/noisy augmented data for method development; not a clinical threshold source."
+    },
+    {
+      "source_id": "AC_ICAM_V8_PFS",
+      "organization": "Gut-Oral Axis Analysis Platform",
+      "title": "AC-ICAM V8 real-outcome PFS model",
+      "year": 2026,
+      "source_type": "internal_repeated_cross_validation",
+      "url": "https://doi.org/10.1038/s41591-023-02324-5",
+      "scope_note": "Five-seed repeated cross-validation on 246 AC-ICAM patients; not external clinical validation."
     },
     {
       "source_id": "FDA_CDS_2026",

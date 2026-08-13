@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "status": "candidate_grid_locked_before_development_generation",
+  "scope": "controlled_drop_in_internal_edge_development_then_audit",
+  "parent_experiment": "topology_v7_compositional_temporal_v1",
+  "parent_development_result": {
+    "baseline_macro_c_index": 0.749870281029396,
+    "best_new_macro_c_index": 0.749613311339291,
+    "candidate_passed_gate": false
+  },
+  "future_cohorts": {
+    "development_generation_seed": 20261008,
+    "audit_generation_seed": 20261009,
+    "audit_generated_only_after_candidate_lock": true,
+    "audit_seed_reruns_prohibited": true
+  },
+  "groups": [0, 1, 2, 3, 4],
+  "metrics": {
+    "report_horizons": [36, 60, 84],
+    "integration_grid": [24, 36, 48, 60, 72, 84, 96],
+    "uno_tau": 96
+  },
+  "development_training": {
+    "model_seed": 42,
+    "maximum_epochs": 100,
+    "early_stop_patience": 20,
+    "minimum_c_index_delta": 0.0002,
+    "learning_rate": 0.001,
+    "weight_decay": 0.001,
+    "gradient_clip_norm": 2.0,
+    "warmup_epochs": 10,
+    "edge_pretrain_learning_rate": 0.002
+  },
+  "candidates": [
+    {
+      "name": "legacy_precomputed_edge_gnn",
+      "model_family": "existing_v7_gnn",
+      "uses_precomputed_edge_weight_at_inference": true
+    },
+    {
+      "name": "dropin_equal_edge_cox",
+      "model_family": "dropin_internal_edge",
+      "edge_mode": "equal",
+      "edge_pretrain_epochs": 0,
+      "edge_reconstruction_weight": 0.0,
+      "aft_weight": 0.0
+    },
+    {
+      "name": "dropin_node_context_recon1",
+      "model_family": "dropin_internal_edge",
+      "edge_mode": "node_context",
+      "edge_pretrain_epochs": 20,
+      "edge_reconstruction_weight": 1.0,
+      "aft_weight": 0.0
+    },
+    {
+      "name": "dropin_node_context_recon5",
+      "model_family": "dropin_internal_edge",
+      "edge_mode": "node_context",
+      "edge_pretrain_epochs": 20,
+      "edge_reconstruction_weight": 5.0,
+      "aft_weight": 0.0
+    },
+    {
+      "name": "dropin_node_context_recon1_aft005",
+      "model_family": "dropin_internal_edge",
+      "edge_mode": "node_context",
+      "edge_pretrain_epochs": 20,
+      "edge_reconstruction_weight": 1.0,
+      "aft_weight": 0.05
+    },
+    {
+      "name": "dropin_node_context_recon1_aft010",
+      "model_family": "dropin_internal_edge",
+      "edge_mode": "node_context",
+      "edge_pretrain_epochs": 20,
+      "edge_reconstruction_weight": 1.0,
+      "aft_weight": 0.1
+    }
+  ],
+  "development_gate": {
+    "baseline_candidate": "legacy_precomputed_edge_gnn",
+    "minimum_macro_c_index_gain": 0.0015,
+    "minimum_integrated_auc_gain": 0.003,
+    "minimum_improved_groups": 4,
+    "maximum_worst_group_regression": 0.002
+  },
+  "audit_gate": {
+    "minimum_macro_c_index_gain": 0.002,
+    "minimum_integrated_auc_gain": 0.005,
+    "minimum_improved_groups": 4,
+    "maximum_worst_group_regression": 0.002,
+    "cluster_bootstrap_delta_ci_lower_bound_must_be_positive": true,
+    "integrated_brier_score_must_not_worsen": true
+  },
+  "inference_contract": {
+    "edge_weight_csv_read_by_model": false,
+    "edge_supervision_target_available_at_inference": false,
+    "edge_inputs": [
+      "node_abundance",
+      "node_function_score",
+      "clinical_features",
+      "metabolite_features"
+    ],
+    "edge_prohibited_inputs": [
+      "time",
+      "event",
+      "generation_group_id",
+      "sample_id",
+      "provenance",
+      "survival_latent_risk"
+    ]
+  }
+}

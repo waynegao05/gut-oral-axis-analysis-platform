@@ -137,6 +137,8 @@ celerybeat.pid
 # Environments
 .env
 .envrc
+node_modules/
+/.npmrc
 .venv
 env/
 venv/
@@ -178,6 +180,49 @@ cython_debug/
 # Generated experiment and application outputs
 /output/
 /outputs/
+**/output/
+**/outputs/
+
+# Generated figures and local plotting source
+*.R
+*.Rmd
+*.RData
+*.rds
+**/plot*.R
+**/*figure*.R
+/experiments/colorimetric_standard_curve_v1/
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.tif
+*.tiff
+*.svg
+*.webp
+*.bmp
+*.pdf
+
+# Trained parameters and deployment weights remain local only
+*.pt
+*.pth
+*.ckpt
+*.onnx
+*.pb
+*.tflite
+*.bin
+*.joblib
+*.pkl
+*.pickle
+*.safetensors
+*.h5
+*.hdf5
+*.npz
+*.npy
+*.mar
+/checkpoints/
+**/checkpoints/
+/config/releases/*.json
+/archive/model_releases/
 
 # Abstra
 # Abstra is an AI-powered process automation framework.
@@ -221,7 +266,14 @@ tmp_flask_*.log
 /experiments/temporal_independent_v3/plot_risk_stratification_figure.R
 /experiments/temporal_independent_v3/plot_roc_only_nature.R
 /experiments/temporal_independent_v3/plot_training_roc_figure.R
+/experiments/temporal_independent_v3/plot_training_roc_standalone.R
 /research/plot_survival_roc_nature_v2.R
+
+# Local release backups and heavyweight historical model artifacts
+/archive/backup_TCM1.3/
+
+# Local patent/presentation artwork; release figures remain under ignored outputs/
+/说明书附图/
 
 # Marimo
 marimo/_static/

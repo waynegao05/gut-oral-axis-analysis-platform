@@ -1,0 +1,99 @@
+{
+  "schema_version": 1,
+  "status": "locked_before_source_audit",
+  "objective": "Test whether a real, public microbiome survival cohort supplies an independent frozen prior that can improve V7 without using generator-only information.",
+  "source_dataset": {
+    "name": "Sidra-LUMC AC-ICAM",
+    "primary_endpoint": "PFS",
+    "included_stages": [
+      1,
+      2,
+      3
+    ],
+    "tissues": [
+      "tumor",
+      "adjacent normal colon"
+    ],
+    "shared_taxa": [
+      "Fusobacterium",
+      "Porphyromonas",
+      "Prevotella",
+      "Streptococcus",
+      "Lactobacillus"
+    ],
+    "patient_level_id_mapping_required": true
+  },
+  "source_screen": {
+    "model": "ridge Cox proportional hazards",
+    "feature_sets": [
+      "tissue-specific five-genus CLR",
+      "tissue-specific five-genus CLR plus log panel load"
+    ],
+    "l2_values": [
+      0.01,
+      0.1,
+      1.0
+    ],
+    "cv_seeds": [
+      7,
+      21,
+      42,
+      123,
+      2026
+    ],
+    "folds": 5,
+    "gate": {
+      "minimum_mean_c_index": 0.56,
+      "minimum_seed_c_index": 0.53,
+      "all_optimizations_must_succeed": true
+    }
+  },
+  "source_mbr_distillation_screen": {
+    "target": "published AC-ICAM 41-genus MBR score",
+    "purpose": "Transfer only information recoverable from the five genera observed by V7; do not fabricate the other genera.",
+    "model": "ridge regression",
+    "feature_sets": [
+      "tissue-specific five-genus CLR",
+      "tissue-specific five-genus CLR plus log panel load"
+    ],
+    "ridge_alphas": [
+      0.01,
+      0.1,
+      1.0,
+      10.0
+    ],
+    "cv_seeds": [
+      7,
+      21,
+      42,
+      123,
+      2026
+    ],
+    "folds": 5,
+    "gate": {
+      "minimum_mean_spearman": 0.35,
+      "minimum_seed_spearman": 0.3,
+      "minimum_mean_r2": 0.08
+    }
+  },
+  "v7_development_gate_if_source_passes": {
+    "data": "generator-v3 covariance-compensated pilot only",
+    "baseline": "V9 locked core_no_edges XGBoost Cox stump_l10",
+    "candidate_methods": [
+      "add frozen AC-ICAM PFS prior as one model feature",
+      "validation-calibrated positive residual with alpha grid 0, 0.05, 0.1, 0.2, 0.4, 0.8, 1.2"
+    ],
+    "source_tissue_mapping": "adjacent normal colon model applied to V7 stool five-genus panel",
+    "mbr_distillation_must_not_be_used_if_source_gate_fails": true,
+    "minimum_mean_delta": 0.005,
+    "minimum_improved_outer_groups": 3,
+    "minimum_worst_group_delta": -0.005
+  },
+  "formal_policy": "Do not access the formal V7 cohort unless both source and V7 development gates pass. Formal evaluation is one-time and uses seeds 7, 21, 42, 123, and 2026.",
+  "prohibited_inputs": [
+    "V7 generator latent risk",
+    "V7 generator survival weights",
+    "V6 outcome teacher values",
+    "precomputed V7 edge weights"
+  ]
+}

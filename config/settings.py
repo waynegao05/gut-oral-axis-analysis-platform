@@ -6,10 +6,36 @@ HOST = os.getenv("GOA_HOST", "127.0.0.1")
 PORT = int(os.getenv("GOA_PORT", "8765"))
 DEBUG = os.getenv("GOA_DEBUG", "0").strip().lower() in {"1", "true", "yes", "on"}
 USE_RELOADER = os.getenv("GOA_RELOADER", "0").strip().lower() in {"1", "true", "yes", "on"}
-WEB_MODEL_BACKEND = os.getenv("GOA_MODEL_BACKEND", "temporal_topology").strip().lower()
+WEB_MODEL_BACKEND = os.getenv("GOA_MODEL_BACKEND", "ac_icam_v8").strip().lower()
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-RESEARCH_MODEL_CONFIG_PATH = PROJECT_ROOT / "research_config_v2.yaml"
+AC_ICAM_V8_ARTIFACT_PATH = (
+    PROJECT_ROOT / "config" / "releases" / "ac_icam_real_outcome_pfs_v8.json"
+)
+AC_ICAM_V8_RELEASE_NAME = "ac_icam_real_outcome_pfs_v8"
+AC_ICAM_V8_ARTIFACT_SHA256 = (
+    "feb8036a52d1c14327b93b6b324ff2c09bcee5b7f711ea0f16c84f44e006ab95"
+)
+AC_ICAM_V8_RELEASE_NOTE = (
+    "Five-seed AC-ICAM real-outcome PFS release. The default clinical-core "
+    "variant uses age, sex, AJCC stage, pathological T/N/M, tumor location, "
+    "and morphology. A measured tumor-RNA ICR score activates the expanded "
+    "variant; microbiome and treatment fields do not alter the deployed PFS score."
+)
+
+# Independent oral-only adenoma research endpoint. It is disabled by default
+# and never changes the AC-ICAM V8 PFS score.
+ENABLE_INTERNAL_ORAL_ADENOMA = os.getenv(
+    "GOA_ENABLE_INTERNAL_ORAL_ADENOMA", "0"
+).strip().lower() in {"1", "true", "yes", "on"}
+ORAL_ADENOMA_RELEASE_NAME = "oral_adenoma_internal_v3"
+ORAL_ADENOMA_ARTIFACT_PATH = (
+    PROJECT_ROOT / "config" / "releases" / "oral_adenoma_internal_v3.json"
+)
+ORAL_ADENOMA_ARTIFACT_SHA256 = (
+    "71e855e5123fe0d0d3f31f0d13ea1c85bb3e7e0e4d192d24abb30d6638ba1994"
+)
+RESEARCH_MODEL_CONFIG_PATH = PROJECT_ROOT / "config" / "releases" / "temporal_topology_v6.yaml"
 RESEARCH_MODEL_RELEASE_NAME = "cox_fixed_split_ensemble_v1"
 RESEARCH_MODEL_RELEASE_NOTE = (
     "Locked web release for the conservative GNN + Cox mainline using the "
@@ -36,8 +62,8 @@ RESEARCH_MODEL_RELEASE_METRICS = {
     "graph_perturbation_gap_max": 0.025424957062076037,
 }
 
-# Latest formal web backend. The older Cox bridge remains available in
-# archive/legacy_web_backends/cox_ensemble_v1.py for local comparison and rollback.
+# Previous formal web backend retained for local comparison and rollback.
+# The older Cox bridge also remains available under archive/legacy_web_backends/.
 TEMPORAL_TOPOLOGY_RELEASE_NAME = "temporal_topology_aft_cross_split_consensus_v1"
 TEMPORAL_TOPOLOGY_RELEASE_NOTE = (
     "Cross-split consensus of the structure-aware GNN mainline and the "
