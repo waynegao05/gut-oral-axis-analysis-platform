@@ -278,7 +278,7 @@ CURRENT_MAINLINE.md                   当前主线速查
 
 ## License | 许可证
 
-本项目采用 Apache License 2.0 许可证。具体条款请参阅 [LICENCE](LICENCE) 文件。
+本项目采用自有许可证。具体条款请参阅 [LICENCE](LICENCE) 文件。
 
 ## Funding Support | 基金支持
 
