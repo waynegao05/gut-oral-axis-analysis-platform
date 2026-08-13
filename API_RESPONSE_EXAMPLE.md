@@ -1,6 +1,8 @@
 # API Response Example
 
-Representative response from the current temporal-topology AFT consensus backend. Large inferred-topology and artifact lists are abbreviated here; the endpoint returns the complete fields.
+Representative response from the current AC-ICAM V8 real-outcome PFS backend.
+Large model metadata lists are abbreviated here; the endpoint returns the
+complete fields.
 
 ```json
 {
@@ -12,51 +14,54 @@ Representative response from the current temporal-topology AFT consensus backend
       ["Porphyromonas", 0.14]
     ],
     "gnn_features": {
-      "backend": "temporal_topology_aft_cross_split_consensus",
-      "model_release": "temporal_topology_aft_cross_split_consensus_v1",
-      "num_split_branches": 2,
-      "num_gnn_models": 6,
-      "num_aft_models": 10,
-      "consensus_alpha": 0.63,
-      "topology_source": "inferred_from_web_inputs",
-      "topology_inference_method": "split_train_only_standardized_ridge",
-      "gnn_inference_context": "fixed_median_batch_normalization_anchor",
+      "backend": "ac_icam_real_outcome_clinical_pfs",
+      "model_release": "ac_icam_real_outcome_pfs_v8",
+      "model_variant": "clinical_core",
+      "endpoint": "PFS",
+      "microbiome_used_for_risk": false,
+      "treatment_used_for_risk": false,
+      "icr_used_for_risk": false,
       "defaulted_inputs": [],
       "out_of_training_range_inputs": [],
-      "unsupported_microbes_ignored": []
+      "formal_metrics": {
+        "ensemble_oof_c_index": 0.7756446991404011
+      }
     },
     "risk_result": {
-      "risk_score": 70.06,
-      "risk_level": "high",
-      "risk_percentile": 70.06,
-      "raw_model_risk": 0.579259,
-      "split_consensus_risks": {
-        "42": 0.433723,
-        "43": 0.724796
+      "risk_score": 63.41,
+      "risk_level": "medium",
+      "risk_percentile": 63.41,
+      "raw_model_risk": 0.260397,
+      "pfs_probability": {
+        "36": 0.723103,
+        "60": 0.692087
       },
-      "split_disagreement": 0.291073,
       "prediction_reliability": "standard",
-      "ensemble_size": 16,
-      "backend": "temporal_topology_aft_cross_split_consensus",
-      "model_release": "temporal_topology_aft_cross_split_consensus_v1"
+      "prediction_available": true,
+      "ensemble_size": 5,
+      "backend": "ac_icam_real_outcome_clinical_pfs",
+      "model_release": "ac_icam_real_outcome_pfs_v8",
+      "model_variant": "clinical_core",
+      "endpoint": "PFS",
+      "research_use_only": true
     },
     "recommendations": [
       {
         "recommendation_id": "risk_review_high",
         "category": "risk_follow_up",
-        "title": "模型提示较高风险，优先安排临床复核",
-        "suggestion": "整理症状、既往检查、家族史和完整用药清单，带着本结果咨询消化专科或临床药师。",
+        "title": "PFS 模型提示较高相对风险，优先核对随访计划",
+        "suggestion": "整理病理、治疗、近期影像和复诊安排，交给肿瘤科核对随访计划。",
         "action_steps": [
           "记录目前症状、开始时间以及近期是否加重。",
           "准备既往检查结果、家族史和完整用药清单。",
           "把这些资料和本结果交给消化专科或临床药师。"
         ],
-        "rationale": "该结果表示研究队列中的相对位置，不是诊断或个人绝对发病概率。",
+        "rationale": "该结果表示 AC-ICAM 队列中的相对进展风险位置，不是个体预后保证或治疗指令。",
         "priority": 0.96,
         "urgency": "priority",
         "urgency_label": "优先处理",
         "evidence_level": "model_assisted_review",
-        "evidence_source_ids": ["FDA_CDS_2026", "INTERNAL_TOPOLOGY_V6"],
+        "evidence_source_ids": ["FDA_CDS_2026", "AC_ICAM_V8_PFS"],
         "requires_clinician_review": true,
         "allows_medication_change": false
       }
@@ -163,10 +168,44 @@ Representative response from the current temporal-topology AFT consensus backend
 }
 ```
 
-`risk_score` is a percentile relative to the `topology_v6` reference cohort. It is not an absolute event probability. Function scores and edge weights returned under `gnn_features` are model-inferred values, not direct laboratory measurements.
+`risk_score` is a percentile relative to the AC-ICAM five-seed OOF PFS-risk
+distribution. It is not a general-population cancer probability.
+`pfs_probability` is a Breslow model estimate for an already diagnosed
+colorectal-cancer patient and is not an individual prognostic guarantee.
+`clinical_icr` appears only when a measured tumor-RNA ICR score was submitted.
+
+For a person without complete colorectal-cancer pathology, age and sex are
+still required but the oncology fields may be omitted. The endpoint returns
+HTTP `200` with `prediction_available=false`,
+`not_available_reason="missing_oncology_fields"`, null 36/60-month PFS values,
+and a list of the missing oncology fields. The service does not manufacture
+normal staging values.
+
+If all five core microbes are present, the response also includes a separate
+`general_risk_result`, for example:
+
+```json
+{
+  "prediction_available": true,
+  "endpoint": "research_risk_index",
+  "display_name": "菌群-临床研究风险指数",
+  "risk_percentile": 71.94,
+  "risk_level": "high",
+  "absolute_cancer_probability": false,
+  "screening_result": false,
+  "pfs_calculated": false,
+  "dataset_version": "topology_v6",
+  "dataset_is_synthetic_noisy_augmented": true
+}
+```
+
+This is a research-reference percentile used for visualization and review. It
+is not an absolute colorectal-cancer probability, screening result, diagnosis,
+or PFS prediction. If the five-microbe panel is incomplete, its value remains
+null and `not_available_reason` is `incomplete_microbiome_panel`.
 
 The top-level `pharmacy_assessment` is the same object stored under `report.pharmacy_assessment`; the duplicate path keeps API and saved-report callers compatible. Root-level `recommendations` is also an alias of the assessment cards.
 
 `interaction_screening_performed` refers only to the local minimum high-priority subset and becomes `true` when at least two submitted medications are screened. `comprehensive_interaction_screening_performed` remains `false`; a zero-match result does not exclude other interactions. Label dosage sections are product evidence only, while `patient_specific_dose_selected` and `treatment_duration_selected` remain `false`.
 
-Invalid values return HTTP `400` with field-level errors. Examples include negative microbial abundance, age outside `1-120`, BMI outside `5-100`, non-binary clinical or medication-context flags, malformed medication/allergy lists, and non-finite numbers.
+Invalid values return HTTP `400` with field-level errors. Examples include missing age or sex, negative microbial abundance, age outside `18-75`, BMI outside `5-100`, non-binary clinical or medication-context flags, malformed medication/allergy lists, and non-finite numbers.

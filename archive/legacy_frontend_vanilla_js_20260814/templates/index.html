@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ app_name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Research Decision Support</p>
+          <h1>{{ app_name }}</h1>
+          <p class="hero-text">
+            基于 AC-ICAM 真实随访结局估计结直肠癌患者的相对无进展生存风险，并整理菌群与用药安全核对事项。
+          </p>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat-label">当前模型</span>
+          <strong>{{ model_release }}</strong>
+          <p>研究决策支持，不用于癌症筛查、诊断或替代医生制定治疗方案。</p>
+        </div>
+      </header>
+
+      <main class="layout">
+        <section class="panel panel-import">
+          <div class="panel-header">
+            <h2>JSON 导入</h2>
+            <p>支持标准 JSON 或原始临床 JSON。导入后会自动标准化并填入下方表单。</p>
+          </div>
+
+          <div class="import-actions">
+            <label class="file-trigger">
+              <input type="file" id="json-file-input" accept=".json,application/json">
+              <span>上传 JSON 文件</span>
+            </label>
+            <button type="button" class="ghost-button" id="load-canonical-example">载入标准示例</button>
+            <button type="button" class="ghost-button" id="load-raw-example">载入临床示例</button>
+          </div>
+
+          <label class="field-label" for="json-payload">JSON 内容</label>
+          <textarea id="json-payload" class="json-textarea" spellcheck="false"></textarea>
+
+          <div class="button-row">
+            <button type="button" class="primary-button" id="standardize-json">导入并回填表单</button>
+            <button type="button" class="secondary-button" id="clear-json">清空 JSON</button>
+          </div>
+
+          <div class="status-box" id="import-status">等待导入 JSON。</div>
+
+          <details class="details-panel">
+            <summary>标准化后预览</summary>
+            <pre id="standardized-preview" class="code-block"></pre>
+          </details>
+        </section>
+
+        <section class="panel panel-form">
+          <div class="panel-header">
+            <h2>输入表单</h2>
+            <p>可以在导入后继续手动调整。点击“运行分析”时，系统会以表单中的当前值为准。</p>
+          </div>
+
+          <div class="section-block">
+            <div class="section-title-row">
+              <h3>菌群信息（可选）</h3>
+              <button type="button" class="ghost-button small-button" id="add-microbe-row">添加自定义菌种</button>
+            </div>
+            <p class="section-help">
+              五项核心菌群全部填写后，无完整病理资料的用户可获得独立的研究风险参考分位。菌群数据不改变正式 V8 PFS 分数，缺失菌也不会被当作 0。
+            </p>
+            <div class="field-grid microbes-grid">
+              <label class="input-card">
+                <span>Fusobacterium</span>
+                <input type="number" id="microbe-Fusobacterium" step="0.0001" min="0" max="1">
+              </label>
+              <label class="input-card">
+                <span>Porphyromonas</span>
+                <input type="number" id="microbe-Porphyromonas" step="0.0001" min="0" max="1">
+              </label>
+              <label class="input-card">
+                <span>Prevotella</span>
+                <input type="number" id="microbe-Prevotella" step="0.0001" min="0" max="1">
+              </label>
+              <label class="input-card">
+                <span>Streptococcus</span>
+                <input type="number" id="microbe-Streptococcus" step="0.0001" min="0" max="1">
+              </label>
+              <label class="input-card">
+                <span>Lactobacillus</span>
+                <input type="number" id="microbe-Lactobacillus" step="0.0001" min="0" max="1">
+              </label>
+            </div>
+            <div id="extra-microbe-rows" class="extra-microbes"></div>
+          </div>
+
+          <div class="section-block">
+            <h3>基础信息与结直肠癌病理资料</h3>
+            <p class="section-help">
+              年龄和生物学性别必填，年龄范围为 18–75 岁。其余肿瘤病理资料均为选填：
+              没有癌症诊断或病理资料时可以全部留空；只有资料完整时才计算 V8 PFS，
+              空白字段不会被当作正常分期或补成默认值。ICR 必须来自肿瘤 RNA 实测。
+            </p>
+            <div class="field-grid">
+              <label class="input-card">
+                <span>年龄</span>
+                <input type="number" id="clinical-age" step="1" min="18" max="75" required>
+              </label>
+              <label class="input-card">
+                <span>生物学性别</span>
+                <select id="clinical-sex" required>
+                  <option value="">请选择</option>
+                  <option value="Female">女</option>
+                  <option value="Male">男</option>
+                </select>
+              </label>
+              <label class="input-card">
+                <span>AJCC 分期（选填）</span>
+                <select id="clinical-stage">
+                  <option value="">未提供 / 不适用</option>
+                  <option value="1">I 期</option>
+                  <option value="2">II 期</option>
+                  <option value="3">III 期</option>
+                  <option value="4">IV 期</option>
+                </select>
+              </label>
+              <label class="input-card">
+                <span>病理 T 分期（选填）</span>
+                <select id="clinical-path-t">
+                  <option value="">未提供 / 不适用</option>
+                  <option value="1">T1</option>
+                  <option value="2">T2</option>
+                  <option value="3">T3</option>
+                  <option value="4">T4</option>
+                </select>
+              </label>
+              <label class="input-card">
+                <span>病理 N 分期（选填）</span>
+                <select id="clinical-path-n">
+                  <option value="">未提供 / 不适用</option>
+                  <option value="0">N0</option>
+                  <option value="1">N1</option>
+                  <option value="2">N2</option>
+                </select>
+              </label>
+              <label class="input-card">
+                <span>病理 M 分期（选填）</span>
+                <select id="clinical-path-m">
+                  <option value="">未提供 / 不适用</option>
+                  <option value="0">M0</option>
+                  <option value="1">M1</option>
+                </select>
+              </label>
+              <label class="input-card">
+                <span>肿瘤部位（选填）</span>
+                <select id="clinical-tumor-location">
+                  <option value="">未提供 / 不适用</option>
+                  <option value="Ceceum">盲肠</option>
+                  <option value="Colon Ascendens">升结肠</option>
+                  <option value="Flexura Hepatica">结肠肝曲</option>
+                  <option value="Colon Transversum">横结肠</option>
+                  <option value="Flexura Lienalis">结肠脾曲</option>
+                  <option value="Colon Descendens">降结肠</option>
+                  <option value="Colon Sigmoideum">乙状结肠</option>
+                  <option value="Rectosigmoideum">直乙交界</option>
+                </select>
+              </label>
+              <label class="input-card">
+                <span>肿瘤形态学（选填）</span>
+                <select id="clinical-tumor-morphology">
+                  <option value="">未提供 / 不适用</option>
+                  <option value="Adenocarcinoma">腺癌</option>
+                  <option value="Adenocarcinoma Intestinal Type">肠型腺癌</option>
+                  <option value="Mucineus Adenocarcinoma">黏液腺癌</option>
+                  <option value="Signet Ring Cell Carcinoma">印戒细胞癌</option>
+                  <option value="Cribriform Carcinoma">筛状癌</option>
+                  <option value="Adenocarcinoma In Villeus Adenoma">绒毛状腺瘤伴腺癌</option>
+                  <option value="Adenocarcinoma With Mixed Subtypes">混合亚型腺癌</option>
+                </select>
+              </label>
+              <label class="input-card">
+                <span>肿瘤 RNA ICR 评分（可选）</span>
+                <input type="number" id="clinical-icr-score" step="0.0001" min="0" max="20">
+              </label>
+            </div>
+          </div>
+
+          <div class="section-block">
+            <h3>其他健康信息</h3>
+            <div class="field-grid">
+              <label class="input-card">
+                <span>BMI</span>
+                <input type="number" id="clinical-bmi" step="0.1" min="5" max="100">
+              </label>
+              <label class="input-card">
+                <span>吸烟</span>
+                <select id="clinical-smoking">
+                  <option value="0">否</option>
+                  <option value="1">是</option>
+                </select>
+              </label>
+              <label class="input-card">
+                <span>家族史</span>
+                <select id="clinical-family-history">
+                  <option value="0">否</option>
+                  <option value="1">是</option>
+                </select>
+              </label>
+            </div>
+          </div>
+
+          <div class="section-block">
+            <h3>代谢特征</h3>
+            <div class="field-grid">
+              <label class="input-card">
+                <span>Bile Acids</span>
+                <input type="number" id="metabolite-bile-acids" step="0.0001" min="0" max="1">
+              </label>
+              <label class="input-card">
+                <span>SCFA</span>
+                <input type="number" id="metabolite-scfa" step="0.0001" min="0" max="1">
+              </label>
+              <label class="input-card">
+                <span>Tryptophan Metabolism</span>
+                <input type="number" id="metabolite-tryptophan" step="0.0001" min="0" max="1">
+              </label>
+            </div>
+          </div>
+
+          <div class="section-block">
+            <h3>用药与健康背景（建议填写）</h3>
+            <p class="section-help">这些信息用来检查是否有需要优先核对的问题，不会自动开药。明确没有用药或过敏时填写“无”，不清楚可留空。</p>
+            <div class="field-grid">
+              <label class="input-card">
+                <span>当前用药清单</span>
+                <textarea id="metadata-current-medications" rows="3" placeholder="每行或逗号分隔；无则填写：无"></textarea>
+              </label>
+              <label class="input-card">
+                <span>药物过敏史</span>
+                <textarea id="metadata-drug-allergies" rows="3" placeholder="药物及反应；无则填写：无"></textarea>
+              </label>
+              <label class="input-card">
+                <span>目前已经明确的临床情况</span>
+                <select id="metadata-suspected-condition">
+                  <option value="gut_risk_screening">一般风险筛查 / 还没有明确诊断或用药目的</option>
+                  <option value="colorectal_cancer_followup">已确诊结直肠癌 / 术后随访</option>
+                  <option value="c_difficile_prevention_during_antibiotics">抗生素治疗期间预防艰难梭菌感染</option>
+                  <option value="pouchitis">已确认储袋炎</option>
+                  <option value="c_difficile_infection">已确认艰难梭菌感染</option>
+                  <option value="crohns_disease">已确认克罗恩病</option>
+                  <option value="ulcerative_colitis">已确认溃疡性结肠炎</option>
+                  <option value="irritable_bowel_syndrome">已确认肠易激综合征</option>
+                  <option value="pediatric_acute_infectious_gastroenteritis">儿童急性感染性胃肠炎</option>
+                </select>
+              </label>
+              <label class="input-card">
+                <span>近期抗生素</span>
+                <select id="metadata-recent-antibiotics">
+                  <option value="">未提供</option>
+                  <option value="0">否</option>
+                  <option value="1">是</option>
+                </select>
+              </label>
+              <label class="input-card">
+                <span>近期益生菌</span>
+                <select id="metadata-recent-probiotics">
+                  <option value="">未提供</option>
+                  <option value="0">否</option>
+                  <option value="1">是</option>
+                </select>
+              </label>
+              <label class="input-card">
+                <span>肾功能异常</span>
+                <select id="metadata-renal-impairment">
+                  <option value="">未提供</option>
+                  <option value="0">否</option>
+                  <option value="1">是</option>
+                </select>
+              </label>
+              <label class="input-card">
+                <span>肝功能异常</span>
+                <select id="metadata-hepatic-impairment">
+                  <option value="">未提供</option>
+                  <option value="0">否</option>
+                  <option value="1">是</option>
+                </select>
+              </label>
+              <label class="input-card">
+                <span>妊娠状态</span>
+                <select id="metadata-pregnancy">
+                  <option value="">未提供</option>
+                  <option value="0">否</option>
+                  <option value="1">是</option>
+                </select>
+              </label>
+            </div>
+          </div>
+
+          <div class="button-row">
+            <button type="button" class="primary-button" id="analyze-form">运行分析</button>
+            <button type="button" class="secondary-button" id="reset-form">重置为标准示例</button>
+          </div>
+        </section>
+
+        <section class="panel panel-result">
+          <div class="panel-header">
+            <h2>结果输出</h2>
+            <p>先看需要采取的行动，再按需查看说明书和技术依据。</p>
+          </div>
+
+          <div class="risk-banner risk-banner-empty" id="risk-banner">
+            <span class="risk-kicker" id="risk-kicker">尚未分析</span>
+            <strong id="risk-score">--</strong>
+            <span id="risk-level">等待输入</span>
+            <div
+              class="risk-scale"
+              id="risk-scale"
+              role="img"
+              aria-label="风险参考分位尚未生成"
+            >
+              <div class="risk-scale-track">
+                <span class="risk-scale-fill" id="risk-scale-fill"></span>
+                <span class="risk-scale-marker" id="risk-scale-marker"></span>
+              </div>
+              <div class="risk-scale-labels" aria-hidden="true">
+                <span>0</span>
+                <span>参考分位</span>
+                <span>100</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="summary-grid guidance-summary-grid" id="v8-outcome-summary">
+            <article class="summary-card">
+              <span>36 月无进展生存概率</span>
+              <strong id="pfs-probability-36">--</strong>
+              <p>基于 AC-ICAM 队列的模型估计，不是个体预后保证。</p>
+            </article>
+            <article class="summary-card">
+              <span>60 月无进展生存概率</span>
+              <strong id="pfs-probability-60">--</strong>
+              <p>需结合病理、影像、治疗过程和随访结果解释。</p>
+            </article>
+            <article class="summary-card">
+              <span>本次使用的模型</span>
+              <strong id="v8-model-variant">等待分析</strong>
+              <p id="v8-model-scope">适用于已确诊 AJCC I-IV 期结直肠癌患者。</p>
+            </article>
+            <article class="summary-card">
+              <span>模型边界</span>
+              <strong>研究用途</strong>
+              <p>不是筛查、诊断、医嘱或治疗决策工具。</p>
+            </article>
+          </div>
+
+          <article class="action-summary-card" id="pharmacy-action-summary">
+            <div class="action-summary-heading">
+              <span class="summary-label">先看这里</span>
+              <span class="action-count-badge"><span id="recommendation-count">0</span> 项待处理</span>
+            </div>
+            <h3 id="pharmacy-headline">等待分析</h3>
+            <ol id="pharmacy-now-list" class="action-checklist">
+              <li>提交数据后，这里会列出最需要先完成的事项。</li>
+            </ol>
+            <p id="pharmacy-safety-note" class="action-safety-note">网页只提供复核清单，不替代医生或药师作出用药决定。</p>
+          </article>
+
+          <div class="summary-grid guidance-summary-grid">
+            <article class="summary-card pharmacy-status-card" id="pharmacy-status-card">
+              <span class="summary-label">这份结果能否直接用于复核</span>
+              <strong id="pharmacy-status">等待分析</strong>
+              <p id="pharmacy-status-reason">系统会先检查输入是否完整，再决定能展示哪些内容。</p>
+            </article>
+            <article class="summary-card" id="drug-knowledge-card">
+              <span class="summary-label">用药核对结果</span>
+              <strong id="drug-knowledge-coverage">等待分析</strong>
+              <p id="drug-knowledge-detail">填写当前用药后，这里会说明识别和核对情况。</p>
+            </article>
+          </div>
+
+          <div class="action-columns">
+            <section class="result-card action-result-card priority-actions-card">
+              <div class="result-card-heading">
+                <h3>现在先做什么</h3>
+                <span class="urgency-badge urgency-priority">优先处理</span>
+              </div>
+              <p class="section-note">先完成这些信息核对或联系动作，不要自行改药。</p>
+              <ul id="priority-recommendation-list" class="result-list guidance-list"></ul>
+            </section>
+            <section class="result-card action-result-card">
+              <div class="result-card-heading">
+                <h3>后续核对</h3>
+                <span class="urgency-badge urgency-routine">随访处理</span>
+              </div>
+              <p class="section-note">可在复诊、随访或资料补充时逐项完成。</p>
+              <ul id="routine-recommendation-list" class="result-list guidance-list"></ul>
+            </section>
+          </div>
+
+          <div class="result-card medication-evidence-card">
+            <h3>当前用药资料</h3>
+            <p class="section-note">先核对实际药名、剂型、规格和每天用法，再查看对应的官方说明书。</p>
+            <div id="medication-label-list" class="label-evidence-list"></div>
+            <p class="source-attribution">药名标准化使用美国国家医学图书馆公开数据；NLM 不对本产品负责，也不表示认可或推荐。</p>
+          </div>
+
+          <details class="details-panel technical-record-panel">
+            <summary>查看模型指标与完整技术记录</summary>
+            <div class="technical-record-summary">
+              <p><strong>输入来源：</strong><span id="analysis-source">尚未生成结果。</span></p>
+              <p><strong>报告保存位置：</strong><code id="saved-path">--</code></p>
+            </div>
+            <h3>模型关注的微生物</h3>
+            <ul id="microbe-list" class="result-list compact-list"></ul>
+            <h3>完整返回 JSON（供研究与审计）</h3>
+            <pre id="result-json" class="code-block"></pre>
+          </details>
+        </section>
+      </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+  </body>
+</html>

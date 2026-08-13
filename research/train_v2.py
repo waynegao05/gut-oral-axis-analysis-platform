@@ -3,8 +3,12 @@ from __future__ import annotations
 import argparse
 import copy
 import gc
+import hashlib
 import json
 import math
+import subprocess
+import time
+from datetime import datetime, timezone
 from pathlib import Path
 
 import torch
@@ -20,6 +24,87 @@ from research.losses import (
 )
 from research.metrics import concordance_index
 from research.model_v2 import DeepStructureAwareGATCoxModelV2
+
+
+def _sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for block in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def _git_value(*arguments: str) -> str | None:
+    result = subprocess.run(
+        ["git", *arguments],
+        check=False,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+    )
+    return result.stdout.strip() if result.returncode == 0 else None
+
+
+def build_run_provenance(config: dict, config_path: Path, split_seed: int) -> dict:
+    data_path_keys = [
+        "graph_csv",
+        "clinical_csv",
+        "metabolite_csv",
+        "label_csv",
+        "provenance_csv",
+    ]
+    data_hashes = {
+        key: {
+            "path": Path(config["paths"][key]).as_posix(),
+            "sha256": _sha256(Path(config["paths"][key])),
+        }
+        for key in data_path_keys
+        if config["paths"].get(key)
+    }
+    manifest_path = Path(config["paths"]["manifest_json"])
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    declared_hashes = manifest.get("outputs", {})
+    for value in data_hashes.values():
+        expected = declared_hashes.get(value["path"])
+        if expected is None:
+            raise RuntimeError(f"Dataset manifest does not declare input file: {value['path']}")
+        if expected != value["sha256"]:
+            raise RuntimeError(f"Dataset input hash does not match manifest: {value['path']}")
+
+    source_paths = [
+        Path(__file__),
+        Path("research/data.py"),
+        Path("research/losses.py"),
+        Path("research/model_v2.py"),
+        Path("research/metrics.py"),
+        Path("research/repeat_runs_v2.py"),
+    ]
+    return {
+        "schema_version": 1,
+        "started_at_utc": datetime.now(timezone.utc).isoformat(),
+        "split_seed": int(split_seed),
+        "model_seed": int(config["seed"]),
+        "git_head": _git_value("rev-parse", "HEAD"),
+        "git_branch": _git_value("branch", "--show-current"),
+        "git_status_short": _git_value("status", "--short", "--untracked-files=no"),
+        "config": {
+            "path": config_path.as_posix(),
+            "sha256": _sha256(config_path),
+        },
+        "dataset": {
+            "manifest_path": manifest_path.as_posix(),
+            "manifest_sha256": _sha256(manifest_path),
+            "dataset_version": manifest.get("dataset_version"),
+            "generator_version": manifest.get("generator_version"),
+            "declared_output_hashes_verified": True,
+            "inputs": data_hashes,
+        },
+        "source_files": {
+            path.as_posix(): _sha256(path)
+            for path in source_paths
+        },
+    }
 
 
 def resolve_device(device_arg: str) -> torch.device:
@@ -51,6 +136,7 @@ def compute_survival_losses(
     time_bin_edges: torch.Tensor | None,
     ranking_weight: float,
     ranking_margin: float,
+    cox_ties_method: str = "legacy",
 ):
     if survival_head_type == "discrete_time":
         if time_bin_edges is None:
@@ -81,6 +167,7 @@ def compute_survival_losses(
         event=batch.event,
         ranking_weight=ranking_weight,
         ranking_margin=ranking_margin,
+        cox_ties_method=cox_ties_method,
     )
     return {
         "total": cox_losses["total"],
@@ -104,6 +191,7 @@ def compute_cohort_evaluation_losses(
     node_aux_loss: float,
     graph_aux_weight: float,
     node_aux_weight: float,
+    cox_ties_method: str = "legacy",
 ) -> dict[str, float]:
     if survival_head_type == "discrete_time":
         if time_bin_edges is None or time_logits is None:
@@ -124,6 +212,7 @@ def compute_cohort_evaluation_losses(
             event=event,
             ranking_weight=ranking_weight,
             ranking_margin=ranking_margin,
+            cox_ties_method=cox_ties_method,
         )
         survival_loss = losses["total"]
         cox_loss = losses["cox"]
@@ -154,6 +243,7 @@ def evaluate(
     node_aux_weight: float,
     ranking_weight: float,
     ranking_margin: float,
+    cox_ties_method: str = "legacy",
 ):
     model.eval()
     all_time, all_event, all_risk = [], [], []
@@ -176,6 +266,7 @@ def evaluate(
                 time_bin_edges=time_bin_edges,
                 ranking_weight=ranking_weight,
                 ranking_margin=ranking_margin,
+                cox_ties_method=cox_ties_method,
             )
             graph_aux = output["graph_aux_loss"]
             node_aux = output["node_aux_loss"]
@@ -210,6 +301,7 @@ def evaluate(
         node_aux_loss=weighted_node_aux,
         graph_aux_weight=graph_aux_weight,
         node_aux_weight=node_aux_weight,
+        cox_ties_method=cox_ties_method,
     )
     return {
         "head_type": survival_head_type,
@@ -233,16 +325,39 @@ def main() -> None:
     parser.add_argument("--config", default="research_config_v2.yaml")
     parser.add_argument("--device", choices=["auto", "cpu", "cuda"], default="cuda")
     parser.add_argument("--split-seed", type=int, default=None)
+    parser.add_argument("--validation-group", default=None)
+    parser.add_argument("--test-group", default=None)
+    parser.add_argument("--epochs-override", type=int, default=None)
+    parser.add_argument("--patience-override", type=int, default=None)
+    parser.add_argument("--batch-size-override", type=int, default=None)
+    parser.add_argument("--output-dir-override", default=None)
     args = parser.parse_args()
+    training_started = time.perf_counter()
+    torch.set_float32_matmul_precision("high")
 
     config = yaml.safe_load(Path(args.config).read_text(encoding="utf-8"))
+    if args.epochs_override is not None:
+        config["train"]["epochs"] = int(args.epochs_override)
+    if args.patience_override is not None:
+        config["train"]["early_stop_patience"] = int(args.patience_override)
+    if args.batch_size_override is not None:
+        config["train"]["batch_size"] = int(args.batch_size_override)
+    if args.output_dir_override is not None:
+        config["paths"]["output_dir"] = str(args.output_dir_override)
     set_seed(config["seed"])
     split_seed = args.split_seed
     if split_seed is None:
         split_seed = config["train"].get("split_seed")
+    validation_group = args.validation_group
+    if validation_group is None:
+        validation_group = config["train"].get("validation_group")
+    test_group = args.test_group
+    if test_group is None:
+        test_group = config["train"].get("test_group")
     graph_preprocess = config.get("graph_preprocess", {})
     tabular_preprocess = config.get("tabular_preprocess", {})
     survival_head_type = str(config["train"].get("survival_head_type", "cox"))
+    cox_ties_method = str(config["train"].get("cox_ties_method", "legacy"))
     num_time_bins = int(config["train"].get("num_time_bins", 12))
 
     dataset = build_dataset_from_csv(
@@ -260,6 +375,33 @@ def main() -> None:
         standardize_tabular=bool(tabular_preprocess.get("standardize", False)),
         val_ratio=config["train"]["val_ratio"],
         test_ratio=config["train"]["test_ratio"],
+        validation_group=validation_group,
+        test_group=test_group,
+    )
+    output_dir = Path(config["paths"]["output_dir"])
+    output_dir.mkdir(parents=True, exist_ok=True)
+    run_provenance = build_run_provenance(
+        config,
+        Path(args.config),
+        int(split_seed if split_seed is not None else config["seed"]),
+    )
+    split_assignments = {
+        "split_seed": int(split_seed if split_seed is not None else config["seed"]),
+        "split_strategy": dataset.split_summary["split_strategy"],
+        "train_sample_ids": [str(item.sample_id) for item in dataset.train_set],
+        "validation_sample_ids": [str(item.sample_id) for item in dataset.val_set],
+        "test_sample_ids": [str(item.sample_id) for item in dataset.test_set],
+        "train_groups": dataset.split_summary.get("train_groups", []),
+        "validation_groups": dataset.split_summary.get("val_groups", []),
+        "test_groups": dataset.split_summary.get("test_groups", []),
+        "requested_validation_group": validation_group,
+        "requested_test_group": test_group,
+    }
+    (output_dir / "run_provenance.json").write_text(
+        json.dumps(run_provenance, indent=2), encoding="utf-8"
+    )
+    (output_dir / "split_assignments.json").write_text(
+        json.dumps(split_assignments, indent=2), encoding="utf-8"
     )
     if survival_head_type == "discrete_time":
         train_times = torch.tensor([float(item.time.item()) for item in dataset.train_set], dtype=torch.float32)
@@ -286,6 +428,16 @@ def main() -> None:
         survival_head_type=survival_head_type,
         num_time_bins=num_time_bins,
         use_layer_attention=bool(config["train"].get("use_layer_attention", False)),
+        num_node_types=(
+            dataset.num_node_types
+            if int(config["model"].get("node_identity_dim", 0)) > 0
+            else 0
+        ),
+        node_identity_dim=int(config["model"].get("node_identity_dim", 0)),
+        identity_readout_dim=int(config["model"].get("identity_readout_dim", 0)),
+        pool_every_layer=bool(config["model"].get("pool_every_layer", True)),
+        graph_projection_dim=int(config["model"].get("graph_projection_dim", 0)),
+        tabular_projection_dim=int(config["model"].get("tabular_projection_dim", 0)),
     ).to(device)
 
     optimizer = torch.optim.AdamW(
@@ -313,6 +465,7 @@ def main() -> None:
     history = []
 
     for epoch in range(1, config["train"]["epochs"] + 1):
+        epoch_started = time.perf_counter()
         model.train()
         epoch_survival_losses = []
         epoch_cox_losses = []
@@ -340,6 +493,7 @@ def main() -> None:
                 time_bin_edges=time_bin_edges,
                 ranking_weight=effective_ranking_weight,
                 ranking_margin=ranking_margin,
+                cox_ties_method=cox_ties_method,
             )
             graph_aux = output["graph_aux_loss"]
             node_aux = output["node_aux_loss"]
@@ -385,6 +539,7 @@ def main() -> None:
             node_aux_weight,
             ranking_weight,
             ranking_margin,
+            cox_ties_method,
         )
         history.append(
             {
@@ -399,6 +554,8 @@ def main() -> None:
                 "train_node_aux_loss": train_node_aux,
                 "train_contrastive_loss": train_contrastive,
                 "effective_ranking_weight": effective_ranking_weight,
+                "cox_ties_method": cox_ties_method,
+                "epoch_seconds": time.perf_counter() - epoch_started,
                 **val_metrics,
             }
         )
@@ -411,9 +568,6 @@ def main() -> None:
             patience += 1
             if patience >= config["train"]["early_stop_patience"]:
                 break
-
-    output_dir = Path(config["paths"]["output_dir"])
-    output_dir.mkdir(parents=True, exist_ok=True)
 
     if best_state is not None:
         torch.save(best_state, output_dir / "best_model.pt")
@@ -440,6 +594,30 @@ def main() -> None:
         encoding="utf-8",
     )
 
+    train_metrics = evaluate(
+        model,
+        train_loader,
+        device,
+        survival_head_type,
+        time_bin_edges,
+        graph_aux_weight,
+        node_aux_weight,
+        ranking_weight,
+        ranking_margin,
+        cox_ties_method,
+    )
+    validation_metrics = evaluate(
+        model,
+        val_loader,
+        device,
+        survival_head_type,
+        time_bin_edges,
+        graph_aux_weight,
+        node_aux_weight,
+        ranking_weight,
+        ranking_margin,
+        cox_ties_method,
+    )
     test_metrics = evaluate(
         model,
         test_loader,
@@ -450,9 +628,40 @@ def main() -> None:
         node_aux_weight,
         ranking_weight,
         ranking_margin,
+        cox_ties_method,
     )
     (output_dir / "history.json").write_text(json.dumps(history, indent=2), encoding="utf-8")
+    (output_dir / "train_metrics.json").write_text(json.dumps(train_metrics, indent=2), encoding="utf-8")
+    (output_dir / "validation_metrics.json").write_text(
+        json.dumps(validation_metrics, indent=2), encoding="utf-8"
+    )
     (output_dir / "test_metrics.json").write_text(json.dumps(test_metrics, indent=2), encoding="utf-8")
+    training_summary = {
+        "epochs_run": len(history),
+        "best_validation_c_index": best_val,
+        "train_c_index": train_metrics["c_index"],
+        "validation_c_index": validation_metrics["c_index"],
+        "test_c_index": test_metrics["c_index"],
+        "train_cohort_loss": train_metrics["cohort_loss"],
+        "validation_cohort_loss": validation_metrics["cohort_loss"],
+        "test_cohort_loss": test_metrics["cohort_loss"],
+        "parameter_count": sum(parameter.numel() for parameter in model.parameters()),
+        "training_seconds": time.perf_counter() - training_started,
+        "cox_ties_method": cox_ties_method,
+        "node_identity_dim": int(config["model"].get("node_identity_dim", 0)),
+        "identity_readout_dim": int(config["model"].get("identity_readout_dim", 0)),
+        "pool_every_layer": bool(config["model"].get("pool_every_layer", True)),
+        "graph_projection_dim": int(config["model"].get("graph_projection_dim", 0)),
+        "tabular_projection_dim": int(config["model"].get("tabular_projection_dim", 0)),
+    }
+    (output_dir / "training_summary.json").write_text(
+        json.dumps(training_summary, indent=2), encoding="utf-8"
+    )
+    run_provenance["completed_at_utc"] = datetime.now(timezone.utc).isoformat()
+    run_provenance["training_summary"] = training_summary
+    (output_dir / "run_provenance.json").write_text(
+        json.dumps(run_provenance, indent=2), encoding="utf-8"
+    )
 
     print(
         json.dumps(
@@ -465,6 +674,7 @@ def main() -> None:
                 "dataset_version": dataset.data_summary["dataset_origin"]["dataset_version"],
                 "split_strategy": dataset.split_summary["split_strategy"],
                 "test_metrics": test_metrics,
+                "training_summary": training_summary,
             },
             indent=2,
         )

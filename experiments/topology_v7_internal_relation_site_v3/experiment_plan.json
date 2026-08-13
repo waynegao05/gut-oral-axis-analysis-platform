@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "status": "locked_before_development_generation",
+  "scope": "nested_logo_internal_relation_site_development_then_one_time_audit",
+  "development_generation_seed": 20261010,
+  "audit_generation_seed": 20261011,
+  "sample_count": 3600,
+  "outer_test_groups": [0, 1, 2, 3, 4],
+  "inner_validation_group_rule": "(outer_test_group + 1) modulo 5",
+  "development_model_seeds": [42],
+  "audit_model_seeds": [7, 21, 42, 123, 2026],
+  "base_config": "research_config_v7_v3_gnn_locked.yaml",
+  "metrics": {
+    "report_horizons": [36, 60, 84],
+    "integration_grid": [24, 36, 48, 60, 72, 84, 96],
+    "uno_tau": 96
+  },
+  "training": {
+    "maximum_epochs": 120,
+    "early_stop_patience": 25,
+    "minimum_validation_c_index_delta": 0.0002,
+    "learning_rate": 0.001,
+    "weight_decay": 0.001,
+    "gradient_clip_norm": 2.0,
+    "warmup_epochs": 10,
+    "edge_regularization_weight": 0.01,
+    "site_residual_regularization_weight": 0.001
+  },
+  "candidates": [
+    {
+      "name": "legacy_precomputed_edge_gnn",
+      "model_family": "legacy",
+      "uses_precomputed_edge_weight_at_inference": true,
+      "eligible_for_internal_relation_promotion": false
+    },
+    {
+      "name": "internal_equal_attention_gnn",
+      "model_family": "internal_relation",
+      "edge_mode": "equal",
+      "use_site_residual": false,
+      "aft_weight": 0.0,
+      "eligible_for_internal_relation_promotion": true
+    },
+    {
+      "name": "internal_equal_site_residual_gnn",
+      "model_family": "internal_relation",
+      "edge_mode": "equal",
+      "use_site_residual": true,
+      "aft_weight": 0.0,
+      "eligible_for_internal_relation_promotion": true
+    },
+    {
+      "name": "internal_site_edge_residual_gnn",
+      "model_family": "internal_relation",
+      "edge_mode": "site_context",
+      "use_site_residual": true,
+      "aft_weight": 0.0,
+      "eligible_for_internal_relation_promotion": true
+    },
+    {
+      "name": "internal_site_edge_residual_aft005_gnn",
+      "model_family": "internal_relation",
+      "edge_mode": "site_context",
+      "use_site_residual": true,
+      "aft_weight": 0.05,
+      "eligible_for_internal_relation_promotion": true
+    }
+  ],
+  "development_gate": {
+    "baseline_candidate": "legacy_precomputed_edge_gnn",
+    "minimum_macro_c_index_gain": 0.0015,
+    "minimum_integrated_auc_gain": 0.003,
+    "minimum_improved_outer_groups": 4,
+    "maximum_worst_group_regression": 0.002,
+    "maximum_integrated_brier_increase": 0.0005,
+    "maximum_any_horizon_auc_regression": 0.003
+  },
+  "audit_gate": {
+    "minimum_macro_c_index_gain": 0.002,
+    "minimum_integrated_auc_gain": 0.005,
+    "minimum_improved_outer_groups": 4,
+    "maximum_worst_group_regression": 0.002,
+    "integrated_brier_must_not_worsen": true,
+    "maximum_any_horizon_auc_regression": 0.003
+  },
+  "inference_contract": {
+    "precomputed_edge_weight_allowed_for_new_candidates": false,
+    "cached_structure_allowed_for_new_candidates": false,
+    "edge_weights_computed_inside_forward": true,
+    "site_standardizer_fit_scope": "outer_training_groups_only",
+    "allowed_inputs": [
+      "node_abundance",
+      "node_function_score",
+      "saliva_relative_abundance",
+      "stool_relative_abundance",
+      "clinical_features",
+      "metabolite_features"
+    ],
+    "prohibited_inputs": [
+      "time",
+      "event",
+      "generation_group_id",
+      "sample_id",
+      "provenance",
+      "survival_latent_risk",
+      "event_noise",
+      "censor_time"
+    ]
+  },
+  "audit_policy": {
+    "audit_generated_only_after_development_gate": true,
+    "audit_seed_reruns_prohibited": true,
+    "audit_test_labels_used_for_selection": false,
+    "candidate_and_hyperparameters_fixed_before_audit_generation": true
+  }
+}

@@ -21,7 +21,13 @@ def load_checkpoints(checkpoint_glob: str) -> list[Path]:
     return checkpoints
 
 
-def build_loader(config: dict, split_seed: int | None, split: str) -> tuple[DataLoader, object]:
+def build_loader(
+    config: dict,
+    split_seed: int | None,
+    split: str,
+    validation_group: str | int | None = None,
+    test_group: str | int | None = None,
+) -> tuple[DataLoader, object]:
     graph_preprocess = config.get("graph_preprocess", {})
     tabular_preprocess = config.get("tabular_preprocess", {})
     dataset = build_dataset_from_csv(
@@ -39,6 +45,14 @@ def build_loader(config: dict, split_seed: int | None, split: str) -> tuple[Data
         standardize_tabular=bool(tabular_preprocess.get("standardize", False)),
         val_ratio=config["train"]["val_ratio"],
         test_ratio=config["train"]["test_ratio"],
+        validation_group=(
+            validation_group
+            if validation_group is not None
+            else config["train"].get("validation_group")
+        ),
+        test_group=(
+            test_group if test_group is not None else config["train"].get("test_group")
+        ),
     )
     split_map = {
         "train": dataset.train_set,
@@ -64,6 +78,16 @@ def build_model(config: dict, dataset, device: torch.device) -> DeepStructureAwa
         survival_head_type=config["train"].get("survival_head_type", "cox"),
         num_time_bins=int(config["train"].get("num_time_bins", 12)),
         use_layer_attention=bool(config["train"].get("use_layer_attention", False)),
+        num_node_types=(
+            dataset.num_node_types
+            if int(config["model"].get("node_identity_dim", 0)) > 0
+            else 0
+        ),
+        node_identity_dim=int(config["model"].get("node_identity_dim", 0)),
+        identity_readout_dim=int(config["model"].get("identity_readout_dim", 0)),
+        pool_every_layer=bool(config["model"].get("pool_every_layer", True)),
+        graph_projection_dim=int(config["model"].get("graph_projection_dim", 0)),
+        tabular_projection_dim=int(config["model"].get("tabular_projection_dim", 0)),
     ).to(device)
 
 
@@ -73,13 +97,21 @@ def evaluate_ensemble(
     split: str,
     device_arg: str,
     split_seed: int | None,
+    validation_group: str | int | None = None,
+    test_group: str | int | None = None,
 ) -> dict:
     config = yaml.safe_load(Path(config_path).read_text(encoding="utf-8"))
     checkpoints = load_checkpoints(checkpoint_glob)
     if split_seed is None:
         split_seed = config["train"].get("split_seed")
 
-    loader, dataset = build_loader(config, split_seed=split_seed, split=split)
+    loader, dataset = build_loader(
+        config,
+        split_seed=split_seed,
+        split=split,
+        validation_group=validation_group,
+        test_group=test_group,
+    )
     device = resolve_device(device_arg)
 
     all_sample_ids: list[str] = []
@@ -127,6 +159,8 @@ def evaluate_ensemble(
         "config_path": config_path,
         "split": split,
         "split_seed": split_seed,
+        "validation_group": validation_group,
+        "test_group": test_group,
         "num_models": len(checkpoints),
         "checkpoints": [str(path) for path in checkpoints],
         "member_c_indices": member_c_indices,
@@ -157,6 +191,9 @@ def main() -> None:
     parser.add_argument("--split", choices=["train", "val", "test"], default="test")
     parser.add_argument("--device", choices=["auto", "cpu", "cuda"], default="cuda")
     parser.add_argument("--split-seed", type=int, default=None)
+    parser.add_argument("--validation-group", default=None)
+    parser.add_argument("--test-group", default=None)
+    parser.add_argument("--quiet", action="store_true")
     parser.add_argument("--output", default="outputs/current_mainline_v2/ensemble_summary.json")
     args = parser.parse_args()
 
@@ -166,11 +203,29 @@ def main() -> None:
         split=args.split,
         device_arg=args.device,
         split_seed=args.split_seed,
+        validation_group=args.validation_group,
+        test_group=args.test_group,
     )
     output_path = Path(args.output)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(json.dumps(result, indent=2), encoding="utf-8")
-    print(json.dumps(result, indent=2))
+    if not args.quiet:
+        print(json.dumps(result, indent=2))
+    else:
+        print(
+            json.dumps(
+                {
+                    "split": result["split"],
+                    "validation_group": result["validation_group"],
+                    "test_group": result["test_group"],
+                    "num_models": result["num_models"],
+                    "mean_member_c_index": result["mean_member_c_index"],
+                    "ensemble_c_index": result["ensemble_c_index"],
+                    "output": str(output_path.as_posix()),
+                },
+                indent=2,
+            )
+        )
 
 
 if __name__ == "__main__":

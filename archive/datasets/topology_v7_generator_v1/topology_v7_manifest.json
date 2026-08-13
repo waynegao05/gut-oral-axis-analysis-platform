@@ -1,0 +1,162 @@
+{
+  "schema_version": 1,
+  "dataset_version": "topology_v7",
+  "generator_version": "topology_v7_hybrid_generator_v1",
+  "generated_at_utc": "2026-07-20T10:29:17.716008+00:00",
+  "seed": 20260720,
+  "sample_count": 3600,
+  "observed_real_patient_count": 42,
+  "observed_real_patient_rows_in_v7": 0,
+  "dataset_class": "hybrid_model_generated_development_cohort",
+  "sources": {
+    "public_microbiome_anchor": "russo_crc_oral_gut_2023",
+    "missing_modality_prior": "topology_v6",
+    "sha256": {
+      "data/public/russo_crc_oral_gut_2023/processed/paired_patient_features.csv": "5b198bd3d2f8d9eb5c8076564bcee3c145c60e6bd0b0e6ea59bd53c27d404495",
+      "data/research/topology_v6_sample_graph_table.csv": "0ada7e8380f7ebc300f487b90d0c5593580eeff5940e770ae292e79719256894",
+      "data/research/topology_v6_sample_clinical_table.csv": "22baaa78a7a95a4601157d40c12fc4f1e5b3c1052c87938cd81ea12c459a5f3f",
+      "data/research/topology_v6_sample_metabolite_table.csv": "9e8b215da90d3077e734efeb1474bf8d7573fad38e58fe7f3099d2239588b98b",
+      "data/research/topology_v6_sample_label_table.csv": "d599e01a37e201b46bfd8b5f013dc5a884a8c726936b253dde678bc8c7b6f9f2"
+    }
+  },
+  "generation": {
+    "microbiome": {
+      "method": "class_conditional_pca_local_gaussian_on_paired_saliva_stool_compositions",
+      "observed_public_patients": 42,
+      "generated_samples": 3600,
+      "generation_groups": 5,
+      "latent_components": 8,
+      "pca_explained_variance_ratio_sum": 0.47250139292479026,
+      "max_features_per_site": 96,
+      "selected_saliva_components": 97,
+      "selected_stool_components": 97,
+      "target_crc_rate_observed": 0.7857142857142857,
+      "target_crc_rate_generated": 0.7788888888888889,
+      "fusion_weights": {
+        "Fusobacterium": {
+          "saliva": 0.6666666666666666,
+          "stool": 0.3333333333333333
+        },
+        "Porphyromonas": {
+          "saliva": 0.6774193548387096,
+          "stool": 0.3225806451612903
+        },
+        "Prevotella": {
+          "saliva": 0.5915492957746479,
+          "stool": 0.4084507042253521
+        },
+        "Streptococcus": {
+          "saliva": 0.5185185185185185,
+          "stool": 0.4814814814814815
+        },
+        "Lactobacillus": {
+          "saliva": 0.5121951219512195,
+          "stool": 0.4878048780487805
+        }
+      }
+    },
+    "clinical_and_metabolite": {
+      "method": "random_forest_conditional_prediction_with_oob_residual_sampling",
+      "clinical_continuous_oob_r2": 0.048615277722780716,
+      "smoking_oob_auc": 0.53388259511416,
+      "family_history_oob_auc": 0.5527652624223536,
+      "metabolite_oob_r2": 0.2210254549638417,
+      "function_oob_r2": 0.30487580750010446,
+      "edge_model": "graphical_lasso_cv",
+      "edge_model_alpha": 0.07831182756797073,
+      "edge_partial_correlations": {
+        "Fusobacterium -> Porphyromonas": 0.06482178938696981,
+        "Fusobacterium -> Prevotella": -0.06482676716821648,
+        "Fusobacterium -> Streptococcus": -0.34171423358053477,
+        "Fusobacterium -> Lactobacillus": -0.022371579897620456,
+        "Porphyromonas -> Prevotella": -0.1554817884285323,
+        "Porphyromonas -> Streptococcus": -0.23693279288627753,
+        "Porphyromonas -> Lactobacillus": 0.0,
+        "Prevotella -> Streptococcus": -0.32579521272681383,
+        "Prevotella -> Lactobacillus": 0.0,
+        "Streptococcus -> Lactobacillus": 0.32392163632639803
+      }
+    },
+    "function_score": "random_forest_prediction_from_v6_prior_targets",
+    "edge_weight": "public_graphical_model_partial_association_with_sample_specific_modulation",
+    "survival": {
+      "method": "separate_random_forest_event_and_censor_time_models_with_oob_residual_sampling",
+      "event_time_oob_r2": 0.23129393133304588,
+      "censor_time_oob_r2": 0.21789113205790345,
+      "target_event_rate_from_v6": 0.5483333333333333,
+      "generated_event_rate": 0.5483333333333333,
+      "generated_time_min": 16,
+      "generated_time_median": 60.0,
+      "generated_time_max": 129,
+      "semantics": "fully model-generated right-censored development proxy; not observed follow-up"
+    }
+  },
+  "quality": {
+    "num_samples": 3600,
+    "graph_rows": 36000,
+    "unique_abundance_vectors": 3600,
+    "exact_duplicate_abundance_vectors": 0,
+    "finite_values": true,
+    "generation_group_sizes": {
+      "0": 720,
+      "1": 720,
+      "2": 720,
+      "3": 720,
+      "4": 720
+    },
+    "anchor_overlap_between_generation_groups": [],
+    "event_rate": 0.5483333333333333,
+    "ranges": {
+      "abundance": [
+        0.0,
+        1.0
+      ],
+      "function_score": [
+        0.23769198076518472,
+        0.8198884865189491
+      ],
+      "edge_weight": [
+        0.02,
+        0.5376319649661193
+      ],
+      "age": [
+        22.0,
+        84.0
+      ],
+      "bmi": [
+        16.0,
+        36.28
+      ],
+      "metabolites": [
+        0.0,
+        1.0
+      ],
+      "time": [
+        16,
+        129
+      ]
+    }
+  },
+  "archive": {
+    "archive/datasets/topology_v6/topology_v6_sample_graph_table.csv": "0ada7e8380f7ebc300f487b90d0c5593580eeff5940e770ae292e79719256894",
+    "archive/datasets/topology_v6/topology_v6_sample_clinical_table.csv": "22baaa78a7a95a4601157d40c12fc4f1e5b3c1052c87938cd81ea12c459a5f3f",
+    "archive/datasets/topology_v6/topology_v6_sample_metabolite_table.csv": "9e8b215da90d3077e734efeb1474bf8d7573fad38e58fe7f3099d2239588b98b",
+    "archive/datasets/topology_v6/topology_v6_sample_label_table.csv": "d599e01a37e201b46bfd8b5f013dc5a884a8c726936b253dde678bc8c7b6f9f2"
+  },
+  "limitations": [
+    "All 3600 v7 rows are model-generated; they are not 3600 observed patients.",
+    "Only the paired oral-gut microbiome distribution is anchored in an open real cohort of 42 patients.",
+    "Clinical variables, metabolites, function scores, and right-censored outcomes inherit synthetic topology_v6 priors.",
+    "Generated survival labels are development proxies and cannot support clinical efficacy, prognosis, or external-validation claims.",
+    "Performance measured on v7 evaluates recovery of the generator, not independent clinical generalization.",
+    "The source public cohort remains the external real-data validation dataset and must be evaluated separately."
+  ],
+  "outputs": {
+    "data/research/topology_v7_sample_graph_table.csv": "a92af5609649cd0895e5781899021eeb1534d125223b43ce5d0e68148d07a53b",
+    "data/research/topology_v7_sample_clinical_table.csv": "4c25dbcb1df6f7100f429318917ca722ac070ce9a35a54a0b6a396aec3cb2bb3",
+    "data/research/topology_v7_sample_metabolite_table.csv": "7e0ec64688ebbd7d3986d6117f3406e289d3f87d1d6b5d8c5c33c5736dcd4d75",
+    "data/research/topology_v7_sample_label_table.csv": "61ecf1ba514e736b8cd8b3a189aa71cca639bce3a29ca549790cd32edc37bcaf",
+    "data/research/topology_v7_sample_oral_gut_table.csv": "14d6c83afef5d0668b2dc3a8e388aa8dfe3e53d8801c82492d337256da8db824",
+    "data/research/topology_v7_sample_provenance.csv": "9717d9cb1c7cdeb76d855db8fcf0618943cd4e286e4fe2103a2be0a795c6ae86"
+  }
+}

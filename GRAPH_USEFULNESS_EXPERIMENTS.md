@@ -30,4 +30,7 @@ Required variants are `original`, `shuffle_weights`, `shuffle_edges`, and `shuff
 
 The Cox reference showed perturbation gaps of about `0.0232-0.0254` C-index. The accepted temporal-topology AFT release additionally preserves ten named edge identities rather than only global graph summaries. Its formal cross-split result is documented in `CURRENT_MAINLINE.md`.
 
-All claims remain limited to the synthetic/noisy augmented `topology_v6` dataset until external real-cohort validation is available.
+The released perturbation claims remain limited to synthetic/noisy augmented
+`topology_v6`. New v7 runs must be reported separately as generator-recovery
+experiments, even though their microbiome distribution is anchored to a real
+paired cohort. Neither dataset replaces external survival validation.

@@ -1,0 +1,299 @@
+{
+  "schema_version": 1,
+  "dataset_version": "topology_v7",
+  "dataset_id": "topology_v7_generator_v3",
+  "generator_version": "topology_v7_hybrid_generator_v3",
+  "parent_generator_version": "topology_v7_hybrid_generator_v2",
+  "parent_v2_manifest_path": "data/research/topology_v7_manifest.json",
+  "parent_v2_manifest_sha256": "f81d9b6e3c705542602fa502e9f0a4ebf3f7fe83e7d361e8e9874c000492238b",
+  "generated_at_utc": "2026-07-22T15:54:23.177382+00:00",
+  "seed": 20261001,
+  "sample_count": 3600,
+  "observed_real_patient_count": 42,
+  "observed_real_patient_rows_in_v7": 0,
+  "dataset_class": "hybrid_model_generated_development_cohort",
+  "sources": {
+    "public_microbiome_anchor": "russo_crc_oral_gut_2023",
+    "missing_modality_prior": "topology_v6",
+    "sha256": {
+      "data/public/russo_crc_oral_gut_2023/processed/paired_patient_features.csv": "5b198bd3d2f8d9eb5c8076564bcee3c145c60e6bd0b0e6ea59bd53c27d404495",
+      "data/research/topology_v6_sample_graph_table.csv": "0ada7e8380f7ebc300f487b90d0c5593580eeff5940e770ae292e79719256894",
+      "data/research/topology_v6_sample_clinical_table.csv": "22baaa78a7a95a4601157d40c12fc4f1e5b3c1052c87938cd81ea12c459a5f3f",
+      "data/research/topology_v6_sample_metabolite_table.csv": "9e8b215da90d3077e734efeb1474bf8d7573fad38e58fe7f3099d2239588b98b",
+      "data/research/topology_v6_sample_label_table.csv": "d599e01a37e201b46bfd8b5f013dc5a884a8c726936b253dde678bc8c7b6f9f2"
+    }
+  },
+  "generation": {
+    "microbiome": {
+      "method": "group_disjoint_class_conditional_pca_with_global_class_shrinkage",
+      "observed_public_patients": 42,
+      "generated_samples": 3600,
+      "generation_groups": 5,
+      "latent_components": 8,
+      "pca_explained_variance_ratio_sum": 0.47250139292479026,
+      "max_features_per_site": 96,
+      "selected_saliva_components": 97,
+      "selected_stool_components": 97,
+      "target_crc_rate_observed": 0.7857142857142857,
+      "target_crc_rate_generated": 0.7861111111111111,
+      "target_crc_rate_by_generation_group": {
+        "0": 0.7861111111111111,
+        "1": 0.7861111111111111,
+        "2": 0.7861111111111111,
+        "3": 0.7861111111111111,
+        "4": 0.7861111111111111
+      },
+      "anchor_shrinkage_to_class_mean": 0.44999999999999996,
+      "anchor_prior_strength": null,
+      "local_anchor_weight_range": [
+        0.55,
+        0.55
+      ],
+      "latent_noise_scale": 0.8,
+      "approximate_class_covariance_fraction": 0.9815,
+      "target_balanced_within_generation_group": true,
+      "anchor_balance": {
+        "maximum_absolute_standardized_mean": 0.45742907026525736,
+        "mean_absolute_standardized_mean": 0.20319124153935555,
+        "maximum_absolute_standardized_scale_delta": 0.7143352461449006,
+        "group_sizes": [
+          8,
+          8,
+          9,
+          8,
+          9
+        ],
+        "searches": 20000,
+        "objective": 0.5695008431876185,
+        "method": "outcome_blind_randomized_balanced_partition_search"
+      },
+      "quantile_calibration": "frozen_public_anchor_to_v6_reference",
+      "fusion_weights": {
+        "Fusobacterium": {
+          "saliva": 0.6666666666666666,
+          "stool": 0.3333333333333333
+        },
+        "Porphyromonas": {
+          "saliva": 0.6774193548387096,
+          "stool": 0.3225806451612903
+        },
+        "Prevotella": {
+          "saliva": 0.5915492957746479,
+          "stool": 0.4084507042253521
+        },
+        "Streptococcus": {
+          "saliva": 0.5185185185185185,
+          "stool": 0.4814814814814815
+        },
+        "Lactobacillus": {
+          "saliva": 0.5121951219512195,
+          "stool": 0.4878048780487805
+        }
+      }
+    },
+    "clinical_and_metabolite": {
+      "method": "random_forest_conditional_prediction_with_oob_residual_sampling",
+      "clinical_continuous_oob_r2": 0.04795137085538256,
+      "smoking_oob_auc": 0.538851826171692,
+      "family_history_oob_auc": 0.5490407290217809,
+      "metabolite_oob_r2": 0.22313187027206816,
+      "function_oob_r2": 0.30579222948075874,
+      "edge_model": "graphical_lasso_cv",
+      "edge_model_alpha": 0.1380843757444399,
+      "edge_partial_correlations": {
+        "Fusobacterium -> Porphyromonas": 0.0,
+        "Fusobacterium -> Prevotella": -0.0,
+        "Fusobacterium -> Streptococcus": -0.2301429889157048,
+        "Fusobacterium -> Lactobacillus": -0.0,
+        "Porphyromonas -> Prevotella": -0.07288765285923732,
+        "Porphyromonas -> Streptococcus": -0.19780079185523478,
+        "Porphyromonas -> Lactobacillus": 0.0,
+        "Prevotella -> Streptococcus": -0.181020347893695,
+        "Prevotella -> Lactobacillus": -0.0,
+        "Streptococcus -> Lactobacillus": 0.30961620075602636
+      }
+    },
+    "function_score": "random_forest_prediction_from_v6_prior_targets",
+    "edge_weight": "public_graphical_model_partial_association_with_sample_specific_modulation",
+    "survival": {
+      "method": "group_harmonized_multimodal_log_normal_aft_with_independent_noise_and_analytic_prior_censoring",
+      "v6_teacher_event_time_oob_r2": 0.22553944354042943,
+      "latent_risk_method": "standardized_weighted_multimodal_score_with_v6_event_teacher",
+      "latent_risk_component_weights": {
+        "v6_teacher": 0.3,
+        "microbiome": 0.24,
+        "clinical": 0.16,
+        "metabolite": 0.14,
+        "function": 0.09,
+        "topology": 0.07
+      },
+      "node_abundance_weights": {
+        "Fusobacterium": 0.32,
+        "Porphyromonas": 0.24,
+        "Prevotella": 0.12,
+        "Streptococcus": -0.18,
+        "Lactobacillus": -0.28
+      },
+      "clinical_weights": {
+        "age": 0.38,
+        "bmi": 0.27,
+        "smoking": 0.19,
+        "family_history": 0.16
+      },
+      "metabolite_weights": {
+        "bile_acids": 0.38,
+        "scfa": -0.4,
+        "tryptophan_metabolism": 0.22
+      },
+      "function_weights": {
+        "Fusobacterium": 0.3,
+        "Porphyromonas": 0.2,
+        "Prevotella": 0.08,
+        "Streptococcus": -0.16,
+        "Lactobacillus": -0.24
+      },
+      "event_time_model": "log_normal_aft_with_controlled_signal_to_noise",
+      "event_signal_scale": 0.35,
+      "event_signal_log_time_sd": 0.35,
+      "event_noise_log_time_sd": 0.4375,
+      "event_noise_to_signal_sd_ratio": 1.25,
+      "event_noise_sampling": "independent_pseudorandom_normal",
+      "censoring_model": "feature_independent_log_normal_with_analytic_prior_rate_calibration",
+      "censor_location_mode": "analytic_prior_calibration",
+      "censor_log_time_location": 4.452062367715712,
+      "censor_log_time_sd": 0.55,
+      "censor_noise_sampling": "independent_pseudorandom_normal",
+      "generation_group_used_for_outcome_generation": false,
+      "generation_group_used_for_outcome_audit_only": true,
+      "censor_log_time_latent_risk_correlation": -0.0073973434571751534,
+      "target_event_rate_from_v6": 0.5483333333333333,
+      "generated_event_rate": 0.5461111111111111,
+      "deterministic_latent_risk_c_index": 0.7572518904201145,
+      "realized_hidden_event_time_oracle_c_index": 1.0,
+      "generation_group_latent_risk_c_index": {
+        "0": 0.7714325362625806,
+        "1": 0.7570589458736454,
+        "2": 0.74400474652979,
+        "3": 0.7582481013315001,
+        "4": 0.7528600624013615
+      },
+      "minimum_generation_group_latent_risk_c_index": 0.74400474652979,
+      "generation_group_latent_risk_c_index_spread": 0.027427789732790586,
+      "validation_target_band": {
+        "deterministic_latent_risk_c_index": [
+          0.72,
+          0.8
+        ],
+        "minimum_generation_group_latent_risk_c_index": 0.68,
+        "event_noise_to_signal_sd_ratio": [
+          1.1,
+          1.4
+        ],
+        "absolute_censor_risk_correlation_maximum": 0.08
+      },
+      "generated_time_min": 8,
+      "generated_time_median": 61.0,
+      "generated_time_max": 132,
+      "semantics": "fully model-generated right-censored development proxy; not observed follow-up"
+    }
+  },
+  "quality": {
+    "num_samples": 3600,
+    "graph_rows": 36000,
+    "unique_abundance_vectors": 3600,
+    "exact_duplicate_abundance_vectors": 0,
+    "finite_values": true,
+    "generation_group_sizes": {
+      "0": 720,
+      "1": 720,
+      "2": 720,
+      "3": 720,
+      "4": 720
+    },
+    "anchor_overlap_between_generation_groups": [],
+    "event_rate": 0.5461111111111111,
+    "ranges": {
+      "abundance": [
+        0.0,
+        1.0
+      ],
+      "function_score": [
+        0.294489226962868,
+        0.8200286571661274
+      ],
+      "edge_weight": [
+        0.020000242753497655,
+        0.5151084511162591
+      ],
+      "age": [
+        23.52,
+        84.0
+      ],
+      "bmi": [
+        16.0,
+        36.07
+      ],
+      "metabolites": [
+        0.0,
+        1.0
+      ],
+      "time": [
+        8,
+        132
+      ]
+    }
+  },
+  "quality_gate": {
+    "passed": true,
+    "checks": {
+      "overall_latent_risk_c_index_0_72_to_0_80": true,
+      "minimum_group_latent_risk_c_index_at_least_0_68": true,
+      "group_latent_risk_c_index_spread_at_most_0_10": true,
+      "event_noise_to_signal_ratio_1_10_to_1_40": true,
+      "absolute_censor_risk_correlation_at_most_0_08": true,
+      "generated_event_rate_within_0_05_of_v6_target": true
+    },
+    "selection_policy": "Generator parameters are selected using feature-domain harmonization and a separate development cohort. Formal-cohort subgroup thresholds are broad sampling-sanity checks and are never optimized by rerunning random seeds."
+  },
+  "archive": {
+    "archive/datasets/topology_v6/topology_v6_sample_graph_table.csv": "0ada7e8380f7ebc300f487b90d0c5593580eeff5940e770ae292e79719256894",
+    "archive/datasets/topology_v6/topology_v6_sample_clinical_table.csv": "22baaa78a7a95a4601157d40c12fc4f1e5b3c1052c87938cd81ea12c459a5f3f",
+    "archive/datasets/topology_v6/topology_v6_sample_metabolite_table.csv": "9e8b215da90d3077e734efeb1474bf8d7573fad38e58fe7f3099d2239588b98b",
+    "archive/datasets/topology_v6/topology_v6_sample_label_table.csv": "d599e01a37e201b46bfd8b5f013dc5a884a8c726936b253dde678bc8c7b6f9f2"
+  },
+  "prohibited_model_features": [
+    "survival_component_v6_teacher",
+    "survival_component_microbiome",
+    "survival_component_clinical",
+    "survival_component_metabolite",
+    "survival_component_function",
+    "survival_component_topology",
+    "survival_latent_risk",
+    "survival_event_noise",
+    "survival_event_time",
+    "survival_censor_time",
+    "survival_censor_noise"
+  ],
+  "limitations": [
+    "All 3600 generator-v3 rows are model-generated development proxies, not observed patients.",
+    "Only paired oral-gut microbiome anchors come from an open real cohort of 42 patients.",
+    "Clinical variables, metabolites, function scores, topology, and outcomes inherit model priors.",
+    "Generation-group balancing removes artificial simulation-batch effects; it is not a clinical claim.",
+    "No audit-only latent risk, event noise, event time, or censor time may enter model features.",
+    "Performance on this cohort measures generator recovery and requires external validation."
+  ],
+  "formal_protocol_lock": {
+    "path": "experiments/topology_v7_generator_v3/generator_lock.json",
+    "sha256": "c52cb769a592991f4b051f19ceb8896e8f42c44951bcf3196b54b8987237543f",
+    "development_benchmark_sha256": "b0bfd048a8d5a7f55fbc1ecc2bea0f4315df0d7817626540d16a5a81771ac457",
+    "formal_seed_rerun_policy": "Generate seed 20261001 once. Do not change or rerun the seed in response to formal cohort performance."
+  },
+  "outputs": {
+    "data/research/topology_v7_generator_v3/topology_v7_sample_graph_table.csv": "0874189f37fbfeefaa9bcd038dcd0d7b281058261edc41642ccd52e7183ca84d",
+    "data/research/topology_v7_generator_v3/topology_v7_sample_clinical_table.csv": "19368521759c679b7644ec6edd20b2de091904ad246715d80e56a66221665326",
+    "data/research/topology_v7_generator_v3/topology_v7_sample_metabolite_table.csv": "d29da6a239bfce99c165894d1018b31d0b2d218294f6f74648e4f52233caa30e",
+    "data/research/topology_v7_generator_v3/topology_v7_sample_label_table.csv": "a64adb6924c23a5d3ee9d8f59674d47e0b849071fe2080d77894ec62f965f657",
+    "data/research/topology_v7_generator_v3/topology_v7_sample_oral_gut_table.csv": "71923ca06cb07230c9f10e0f36f77a65c9e02916a9129c9109dd2034fbbc7492",
+    "data/research/topology_v7_generator_v3/topology_v7_sample_provenance.csv": "d6e14b640d5076f4989a7072eec4f3f3cdf5ebdaf92e9a0c2a8cf889c4086040"
+  }
+}

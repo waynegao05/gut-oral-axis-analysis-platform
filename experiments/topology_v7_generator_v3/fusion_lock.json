@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "status": "locked_before_formal_aft_fusion",
+  "dataset_manifest_sha256": "c9c309cbf6a75488e24da72a9dc432df5952c535dde50c0e15e7705fc86dd2f2",
+  "gnn_summary_sha256": "0ac95c68a572af452756f44e4dd4e376965d1d3296a697077823d95ebb989b22",
+  "protocol": {
+    "outer_test_groups": [0, 1, 2, 3, 4],
+    "inner_validation_group_rule": "(outer_test_group + 1) modulo 5",
+    "aft_seeds": [7, 21, 42, 123, 2026],
+    "aft_presets": [
+      "shallow_normal",
+      "balanced_normal",
+      "shallow_logistic",
+      "balanced_logistic"
+    ],
+    "feature_set": "full_without_generation_group_id",
+    "num_boost_round": 1600,
+    "early_stopping_rounds": 80,
+    "nthread": 6,
+    "minimum_validation_c_index_delta": 0.0003,
+    "maximum_alpha": 1.0,
+    "alpha_step": 0.01,
+    "seed_ensemble": "equal_mean_of_train_standardized_selected_expert_risks",
+    "fusion": "convex_blend_selected_on_the_fold_specific_validation_group",
+    "alpha_zero_fallback": true,
+    "cross_fold_consensus_prohibited": true,
+    "test_labels_used_for_selection": false
+  },
+  "selection_boundary": "No AFT preset, seed, feature set, or alpha rule may change after formal outer-fold results are observed."
+}

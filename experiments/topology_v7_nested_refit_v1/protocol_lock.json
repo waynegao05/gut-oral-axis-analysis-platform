@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "status": "locked_after_development_before_audit_generation",
+  "locked_at_utc": "2026-07-23T10:11:11.184784+00:00",
+  "plan_path": "experiments/topology_v7_nested_refit_v1/experiment_plan.json",
+  "plan_sha256": "286b0891379bd9986775191aecf35874fd67d2ba5460ab01eb65918812cfda3c",
+  "development_manifest_path": "D:/OneDrive/Desktop/星火计划/small/gut-oral-axis-analysis-platform/outputs/topology_v7_nested_refit_v1/cohorts/development_seed20261002/topology_v7_manifest.json",
+  "development_manifest_sha256": "572ea7a945e649a8c2f3e34a1051eb0f613a5e5aa77b250de4f81839cc26832b",
+  "development_summary_path": "D:/OneDrive/Desktop/星火计划/small/gut-oral-axis-analysis-platform/outputs/topology_v7_nested_refit_v1/development/development_summary.json",
+  "development_summary_sha256": "ffc1c47d560f6130fdbdd41ad18df68e321975e53886555258e4c19957a9a773",
+  "baseline_candidate": {
+    "name": "baseline_pooled_cox",
+    "cox_mode": "pooled",
+    "ranking_weight": 0.0,
+    "ipcw_ranking": false
+  },
+  "selected_candidate": {
+    "name": "baseline_pooled_cox",
+    "cox_mode": "pooled",
+    "ranking_weight": 0.0,
+    "ipcw_ranking": false
+  },
+  "fixed_epochs_by_candidate": {
+    "baseline_pooled_cox": 46,
+    "pooled_cox_ipcw_rank_003": 46,
+    "mixed_group_cox": 46,
+    "mixed_group_cox_ipcw_rank_003": 46,
+    "fixed_edge_mixed_rank_003": 46,
+    "fixed_edge_pooled_cox": 46
+  },
+  "audit_generation_seed": 20261003,
+  "audit_model_seeds": [
+    7,
+    21,
+    42,
+    123,
+    2026
+  ],
+  "audit_generation_seed_reruns_prohibited": true,
+  "audit_test_labels_used_for_selection": false
+}

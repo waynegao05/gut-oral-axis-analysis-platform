@@ -6,10 +6,22 @@ from typing import Any, Dict, List, Tuple
 
 
 REQUIRED_TOP_LEVEL_KEYS = ["microbes", "clinical", "metabolites"]
+V8_WEB_REQUIRED_CLINICAL_FIELDS = ("age", "sex")
 
 CLINICAL_RANGES: dict[str, tuple[float, float, str]] = {
-    "age": (1.0, 120.0, "年龄"),
+    "age": (18.0, 75.0, "年龄"),
     "bmi": (5.0, 100.0, "BMI"),
+    "stage": (1.0, 4.0, "AJCC 分期"),
+    "path_t": (1.0, 4.0, "病理 T 分期"),
+    "path_n": (0.0, 2.0, "病理 N 分期"),
+    "path_m": (0.0, 1.0, "病理 M 分期"),
+    "icr_score": (0.0, 20.0, "肿瘤 RNA ICR 评分"),
+}
+INTEGER_CLINICAL_FIELDS = {"stage", "path_t", "path_n", "path_m"}
+CATEGORICAL_CLINICAL_FIELDS: dict[str, str] = {
+    "sex": "生物学性别",
+    "tumor_location": "肿瘤部位",
+    "tumor_morphology": "肿瘤形态学",
 }
 BINARY_CLINICAL_FIELDS: dict[str, str] = {
     "smoking": "吸烟状态",
@@ -54,9 +66,15 @@ def _finite_number(value: Any, field_path: str, errors: List[str]) -> float | No
     return number
 
 
-def _validate_microbes(microbes: Dict[str, Any], errors: List[str]) -> None:
+def _validate_microbes(
+    microbes: Dict[str, Any],
+    errors: List[str],
+    *,
+    require_positive: bool,
+) -> None:
     if not microbes:
-        errors.append("字段 microbes 不能为空。")
+        if require_positive:
+            errors.append("字段 microbes 不能为空。")
         return
 
     positive_count = 0
@@ -77,15 +95,30 @@ def _validate_microbes(microbes: Dict[str, Any], errors: List[str]) -> None:
         if number > 0.0:
             positive_count += 1
 
-    if positive_count == 0 and not any(message.startswith("microbes.") for message in errors):
+    if (
+        require_positive
+        and positive_count == 0
+        and not any(message.startswith("microbes.") for message in errors)
+    ):
         errors.append("microbes 至少需要一个大于 0 的菌群丰度。")
 
 
 def _validate_clinical(clinical: Dict[str, Any], errors: List[str]) -> None:
-    known_fields = set(CLINICAL_RANGES) | set(BINARY_CLINICAL_FIELDS)
+    known_fields = (
+        set(CLINICAL_RANGES)
+        | set(BINARY_CLINICAL_FIELDS)
+        | set(CATEGORICAL_CLINICAL_FIELDS)
+    )
     for field, value in clinical.items():
         if field not in known_fields:
             _finite_number(value, f"clinical.{field}", errors)
+
+    for field, label in CATEGORICAL_CLINICAL_FIELDS.items():
+        if field not in clinical:
+            continue
+        value = clinical[field]
+        if not isinstance(value, str) or not value.strip():
+            errors.append(f"clinical.{field}（{label}）必须是非空文本。")
 
     for field, (minimum, maximum, label) in CLINICAL_RANGES.items():
         if field not in clinical:
@@ -97,6 +130,10 @@ def _validate_clinical(clinical: Dict[str, Any], errors: List[str]) -> None:
         if number < minimum or number > maximum:
             errors.append(
                 f"{field_path}（{label}）必须在 {minimum:g} 到 {maximum:g} 之间，当前值为 {number:g}。"
+            )
+        elif field in INTEGER_CLINICAL_FIELDS and not number.is_integer():
+            errors.append(
+                f"{field_path}（{label}）必须是整数，当前值为 {number:g}。"
             )
 
     for field, label in BINARY_CLINICAL_FIELDS.items():
@@ -156,7 +193,12 @@ def _validate_metadata(metadata: Dict[str, Any], errors: List[str]) -> None:
                 )
 
 
-def validate_payload(payload: Dict[str, Any]) -> Tuple[bool, List[str]]:
+def validate_payload(
+    payload: Dict[str, Any],
+    *,
+    require_positive_microbes: bool = True,
+    required_clinical_fields: tuple[str, ...] = (),
+) -> Tuple[bool, List[str]]:
     errors: List[str] = []
     if not isinstance(payload, dict):
         return False, ["输入必须是 JSON 对象。"]
@@ -173,8 +215,28 @@ def validate_payload(payload: Dict[str, Any]) -> Tuple[bool, List[str]]:
     metadata = payload.get("metadata")
 
     if isinstance(microbes, dict):
-        _validate_microbes(microbes, errors)
+        _validate_microbes(
+            microbes,
+            errors,
+            require_positive=require_positive_microbes,
+        )
     if isinstance(clinical, dict):
+        clinical_labels = {
+            field: label
+            for field, (_, _, label) in CLINICAL_RANGES.items()
+        }
+        clinical_labels.update(CATEGORICAL_CLINICAL_FIELDS)
+        for field in required_clinical_fields:
+            value = clinical.get(field)
+            if (
+                field not in clinical
+                or value is None
+                or (isinstance(value, str) and not value.strip())
+            ):
+                label = clinical_labels.get(field, field)
+                errors.append(
+                    f"clinical.{field}（{label}）是当前网页必填项。"
+                )
         _validate_clinical(clinical, errors)
     if isinstance(metabolites, dict):
         _validate_metabolites(metabolites, errors)

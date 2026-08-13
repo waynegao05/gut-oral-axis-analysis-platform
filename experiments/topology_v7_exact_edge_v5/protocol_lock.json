@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "status": "development_no_candidate_passed_performance_gate",
+  "plan_sha256": "d30ca35d56ab318b6097216f42f75610928c30faa1b23789c5acef8018f77b71",
+  "development_manifest_sha256": "5ad2250ffe8904fb5757bf4d76b2e97e55077e5354bd5097c908357346f3f303",
+  "baseline_candidate": {
+    "name": "legacy_precomputed_edge_gnn",
+    "model_family": "legacy",
+    "uses_precomputed_edge_weight_at_inference": true,
+    "eligible_for_internal_relation_promotion": false
+  },
+  "selected_candidate": {
+    "name": "legacy_precomputed_edge_gnn",
+    "model_family": "legacy",
+    "uses_precomputed_edge_weight_at_inference": true,
+    "eligible_for_internal_relation_promotion": false
+  },
+  "audit_generation_seed": 20261015,
+  "audit_cohort_generated": false,
+  "performance_selection_decisions": [
+    {
+      "candidate": "exact_internal_edge_gnn",
+      "passed": false,
+      "checks": {
+        "macro_c_index_gain": false,
+        "integrated_auc_gain": false,
+        "improved_outer_groups": true,
+        "worst_group_regression": true,
+        "any_horizon_auc_regression": true,
+        "integrated_brier": true
+      },
+      "macro_c_index_gain": 0.0004488153084449831,
+      "macro_integrated_auc_gain": 0.0005010599192990517,
+      "macro_integrated_brier_change": -0.00019764246844364286,
+      "improved_outer_groups": 5,
+      "fold_c_index_deltas": [
+        0.00045377279668090686,
+        0.00120481927710836,
+        0.0005222613918266505,
+        1.3250561492483826e-05,
+        4.997251511662526e-05
+      ],
+      "macro_auc_horizon_deltas": [
+        0.0005139303290917496,
+        0.0005480032144087321,
+        0.0006688647415765692
+      ],
+      "worst_group_delta": 1.3250561492483826e-05
+    }
+  ],
+  "replacement_noninferiority_decisions": [
+    {
+      "candidate": "exact_internal_edge_gnn",
+      "passed": true,
+      "checks": {
+        "macro_c_index_gain": true,
+        "integrated_auc_gain": true,
+        "improved_outer_groups": true,
+        "worst_group_regression": true,
+        "any_horizon_auc_regression": true,
+        "integrated_brier": true
+      },
+      "macro_c_index_gain": 0.0004488153084449831,
+      "macro_integrated_auc_gain": 0.0005010599192990517,
+      "macro_integrated_brier_change": -0.00019764246844364286,
+      "improved_outer_groups": 5,
+      "fold_c_index_deltas": [
+        0.00045377279668090686,
+        0.00120481927710836,
+        0.0005222613918266505,
+        1.3250561492483826e-05,
+        4.997251511662526e-05
+      ],
+      "macro_auc_horizon_deltas": [
+        0.0005139303290917496,
+        0.0005480032144087321,
+        0.0006688647415765692
+      ],
+      "worst_group_delta": 1.3250561492483826e-05
+    }
+  ]
+}

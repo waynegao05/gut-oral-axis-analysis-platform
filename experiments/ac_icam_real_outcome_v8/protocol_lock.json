@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "experiment": "ac_icam_real_outcome_v8",
+  "status": "locked_before_formal_benchmark",
+  "data": {
+    "cohort": "Sidra-LUMC AC-ICAM",
+    "paired_microbiome_patients": 246,
+    "tissues": ["tumor", "adjacent_normal"],
+    "taxonomic_level": "genus",
+    "primary_scope": "all_stage_i_to_iv",
+    "sensitivity_scope": "stage_i_to_iii",
+    "primary_endpoint": "PFS",
+    "secondary_endpoint": "OS"
+  },
+  "candidate_features": {
+    "clinical_core": [
+      "age",
+      "sex",
+      "AJCC pathological stage",
+      "pathological T stage",
+      "pathological N stage",
+      "tumor anatomical location",
+      "tumor morphology"
+    ],
+    "microbiome": "All genera passing train-fold prevalence filtering; tumor, adjacent-normal, mean and paired-difference representations are computed within each training fold.",
+    "expanded_measured": "ICR score is evaluated separately because it requires tumor RNA measurement and is not available from routine web inputs."
+  },
+  "reference_only_features": [
+    "Published AC-ICAM MBR score and its 41 selected genera",
+    "Published AC-ICAM 16S MRS-T/MRS-N panels"
+  ],
+  "forbidden_features": [
+    "recurrence status",
+    "vital status",
+    "cause of death",
+    "follow-up-derived fields",
+    "published MICROSCORE",
+    "published MBR group in candidate models",
+    "outcome-selected MRS genera in candidate models"
+  ],
+  "evaluation": {
+    "outer_cv": "repeated stratified 5-fold patient-level CV",
+    "outer_seeds": [7, 21, 42, 123, 2026],
+    "inner_cv": "stratified 3-fold CV on outer-train patients only",
+    "primary_metric": "pooled out-of-fold Harrell C-index",
+    "secondary_metrics": [
+      "cumulative/dynamic IPCW AUC at 36 months",
+      "cumulative/dynamic IPCW AUC at 60 months"
+    ],
+    "confidence_interval": "patient bootstrap on pooled out-of-fold predictions",
+    "selection_rule": "All filtering, transforms, supervised feature selection, model tuning and blend-weight selection are fit inside the outer training fold."
+  },
+  "claim_boundary": "V8 uses real outcomes and measured tissue microbiome from a colon-cancer cohort. It is not directly comparable with the synthetic/noisy V7 score and it does not validate saliva or stool deployment."
+}

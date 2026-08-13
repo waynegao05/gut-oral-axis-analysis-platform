@@ -1,0 +1,72 @@
+{
+  "protocol_id": "oral_adenoma_nested_oof_v3",
+  "locked_at": "2026-08-13",
+  "locked_before_formal_run": true,
+  "deployment": "research_only_not_web",
+  "objective": {
+    "task": "colorectal adenoma versus healthy control from oral-swab microbiome only",
+    "primary_success_gate": "nested repeated-OOF sensitivity > 0.64",
+    "threshold_selection": "training-only low-FPR sensitivity optimization",
+    "mandatory_companion_metrics": [
+      "false_positive_rate",
+      "specificity",
+      "ROC AUC",
+      "95% confidence intervals",
+      "real-patient numerator and denominator"
+    ],
+    "previous_fpr_reference": "4/61 = 0.0655737705 from the rejected stool five-genus experiment",
+    "strict_fpr_improvement_gate": "FPR < 0.0655737705"
+  },
+  "source": {
+    "study": "Zhang et al., Theranostics 2020",
+    "doi": "10.7150/thno.49515",
+    "pmcid": "PMC7545992",
+    "supplement_url": "https://www.thno.org/v10/p11595/thnov10p11595s2.zip",
+    "supplement_sha256": "6a8fa8ae2f75f21a986e820d420395e089fc992821509432831b620c9c2dffac",
+    "formal_groups": {
+      "healthy": 58,
+      "adenoma": 34
+    },
+    "sample_type": "bilateral buccal oral swab",
+    "feature_level": "381 genus relative-abundance percentages",
+    "lesion_size_summary": "adenoma mean 0.8 +/- 0.3 cm; individual sizes unavailable"
+  },
+  "hard_data_boundary": {
+    "allowed_sample_types": ["oral", "oral_swab", "buccal_swab", "saliva"],
+    "forbidden_sample_types": [
+      "stool",
+      "fecal",
+      "faecal",
+      "gut",
+      "intestinal",
+      "blood",
+      "serum",
+      "plasma",
+      "tissue"
+    ],
+    "forbidden_modalities": ["blood biomarker", "fecal biomarker", "clinical blood test"],
+    "crc_samples_used_for_training_or_evaluation": false,
+    "synthetic_samples_used": false
+  },
+  "cleaning": {
+    "abundance_range_percent": [0.0, 100.0],
+    "sample_sum_tolerance_percent": [99.9, 100.1],
+    "duplicate_samples_allowed": false,
+    "duplicate_features_allowed": false,
+    "transform": "CLR with 1e-4 percentage pseudocount",
+    "scaling_train_only": true,
+    "feature_selection_train_only": "ANOVA F score",
+    "candidate_top_k": [10, 20, 40, 80],
+    "candidate_logistic_c": [0.03, 0.1, 0.3, 1.0]
+  },
+  "validation": {
+    "outer": "five-fold stratified OOF repeated over five seeds",
+    "inner": "five-fold stratified candidate and threshold selection",
+    "seeds": [7, 21, 42, 123, 2026],
+    "formal_consensus": "mean calibrated log-odds decision margin across five repeated OOF predictions",
+    "threshold_target_fpr": 0.055,
+    "outer_test_labels_used_for_model_or_threshold_selection": false,
+    "batch_prefix_leave-one-group-out": true
+  },
+  "claim_boundary": "Internal retrospective oral-swab adenoma model. The cohort-level mean lesion size is 8 mm, but individual lesion sizes are unavailable; performance is not a verified <=5 mm diminutive-adenoma endpoint and is not prospective, external, analytical-kit, or clinical validation."
+}

@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "dataset_version": "topology_v7",
+  "generator_version": "topology_v7_hybrid_generator_v1",
+  "archive_reason": "Preserved before replacing the residual-dominated survival generator with the controlled-signal generator_v2.",
+  "local_files_preserved": true,
+  "files": {
+    "archive/datasets/topology_v7_generator_v1/topology_v7_sample_graph_table.csv": "a92af5609649cd0895e5781899021eeb1534d125223b43ce5d0e68148d07a53b",
+    "archive/datasets/topology_v7_generator_v1/topology_v7_sample_clinical_table.csv": "4c25dbcb1df6f7100f429318917ca722ac070ce9a35a54a0b6a396aec3cb2bb3",
+    "archive/datasets/topology_v7_generator_v1/topology_v7_sample_metabolite_table.csv": "7e0ec64688ebbd7d3986d6117f3406e289d3f87d1d6b5d8c5c33c5736dcd4d75",
+    "archive/datasets/topology_v7_generator_v1/topology_v7_sample_label_table.csv": "61ecf1ba514e736b8cd8b3a189aa71cca639bce3a29ca549790cd32edc37bcaf",
+    "archive/datasets/topology_v7_generator_v1/topology_v7_sample_oral_gut_table.csv": "14d6c83afef5d0668b2dc3a8e388aa8dfe3e53d8801c82492d337256da8db824",
+    "archive/datasets/topology_v7_generator_v1/topology_v7_sample_provenance.csv": "9717d9cb1c7cdeb76d855db8fcf0618943cd4e286e4fe2103a2be0a795c6ae86",
+    "archive/datasets/topology_v7_generator_v1/topology_v7_manifest.json": "ac20248ececde7bc0616db444f22d5351f16262d9cf2ae2b6095cdcbe07c2c62"
+  }
+}

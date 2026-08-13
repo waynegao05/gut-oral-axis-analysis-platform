@@ -89,6 +89,36 @@ def test_standardizer_preserves_structured_medication_context() -> None:
     assert metadata["pregnancy"] == 0.0
 
 
+def test_standardizer_preserves_v8_oncology_contract() -> None:
+    payload = {
+        "demographics": {"age": 62, "sex": "female"},
+        "oncology": {
+            "stage": 3,
+            "path_t": 3,
+            "path_n": 1,
+            "path_m": 0,
+            "tumor_location": "Colon Sigmoideum",
+            "tumor_morphology": "Adenocarcinoma",
+            "icr_score": 7.1,
+        },
+        "oral_microbiome": {},
+    }
+
+    standardized = standardize_raw_payload(payload)
+
+    assert standardized["clinical"] == {
+        "age": 62.0,
+        "sex": "female",
+        "stage": 3.0,
+        "path_t": 3.0,
+        "path_n": 1.0,
+        "path_m": 0.0,
+        "icr_score": 7.1,
+        "tumor_location": "Colon Sigmoideum",
+        "tumor_morphology": "Adenocarcinoma",
+    }
+
+
 def test_standardizer_treats_explicit_none_as_reported_empty_list() -> None:
     payload = {
         "medication_context": {

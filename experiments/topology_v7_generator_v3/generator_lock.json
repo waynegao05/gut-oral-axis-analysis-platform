@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "status": "locked_before_formal_generation",
+  "generator_version": "topology_v7_hybrid_generator_v3",
+  "development_cohort": {
+    "seed": 20260920,
+    "path": "outputs/topology_v7_generator_v3_pilots/covariance_compensated",
+    "benchmark_path": "outputs/topology_v7_generator_v3_pilots/covariance_compensated_logo/logo_benchmark_summary.json",
+    "promotion_gate_passed": true,
+    "primary_aft_mean_c_index": 0.7398235958364399,
+    "reference_v2_primary_aft_mean_c_index": 0.7284039448493719,
+    "primary_aft_mean_delta": 0.011419650987067986,
+    "source_grouped_domain_auc": 0.5403300540123457,
+    "reference_v2_source_grouped_domain_auc": 0.7791469907407408
+  },
+  "development_benchmark_sha256": "b0bfd048a8d5a7f55fbc1ecc2bea0f4315df0d7817626540d16a5a81771ac457",
+  "locked_generator_parameters": {
+    "formal_seed": 20261001,
+    "local_anchor_weight": 0.55,
+    "anchor_balance_searches": 20000,
+    "latent_noise_scale": 0.8
+  },
+  "formal_quality_gate": {
+    "overall_latent_risk_c_index": [0.72, 0.8],
+    "minimum_group_latent_risk_c_index": 0.68,
+    "maximum_group_c_index_spread": 0.1,
+    "event_noise_to_signal_ratio": [1.1, 1.4],
+    "maximum_absolute_censor_risk_correlation": 0.08,
+    "maximum_event_rate_deviation_from_v6": 0.05
+  },
+  "formal_seed_rerun_policy": "Generate seed 20261001 once. Do not change or rerun the seed in response to formal cohort performance.",
+  "selection_boundary": "The development cohort selected generator parameters. Only the independently generated formal cohort may be used for subsequent fixed-protocol GNN evaluation."
+}

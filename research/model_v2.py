@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from types import SimpleNamespace
 from typing import Dict, List, Tuple
 
 import torch
@@ -10,6 +11,13 @@ from torch_geometric.nn.aggr import AttentionalAggregation
 
 
 def _compute_structure_targets(batch) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
+    cached = tuple(
+        getattr(batch, name, None)
+        for name in ("node_struct", "node_targets", "graph_targets", "graph_cluster_targets")
+    )
+    if all(value is not None for value in cached):
+        return cached
+
     device = batch.x.device
     num_nodes = batch.x.size(0)
     edge_index = batch.edge_index
@@ -107,6 +115,21 @@ def _compute_structure_targets(batch) -> Tuple[torch.Tensor, torch.Tensor, torch
     return node_struct, node_targets, torch.stack(graph_targets).view(-1, 1), torch.stack(graph_cluster_targets).view(-1, 1)
 
 
+def compute_single_graph_structure(
+    x: torch.Tensor,
+    edge_index: torch.Tensor,
+    edge_attr: torch.Tensor,
+) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
+    """Precompute deterministic structure inputs once per graph."""
+    single_graph = SimpleNamespace(
+        x=x,
+        edge_index=edge_index,
+        edge_attr=edge_attr,
+        batch=torch.zeros(x.size(0), dtype=torch.long, device=x.device),
+    )
+    return _compute_structure_targets(single_graph)
+
+
 class DeepStructureAwareGATCoxModelV2(nn.Module):
     def __init__(
         self,
@@ -123,6 +146,12 @@ class DeepStructureAwareGATCoxModelV2(nn.Module):
         survival_head_type: str = "cox",
         num_time_bins: int = 12,
         use_layer_attention: bool = False,
+        num_node_types: int = 0,
+        node_identity_dim: int = 0,
+        identity_readout_dim: int = 0,
+        pool_every_layer: bool = True,
+        graph_projection_dim: int = 0,
+        tabular_projection_dim: int = 0,
     ) -> None:
         super().__init__()
         self.structure_dim = 5
@@ -131,10 +160,43 @@ class DeepStructureAwareGATCoxModelV2(nn.Module):
         self.survival_head_type = survival_head_type
         self.num_time_bins = num_time_bins
         self.use_layer_attention = use_layer_attention
+        self.pool_every_layer = bool(pool_every_layer)
+        if self.use_layer_attention and not self.pool_every_layer:
+            raise ValueError("Layer attention requires pool_every_layer=True.")
         self.dropout = nn.Dropout(dropout)
 
+        if (num_node_types > 0) != (node_identity_dim > 0):
+            raise ValueError("num_node_types and node_identity_dim must both be positive or both be zero.")
+        self.node_identity_dim = int(node_identity_dim)
+        self.num_node_types = int(num_node_types)
+        self.node_feature_dim = int(node_feature_dim)
+        self.node_identity_embedding = (
+            nn.Embedding(self.num_node_types, self.node_identity_dim)
+            if self.node_identity_dim > 0
+            else None
+        )
+        self.identity_readout_dim = int(identity_readout_dim)
+        if self.identity_readout_dim > 0 and self.num_node_types <= 0:
+            raise ValueError("num_node_types must be positive when identity_readout_dim is enabled.")
+        identity_input_dim = self.num_node_types * (
+            self.node_feature_dim + self.num_node_types
+        )
+        self.identity_readout = (
+            nn.Sequential(
+                nn.Linear(identity_input_dim, self.identity_readout_dim),
+                nn.LayerNorm(self.identity_readout_dim),
+                nn.GELU(),
+                nn.Dropout(dropout),
+            )
+            if self.identity_readout_dim > 0
+            else None
+        )
+
+        self.graph_projection_dim = int(graph_projection_dim)
+        self.tabular_projection_dim = int(tabular_projection_dim)
+
         self.node_proj = nn.Sequential(
-            nn.Linear(node_feature_dim + self.structure_dim, hidden_dim),
+            nn.Linear(node_feature_dim + self.structure_dim + self.node_identity_dim, hidden_dim),
             nn.LayerNorm(hidden_dim),
             nn.GELU(),
             nn.Dropout(dropout),
@@ -173,31 +235,37 @@ class DeepStructureAwareGATCoxModelV2(nn.Module):
             self.norms.append(nn.LayerNorm(final_dim))
             self.layer_dims.append(final_dim)
 
-            self.layer_pool_gates.append(
-                AttentionalAggregation(
-                    gate_nn=nn.Sequential(
-                        nn.Linear(final_dim, max(16, final_dim // 2)),
-                        nn.GELU(),
-                        nn.Linear(max(16, final_dim // 2), 1),
+            if self.pool_every_layer or layer_idx == num_layers - 1:
+                self.layer_pool_gates.append(
+                    AttentionalAggregation(
+                        gate_nn=nn.Sequential(
+                            nn.Linear(final_dim, max(16, final_dim // 2)),
+                            nn.GELU(),
+                            nn.Linear(max(16, final_dim // 2), 1),
+                        )
                     )
                 )
-            )
+            else:
+                self.layer_pool_gates.append(nn.Identity())
 
             in_dim = final_dim
 
         self.final_node_dim = in_dim
         self.graph_dim = self.final_node_dim * 3
 
-        for layer_dim in self.layer_dims:
+        for layer_idx, layer_dim in enumerate(self.layer_dims):
             pooled_dim = layer_dim * 3
-            self.layer_pool_projs.append(
-                nn.Sequential(
-                    nn.Linear(pooled_dim, self.graph_dim),
-                    nn.LayerNorm(self.graph_dim),
-                    nn.GELU(),
-                    nn.Dropout(dropout),
+            if self.pool_every_layer or layer_idx == num_layers - 1:
+                self.layer_pool_projs.append(
+                    nn.Sequential(
+                        nn.Linear(pooled_dim, self.graph_dim),
+                        nn.LayerNorm(self.graph_dim),
+                        nn.GELU(),
+                        nn.Dropout(dropout),
+                    )
                 )
-            )
+            else:
+                self.layer_pool_projs.append(nn.Identity())
 
         if self.use_layer_attention:
             self.layer_attention = nn.MultiheadAttention(
@@ -216,7 +284,30 @@ class DeepStructureAwareGATCoxModelV2(nn.Module):
             self.layer_attention = None
             self.jump_proj = None
 
-        fusion_dim = self.graph_dim + clinical_dim + metabolite_dim
+        self.graph_fusion_projection = (
+            nn.Sequential(
+                nn.Linear(self.graph_dim, self.graph_projection_dim),
+                nn.LayerNorm(self.graph_projection_dim),
+                nn.GELU(),
+                nn.Dropout(dropout),
+            )
+            if self.graph_projection_dim > 0
+            else None
+        )
+        tabular_input_dim = clinical_dim + metabolite_dim
+        self.tabular_fusion_projection = (
+            nn.Sequential(
+                nn.Linear(tabular_input_dim, self.tabular_projection_dim),
+                nn.LayerNorm(self.tabular_projection_dim),
+                nn.GELU(),
+                nn.Dropout(dropout),
+            )
+            if self.tabular_projection_dim > 0
+            else None
+        )
+        graph_fusion_dim = self.graph_projection_dim or self.graph_dim
+        tabular_fusion_dim = self.tabular_projection_dim or tabular_input_dim
+        fusion_dim = graph_fusion_dim + self.identity_readout_dim + tabular_fusion_dim
         self.fusion = nn.Sequential(
             nn.Linear(fusion_dim, hidden_dim * 2),
             nn.LayerNorm(hidden_dim * 2),
@@ -281,7 +372,13 @@ class DeepStructureAwareGATCoxModelV2(nn.Module):
 
     def _encode(self, batch, augment: bool = False):
         node_struct, node_targets, graph_targets, graph_cluster_targets = _compute_structure_targets(batch)
-        x = torch.cat([batch.x, node_struct], dim=1)
+        node_inputs = [batch.x, node_struct]
+        if self.node_identity_embedding is not None:
+            node_type = getattr(batch, "node_type", None)
+            if node_type is None:
+                raise ValueError("node_type is required when node identity embeddings are enabled.")
+            node_inputs.append(self.node_identity_embedding(node_type.long()))
+        x = torch.cat(node_inputs, dim=1)
         if augment:
             x = x + 0.03 * torch.randn_like(x)
             x = F.dropout(x, p=0.08, training=True)
@@ -290,20 +387,21 @@ class DeepStructureAwareGATCoxModelV2(nn.Module):
 
         pooled_layers = []
         layer_states = []
-        for conv, residual, norm, pool_gate, pool_proj in zip(
+        for layer_idx, (conv, residual, norm, pool_gate, pool_proj) in enumerate(zip(
             self.convs,
             self.residuals,
             self.norms,
             self.layer_pool_gates,
             self.layer_pool_projs,
-        ):
+        )):
             h = conv(x, batch.edge_index, edge_emb)
             h = norm(h + residual(x))
             h = F.gelu(h)
             h = self.dropout(h)
             x = h
             layer_states.append(h)
-            pooled_layers.append(self._pool_graph(h, batch.batch, pool_gate, pool_proj))
+            if self.pool_every_layer or layer_idx == self.num_layers - 1:
+                pooled_layers.append(self._pool_graph(h, batch.batch, pool_gate, pool_proj))
 
         if self.use_layer_attention:
             layer_stack = torch.stack(pooled_layers, dim=1)
@@ -323,6 +421,27 @@ class DeepStructureAwareGATCoxModelV2(nn.Module):
         labels = torch.arange(z1.size(0), device=z1.device)
         return 0.5 * (F.cross_entropy(logits, labels) + F.cross_entropy(logits.t(), labels))
 
+    def _identity_preserving_readout(self, batch, num_graphs: int) -> torch.Tensor:
+        if self.identity_readout is None:
+            raise RuntimeError("Identity-preserving readout is disabled.")
+        node_values = batch.x.new_zeros(
+            (num_graphs, self.num_node_types, self.node_feature_dim)
+        )
+        node_values[batch.batch.long(), batch.node_type.long()] = batch.x
+
+        edge_values = batch.x.new_zeros(
+            (num_graphs, self.num_node_types, self.num_node_types)
+        )
+        edge_graph = batch.batch[batch.edge_index[0]].long()
+        edge_source_type = batch.node_type[batch.edge_index[0]].long()
+        edge_target_type = batch.node_type[batch.edge_index[1]].long()
+        edge_values[edge_graph, edge_source_type, edge_target_type] = batch.edge_attr.view(-1)
+        named_graph = torch.cat(
+            [node_values.flatten(start_dim=1), edge_values.flatten(start_dim=1)],
+            dim=1,
+        )
+        return self.identity_readout(named_graph)
+
     def forward(self, batch, compute_contrastive: bool = False) -> Dict[str, torch.Tensor]:
         graph_embedding, final_node, node_struct, node_targets, graph_targets, graph_cluster_targets = self._encode(
             batch,
@@ -330,7 +449,24 @@ class DeepStructureAwareGATCoxModelV2(nn.Module):
         )
         clinical = batch.clinical.view(graph_embedding.size(0), -1)
         metabolites = batch.metabolites.view(graph_embedding.size(0), -1)
-        fused = torch.cat([graph_embedding, clinical, metabolites], dim=1)
+        graph_for_fusion = (
+            self.graph_fusion_projection(graph_embedding)
+            if self.graph_fusion_projection is not None
+            else graph_embedding
+        )
+        tabular = torch.cat([clinical, metabolites], dim=1)
+        tabular_for_fusion = (
+            self.tabular_fusion_projection(tabular)
+            if self.tabular_fusion_projection is not None
+            else tabular
+        )
+        fusion_inputs = [graph_for_fusion]
+        if self.identity_readout is not None:
+            fusion_inputs.append(
+                self._identity_preserving_readout(batch, graph_embedding.size(0))
+            )
+        fusion_inputs.append(tabular_for_fusion)
+        fused = torch.cat(fusion_inputs, dim=1)
         latent = self.fusion(fused)
         if self.survival_head_type == "cox":
             risk = self.risk_head(latent).squeeze(-1)

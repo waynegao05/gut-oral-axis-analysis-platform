@@ -1,0 +1,242 @@
+{
+  "schema_version": 1,
+  "current_dataset_policy": {
+    "dataset_id": "topology_v7",
+    "action": "hybrid_model_generated_development_mainline",
+    "config": "research_config_v2.yaml",
+    "data_root": "data/research",
+    "notes": "The training mainline is generated from the real paired oral-gut distribution with topology_v6 priors for missing modalities. It is not an external clinical cohort."
+  },
+  "safety_policy": {
+    "patient_level_cross_cohort_join_allowed": false,
+    "synthetic_survival_label_creation_allowed": true,
+    "synthetic_survival_label_use": "development_only",
+    "synthetic_survival_claim_as_observed": false,
+    "generated_descendants_must_use_group_disjoint_splits": true,
+    "fold_local_graph_construction_required": true,
+    "raw_public_data_committed_to_git": false
+  },
+  "datasets": [
+    {
+      "id": "russo_crc_oral_gut_2023",
+      "title": "From adenoma to CRC stages: oral-gut microbiome and NMR metabolome",
+      "cohort_size": 61,
+      "accessions": ["PRJNA899104", "GSE217490"],
+      "access": {
+        "mode": "open",
+        "machine_downloadable": true
+      },
+      "modalities": [
+        "oral_microbiome",
+        "gut_microbiome",
+        "intestinal_tissue_microbiome",
+        "clinical_covariates"
+      ],
+      "reported_but_not_individual_public": [
+        "metabolomics"
+      ],
+      "same_subject_modalities": true,
+      "outcome": {
+        "type": "diagnosis_and_stage",
+        "individual_time": false,
+        "individual_event": false,
+        "right_censoring": false
+      },
+      "recommended_role": "primary_oral_gut_mechanism_and_multimodal_external_validation",
+      "limitations": [
+        "No public right-censored time/event outcome.",
+        "NMR metabolomics were reported for a restricted subgroup, but no patient-level matrix is present in the GEO or article supplementary files.",
+        "Supports AP-versus-CRC and stage analyses, not the current c-index task."
+      ],
+      "sources": [
+        {
+          "label": "NCBI BioProject PRJNA899104",
+          "url": "https://www.ncbi.nlm.nih.gov/bioproject/899104"
+        }
+      ]
+    },
+    {
+      "id": "colocare_crc_dfs_2025",
+      "title": "ColoCare baseline fecal microbiome and disease-free survival",
+      "cohort_size": 166,
+      "accessions": ["NCT02328677"],
+      "access": {
+        "mode": "request_required",
+        "machine_downloadable": false,
+        "contact": "colocarestudy_admin@hci.utah.edu"
+      },
+      "modalities": [
+        "gut_microbiome",
+        "clinical_covariates"
+      ],
+      "same_subject_modalities": true,
+      "outcome": {
+        "type": "right_censored_time_to_event",
+        "individual_time": true,
+        "individual_event": true,
+        "right_censoring": true
+      },
+      "recommended_role": "preferred_real_survival_core_after_data_access_approval",
+      "limitations": [
+        "Individual-level data require an approved ColoCare request.",
+        "No matched oral microbiome or metabolomics in the published analysis."
+      ],
+      "sources": [
+        {
+          "label": "Published ColoCare DFS analysis",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12262587/"
+        },
+        {
+          "label": "ColoCare data-sharing process",
+          "url": "https://uofuhealth.utah.edu/huntsman/labs/colocare-consortium/data-sharing/sharing"
+        }
+      ]
+    },
+    {
+      "id": "alexander_crc_multiomics_2023",
+      "title": "CRC mucosal microbiome and UPLC-MS metabolome",
+      "cohort_size": 135,
+      "accessions": ["10.5281/zenodo.7326674"],
+      "access": {
+        "mode": "open_processed",
+        "machine_downloadable": true,
+        "license": "CC-BY-4.0"
+      },
+      "modalities": [
+        "intestinal_tissue_microbiome",
+        "metabolomics",
+        "clinical_covariates"
+      ],
+      "same_subject_modalities": true,
+      "outcome": {
+        "type": "survival_reported_but_labels_not_public",
+        "individual_time": false,
+        "individual_event": false,
+        "right_censoring": false
+      },
+      "recommended_role": "real_multiomics_replication_and_feature_pretraining",
+      "limitations": [
+        "The public workbooks do not contain individual recurrence time/event labels.",
+        "Tissue microbiome is not an oral or fecal microbiome measurement."
+      ],
+      "sources": [
+        {
+          "label": "Zenodo pre-processed data",
+          "url": "https://zenodo.org/records/7326674"
+        },
+        {
+          "label": "Published prospective study",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10165813/"
+        }
+      ]
+    },
+    {
+      "id": "debelius_crc_survival_2023",
+      "title": "Paired colorectal tumour and adjacent-tissue microbiome",
+      "cohort_size": 101,
+      "accessions": ["PRJEB57580", "10.5281/zenodo.7690117"],
+      "access": {
+        "mode": "open_processed",
+        "machine_downloadable": true
+      },
+      "modalities": [
+        "intestinal_tissue_microbiome",
+        "clinical_covariates"
+      ],
+      "same_subject_modalities": true,
+      "outcome": {
+        "type": "binary_fixed_horizon",
+        "individual_time": false,
+        "individual_event": true,
+        "right_censoring": false,
+        "definition": "nested comparison of survival under 2 years versus at least 5 years"
+      },
+      "recommended_role": "fixed_horizon_survival_classification_external_validation",
+      "limitations": [
+        "Public metadata contain long_survival, not exact follow-up time/event.",
+        "Cannot be evaluated with the current right-censored c-index without changing task."
+      ],
+      "sources": [
+        {
+          "label": "Analysis repository and processed feature tables",
+          "url": "https://github.com/ctmrbio/crc-survival"
+        },
+        {
+          "label": "ENA project PRJEB57580",
+          "url": "https://www.ebi.ac.uk/ena/browser/view/PRJEB57580"
+        }
+      ]
+    },
+    {
+      "id": "tcga_coad_read",
+      "title": "TCGA colon and rectal cancer molecular and clinical cohorts",
+      "cohort_size": null,
+      "accessions": ["TCGA-COAD", "TCGA-READ"],
+      "access": {
+        "mode": "open",
+        "machine_downloadable": true
+      },
+      "modalities": [
+        "tumour_genomics",
+        "tumour_transcriptomics",
+        "clinical_covariates"
+      ],
+      "same_subject_modalities": true,
+      "outcome": {
+        "type": "right_censored_time_to_event",
+        "individual_time": true,
+        "individual_event": true,
+        "right_censoring": true
+      },
+      "recommended_role": "independent_clinical_survival_baseline_not_microbiome_replacement",
+      "limitations": [
+        "No matched measured oral or fecal microbiome.",
+        "Microbial signals inferred from tumour sequencing must not be described as oral-gut measurements."
+      ],
+      "sources": [
+        {
+          "label": "NCI GDC colorectal cancer resource",
+          "url": "https://gdc.cancer.gov/about-data/publications/coadread_2012"
+        },
+        {
+          "label": "NCI GDC survival endpoint documentation",
+          "url": "https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/clinical_data_analysis/"
+        }
+      ]
+    },
+    {
+      "id": "ihmp_ibdmdb",
+      "title": "Integrative Human Microbiome Project IBD multi-omics",
+      "cohort_size": 90,
+      "accessions": [],
+      "access": {
+        "mode": "open",
+        "machine_downloadable": true
+      },
+      "modalities": [
+        "gut_microbiome",
+        "metabolomics",
+        "clinical_covariates",
+        "longitudinal_repeated_measures"
+      ],
+      "same_subject_modalities": true,
+      "outcome": {
+        "type": "longitudinal_disease_activity",
+        "individual_time": false,
+        "individual_event": false,
+        "right_censoring": false
+      },
+      "recommended_role": "unsupervised_or_longitudinal_pretraining_only",
+      "limitations": [
+        "IBD rather than colorectal cancer.",
+        "No cancer survival endpoint and no matched oral microbiome."
+      ],
+      "sources": [
+        {
+          "label": "Official IBDMDB portal",
+          "url": "https://ibdmdb.org/"
+        }
+      ]
+    }
+  ]
+}

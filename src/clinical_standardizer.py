@@ -93,6 +93,18 @@ def _set_optional_number(target: Dict[str, float], key: str, value: Any, field_n
         target[key] = parsed
 
 
+def _set_optional_text(
+    target: Dict[str, Any],
+    key: str,
+    value: Any,
+) -> None:
+    if value is None:
+        return
+    text = str(value).strip()
+    if text:
+        target[key] = text
+
+
 def _set_optional_binary(
     target: Dict[str, float],
     key: str,
@@ -141,13 +153,15 @@ def standardize_raw_payload(payload: Dict[str, Any]) -> Dict[str, Any]:
     oral_microbiome = _object_section(payload, "oral_microbiome")
     metabolites_raw = _object_section(payload, "metabolites")
     context = _object_section(payload, "clinical_context")
+    oncology = _object_section(payload, "oncology")
     medication_context = _object_section(payload, "medication_context")
 
     microbes = _normalize_microbe_payload(oral_microbiome.get("taxa", oral_microbiome))
 
-    clinical: Dict[str, float] = {}
+    clinical: Dict[str, Any] = {}
     _set_optional_number(clinical, "age", demographics.get("age"), "demographics.age")
     _set_optional_number(clinical, "bmi", demographics.get("bmi"), "demographics.bmi")
+    _set_optional_text(clinical, "sex", demographics.get("sex"))
     _set_optional_binary(
         clinical,
         "smoking",
@@ -163,6 +177,23 @@ def standardize_raw_payload(payload: Dict[str, Any]) -> Dict[str, Any]:
         FAMILY_HISTORY_TRUE,
         FAMILY_HISTORY_FALSE,
         "history.family_history_colorectal_or_ibd",
+    )
+    for key in ("stage", "path_t", "path_n", "path_m", "icr_score"):
+        _set_optional_number(
+            clinical,
+            key,
+            oncology.get(key, context.get(key)),
+            f"oncology.{key}",
+        )
+    _set_optional_text(
+        clinical,
+        "tumor_location",
+        oncology.get("tumor_location", context.get("tumor_location")),
+    )
+    _set_optional_text(
+        clinical,
+        "tumor_morphology",
+        oncology.get("tumor_morphology", context.get("tumor_morphology")),
     )
 
     metabolites: Dict[str, float] = {}

@@ -1,0 +1,103 @@
+{
+  "schema_version": 1,
+  "status": "locked_before_development_generation",
+  "scope": "independent_model_development_then_one_time_audit",
+  "development_generation_seed": 20261002,
+  "audit_generation_seed": 20261003,
+  "sample_count": 3600,
+  "groups": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "development_model_seed": 42,
+  "audit_model_seeds": [
+    7,
+    21,
+    42,
+    123,
+    2026
+  ],
+  "base_config": "research_config_v7_v3_gnn_locked.yaml",
+  "development_training": {
+    "maximum_epochs": 160,
+    "early_stop_patience": 30,
+    "minimum_c_index_delta": 0.0002,
+    "batch_size": 4096,
+    "ranking_max_pairs": 65536,
+    "ranking_temperature": 0.5,
+    "ranking_warmup_epochs": 15
+  },
+  "candidates": [
+    {
+      "name": "baseline_pooled_cox",
+      "cox_mode": "pooled",
+      "ranking_weight": 0.0,
+      "ipcw_ranking": false
+    },
+    {
+      "name": "pooled_cox_ipcw_rank_003",
+      "cox_mode": "pooled",
+      "ranking_weight": 0.03,
+      "ipcw_ranking": true
+    },
+    {
+      "name": "mixed_group_cox",
+      "cox_mode": "mixed_group",
+      "ranking_weight": 0.0,
+      "ipcw_ranking": false
+    },
+    {
+      "name": "mixed_group_cox_ipcw_rank_003",
+      "cox_mode": "mixed_group",
+      "ranking_weight": 0.03,
+      "ipcw_ranking": true
+    },
+    {
+      "name": "fixed_edge_mixed_rank_003",
+      "cox_mode": "mixed_group",
+      "ranking_weight": 0.03,
+      "ipcw_ranking": true,
+      "fixed_edge_residual": true,
+      "fixed_edge_hidden_dim": 16,
+      "fixed_edge_residual_scale": 0.1
+    },
+    {
+      "name": "fixed_edge_pooled_cox",
+      "cox_mode": "pooled",
+      "ranking_weight": 0.0,
+      "ipcw_ranking": false,
+      "fixed_edge_residual": true,
+      "fixed_edge_hidden_dim": 16,
+      "fixed_edge_residual_scale": 0.1
+    }
+  ],
+  "development_selection": {
+    "minimum_macro_c_index_gain_over_baseline": 0.001,
+    "minimum_improved_groups": 3,
+    "maximum_worst_group_regression": 0.002,
+    "maximum_mean_cox_loss_increase": 0.01,
+    "fallback": "baseline_pooled_cox"
+  },
+  "audit_adoption_gate": {
+    "minimum_macro_c_index_gain": 0.002,
+    "minimum_improved_groups": 4,
+    "maximum_worst_group_delta_regression": 0.003,
+    "maximum_mean_cox_loss_increase": 0.005
+  },
+  "audit_policy": {
+    "hyperparameters_selected_only_on_development_cohort": true,
+    "train_on_all_four_non_test_groups": true,
+    "audit_test_labels_used_for_selection": false,
+    "audit_generation_seed_reruns_prohibited": true
+  },
+  "audit_uncertainty": {
+    "method": "paired_primary_anchor_cluster_bootstrap",
+    "cluster_column": "primary_anchor_patient_id",
+    "replicates": 2000,
+    "seed": 20261004,
+    "confidence_level": 0.95
+  }
+}
