@@ -1,4 +1,5 @@
 import { getJson, postJson } from "./api";
+import { isDesktopHost, saveJsonFile } from "./desktop-host";
 import { errorMessage, formatPercent, requiredElement, setText } from "./dom";
 import type {
   NumericMap,
@@ -13,7 +14,7 @@ let schemaPromise: Promise<OralAdenomaSchemaResponse> | undefined;
 
 function getSchema(): Promise<OralAdenomaSchemaResponse> {
   schemaPromise ??= getJson<OralAdenomaSchemaResponse>(
-    "/internal/oral-adenoma/schema",
+    "oralAdenoma.schema",
   );
   return schemaPromise;
 }
@@ -86,7 +87,15 @@ function templatePayload(schema: OralAdenomaSchemaResponse): NumericMap {
   return Object.fromEntries(schema.taxonomies.map((taxonomy) => [taxonomy, 0]));
 }
 
-function downloadTemplate(schema: OralAdenomaSchemaResponse): void {
+async function downloadTemplate(schema: OralAdenomaSchemaResponse): Promise<void> {
+  if (isDesktopHost()) {
+    await saveJsonFile(
+      "oral_adenoma_381_genus_template.json",
+      templatePayload(schema),
+    );
+    setStatus("模板已保存。", "success");
+    return;
+  }
   const blob = new Blob(
     [`${JSON.stringify(templatePayload(schema), null, 2)}\n`],
     { type: "application/json;charset=utf-8" },
@@ -97,6 +106,12 @@ function downloadTemplate(schema: OralAdenomaSchemaResponse): void {
   anchor.download = "oral_adenoma_381_genus_template.json";
   anchor.click();
   URL.revokeObjectURL(url);
+}
+
+export function importOralAdenomaJsonText(text: string): void {
+  parseAbundanceJson(text);
+  requiredElement<HTMLTextAreaElement>("oral-adenoma-json").value = text;
+  setStatus("口腔菌群 JSON 已载入，请确认样本类型后运行。", "success");
 }
 
 async function runAnalysis(): Promise<void> {
@@ -121,7 +136,7 @@ async function runAnalysis(): Promise<void> {
       oral_abundances: abundances,
     };
     const response = await postJson<OralAdenomaAnalysisResponse>(
-      "/internal/oral-adenoma/analyze",
+      "oralAdenoma.analyze",
       payload,
     );
     renderResult(response.oral_adenoma_result);
@@ -140,9 +155,7 @@ async function handleFileInput(event: Event): Promise<void> {
   }
   try {
     const text = await input.files[0].text();
-    parseAbundanceJson(text);
-    requiredElement<HTMLTextAreaElement>("oral-adenoma-json").value = text;
-    setStatus("口腔菌群 JSON 已载入，请确认样本类型后运行。", "success");
+    importOralAdenomaJsonText(text);
   } catch (error) {
     setStatus(errorMessage(error), "error");
   }

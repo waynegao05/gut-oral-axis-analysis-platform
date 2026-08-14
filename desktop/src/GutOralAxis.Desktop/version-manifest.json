@@ -1,0 +1,7 @@
+{
+  "application": "0.1.0",
+  "frontend": "2.0.0",
+  "ai_engine": "1.0.0",
+  "model": "ac_icam_real_outcome_pfs_v8",
+  "database_schema": 1
+}

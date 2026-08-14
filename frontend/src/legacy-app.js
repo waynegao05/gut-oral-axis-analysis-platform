@@ -1,3 +1,6 @@
+import { postJson } from "./api";
+import { isDesktopHost, saveStructuredReport } from "./desktop-host";
+
 const CANONICAL_EXAMPLE = {
   microbes: {
     Fusobacterium: 0.18,
@@ -169,20 +172,6 @@ function formatOptionalList(metadata, key) {
   }
   const values = Array.isArray(metadata[key]) ? metadata[key] : [];
   return values.length ? values.join("\n") : "无";
-}
-
-async function postJson(url, payload) {
-  const response = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
-  });
-  const data = await response.json();
-  if (!response.ok || !data.ok) {
-    const message = Array.isArray(data.errors) ? data.errors.join(" | ") : "请求失败。";
-    throw new Error(message);
-  }
-  return data;
 }
 
 function setImportStatus(message, variant = "") {
@@ -953,7 +942,7 @@ async function standardizeFromTextarea() {
   }
 
   try {
-    const data = await postJson("/standardize", payload);
+    const data = await postJson("standardize", payload);
     populateForm(data.standardized_payload);
     renderStandardizedPreview(data.standardized_payload, data.source_format);
     setImportStatus("JSON 已成功标准化并回填到表单。", "success");
@@ -962,11 +951,29 @@ async function standardizeFromTextarea() {
   }
 }
 
+export async function importMainJsonText(text) {
+  document.getElementById("json-payload").value = text;
+  await standardizeFromTextarea();
+}
+
 async function analyzeFromForm() {
   try {
     const payload = buildCanonicalPayloadFromForm();
     renderStandardizedPreview(payload, "form_manual");
-    const data = await postJson("/analyze", payload);
+    const data = await postJson("analyze", payload);
+    if (isDesktopHost()) {
+      try {
+        const stored = await saveStructuredReport(
+          data.report,
+          `gut-oral-axis-report-${new Date().toISOString().slice(0, 10)}.json`
+        );
+        data.saved_to = stored.display_location;
+      } catch (saveError) {
+        renderResult(data);
+        setImportStatus(`分析完成，但本地报告保存失败：${saveError.message}`, "error");
+        return;
+      }
+    }
     renderResult(data);
     setImportStatus("分析完成，结果区已更新。", "success");
   } catch (error) {
@@ -1012,8 +1019,7 @@ function bindEvents() {
 
     try {
       const text = await file.text();
-      document.getElementById("json-payload").value = text;
-      await standardizeFromTextarea();
+      await importMainJsonText(text);
     } catch (error) {
       setImportStatus(`文件读取失败：${error.message}`, "error");
     }

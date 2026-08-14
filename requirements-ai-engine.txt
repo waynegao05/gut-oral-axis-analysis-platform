@@ -1,0 +1,4 @@
+# Additive Phase 2 API dependencies. The existing Flask WebUI requirements stay intact.
+-r requirements.txt
+fastapi==0.139.2
+uvicorn==0.52.3

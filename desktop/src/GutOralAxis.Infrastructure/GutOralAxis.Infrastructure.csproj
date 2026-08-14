@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>GutOralAxis.Infrastructure</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../GutOralAxis.Core/GutOralAxis.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Database/**/*.cs" />
+    <Compile Remove="Reports/**/*.cs" />
+  </ItemGroup>
+</Project>

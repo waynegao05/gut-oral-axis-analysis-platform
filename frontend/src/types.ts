@@ -8,8 +8,12 @@ export interface CanonicalPayload {
 }
 
 export interface ApiEnvelope {
-  ok: boolean;
+  ok?: boolean;
+  status?: "ok" | "success" | "error";
   errors?: string[];
+  error_code?: string;
+  message?: string;
+  request_id?: string;
 }
 
 export interface StandardizeResponse extends ApiEnvelope {
@@ -26,7 +30,7 @@ export interface MainAnalysisResponse extends ApiEnvelope {
   recommendations: Array<Record<string, unknown>>;
   pharmacy_assessment: Record<string, unknown>;
   top_microbes: Array<[string, number]>;
-  saved_to: string;
+  saved_to?: string;
 }
 
 export interface OralAdenomaSchemaResponse extends ApiEnvelope {

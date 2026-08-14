@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'none'; object-src 'none'; frame-src 'none'; form-action 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; font-src 'self'; media-src 'none'; worker-src 'none'; manifest-src 'self'">
     <title>{{ app_name }}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
   </head>
@@ -482,6 +483,10 @@
             <div class="technical-record-summary">
               <p><strong>输入来源：</strong><span id="analysis-source">尚未生成结果。</span></p>
               <p><strong>报告保存位置：</strong><code id="saved-path">--</code></p>
+            </div>
+            <div id="desktop-report-actions" class="import-actions" hidden>
+              <button type="button" class="ghost-button" id="desktop-export-pdf">导出当前结果为 PDF</button>
+              <button type="button" class="ghost-button" id="desktop-print">打印当前结果</button>
             </div>
             <h3>模型关注的微生物</h3>
             <ul id="microbe-list" class="result-list compact-list"></ul>

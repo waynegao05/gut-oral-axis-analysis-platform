@@ -225,6 +225,13 @@ cython_debug/
 /config/releases/*.json
 /archive/model_releases/
 /packages/client/dist/
+/frontend/.test-build/
+/.test-tmp/
+/desktop/.packages/
+/desktop/.local-nuget/
+/desktop/**/bin/
+/desktop/**/obj/
+/artifacts/
 
 # Abstra
 # Abstra is an AI-powered process automation framework.

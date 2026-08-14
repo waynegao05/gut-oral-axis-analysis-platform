@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>GutOralAxis.Persistence</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../GutOralAxis.Core/GutOralAxis.Core.csproj" />
+    <ProjectReference Include="../GutOralAxis.Infrastructure/GutOralAxis.Infrastructure.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.Sqlite" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="../GutOralAxis.Infrastructure/Database/**/*.cs" Link="Database/%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="../GutOralAxis.Infrastructure/Reports/**/*.cs" Link="Reports/%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+</Project>

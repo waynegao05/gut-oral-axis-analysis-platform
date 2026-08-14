@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "entries": [
+    {
+      "source": "config/releases/ac_icam_real_outcome_pfs_v8.json",
+      "destination": "config/releases",
+      "kind": "file",
+      "required": true
+    },
+    {
+      "source": "config/releases/oral_adenoma_internal_v3.json",
+      "destination": "config/releases",
+      "kind": "file",
+      "required": true
+    },
+    {
+      "source": "config/releases/temporal_topology_v6.yaml",
+      "destination": "config/releases",
+      "kind": "file",
+      "required": true
+    },
+    {
+      "source": "data/pharmacy_rules_v3.json",
+      "destination": "data",
+      "kind": "file",
+      "required": true
+    },
+    {
+      "source": "data/pharmacy_knowledge",
+      "destination": "data/pharmacy_knowledge",
+      "kind": "directory",
+      "required": true
+    },
+    {
+      "source": "archive/datasets/topology_v6",
+      "destination": "archive/datasets/topology_v6",
+      "kind": "directory",
+      "required": true
+    },
+    {
+      "source": "outputs/current_mainline_v2/temporal_independent_v3",
+      "destination": "outputs/current_mainline_v2/temporal_independent_v3",
+      "kind": "directory",
+      "required": true
+    },
+    {
+      "source": "outputs/current_mainline_v2/full_risk_head_refiner_v2",
+      "destination": "outputs/current_mainline_v2/full_risk_head_refiner_v2",
+      "kind": "directory",
+      "required": true
+    }
+  ]
+}

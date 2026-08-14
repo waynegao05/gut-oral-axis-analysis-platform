@@ -5,7 +5,9 @@
   "description": "Typed browser client for the Flask research platform.",
   "scripts": {
     "typecheck": "tsc --project frontend/tsconfig.json --noEmit",
+    "test:frontend": "node --test frontend/tests/transport.test.mjs",
     "build": "npm run typecheck && esbuild frontend/src/main.ts --bundle --minify --format=iife --target=es2020 --legal-comments=none --outfile=static/generated/app.js",
+    "build:desktop-web": "npm run build && python scripts/build_desktop_web.py",
     "build:debug": "npm run typecheck && esbuild frontend/src/main.ts --bundle --format=iife --target=es2020 --sourcemap --outfile=static/generated/app.js",
     "client:typecheck": "npm --prefix packages/client run typecheck",
     "client:test": "npm --prefix packages/client test",

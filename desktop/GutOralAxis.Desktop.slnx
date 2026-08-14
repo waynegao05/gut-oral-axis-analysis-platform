@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/GutOralAxis.Core/GutOralAxis.Core.csproj" />
+    <Project Path="src/GutOralAxis.Infrastructure/GutOralAxis.Infrastructure.csproj" />
+    <Project Path="src/GutOralAxis.Persistence/GutOralAxis.Persistence.csproj" />
+    <Project Path="src/GutOralAxis.Desktop/GutOralAxis.Desktop.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/GutOralAxis.Core.SmokeTests/GutOralAxis.Core.SmokeTests.csproj" />
+    <Project Path="tests/GutOralAxis.Infrastructure.SmokeTests/GutOralAxis.Infrastructure.SmokeTests.csproj" />
+    <Project Path="tests/GutOralAxis.Persistence.SmokeTests/GutOralAxis.Persistence.SmokeTests.csproj" />
+  </Folder>
+</Solution>

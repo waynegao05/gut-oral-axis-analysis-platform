@@ -1,0 +1,8 @@
+# Windows desktop build dependencies. Runtime versions mirror the verified development stack.
+--extra-index-url https://download.pytorch.org/whl/cpu
+-r requirements-ai-engine.txt
+torch==2.8.0+cpu
+torch-geometric==2.7.0
+xgboost==3.4.0
+pyyaml==6.0.3
+pyinstaller==6.22.0
