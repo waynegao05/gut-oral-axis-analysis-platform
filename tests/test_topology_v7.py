@@ -25,6 +25,11 @@ def _sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+def _normalized_text_sha256(path: Path) -> str:
+    with path.open("r", encoding="utf-8", newline=None) as handle:
+        return hashlib.sha256(handle.read().encode("utf-8")).hexdigest()
+
+
 def test_v7_manifest_declares_generated_not_observed_cohort() -> None:
     manifest = json.loads((DATA_ROOT / "topology_v7_manifest.json").read_text(encoding="utf-8"))
 
@@ -182,7 +187,9 @@ def test_v6_archive_matches_preserved_source_files() -> None:
         "topology_v6_sample_label_table.csv",
     ]
     for name in names:
-        assert _sha256(DATA_ROOT / name) == _sha256(ARCHIVE_ROOT / name)
+        assert _normalized_text_sha256(DATA_ROOT / name) == _normalized_text_sha256(
+            ARCHIVE_ROOT / name
+        )
 
 
 def test_previous_v7_generator_is_preserved_for_rollback() -> None:

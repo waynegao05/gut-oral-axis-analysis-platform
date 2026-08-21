@@ -137,7 +137,7 @@ function newRequestId(): string {
 
 export class HttpTransport implements ApiTransport {
   constructor(
-    private readonly fetchImplementation: typeof fetch = globalThis.fetch,
+    private readonly fetchImplementation: typeof fetch = globalThis.fetch.bind(globalThis),
   ) {}
 
   async request(operation: BridgeOperation, payload?: unknown): Promise<TransportResult> {

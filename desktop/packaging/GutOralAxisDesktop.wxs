@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Gut-Oral Axis Desktop — WiX v5 打包定义（产出 .msi）
+
+  用法（由 scripts/build_windows_installers.ps1 调用）：
+    dotnet tool install -g wix          # 首次安装工具链
+    wix extension add -g WixToolset.UI.wixext
+    wix build GutOralAxisDesktop.wxs `
+      -d SourceDir="<发布目录绝对路径>" `
+      -d AppVersion="0.4.1" `
+      -ext WixToolset.UI.wixext `
+      -arch x64 `
+      -o "<输出>\GutOralAxis-Desktop-0.4.1-win-x64.msi"
+
+  与 Inno（.exe）版本的差异，选型时注意：
+  - MSI 走 Windows Installer，天然支持组策略 / Intune / SCCM 静默批量部署，
+    医院和高校信息科通常只接受 MSI。
+  - MSI 这里配置为「按机器安装」（perMachine），必然弹 UAC。
+  - MSI 不做 WebView2 引导安装：MSI 内嵌另一个安装程序属于不推荐做法，
+    批量部署场景应由信息科统一下发 WebView2。个人用户请用 .exe 版本。
+-->
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+
+  <Package
+      Name="Gut-Oral Axis Desktop"
+      Manufacturer="Gut-Oral Axis Research"
+      Version="$(AppVersion)"
+      UpgradeCode="2C7E9A64-5B18-4D2F-B3A7-6E41C08D5927"
+      Scope="perMachine"
+      Compressed="yes">
+
+    <!-- 同一 UpgradeCode 下自动卸载旧版本再装新版本 -->
+    <MajorUpgrade
+        AllowSameVersionUpgrades="yes"
+        DowngradeErrorMessage="已安装更高版本的 Gut-Oral Axis Desktop，请先卸载后再安装此版本。" />
+
+    <!-- 最低 Windows 10 20H2 -->
+    <Launch
+        Condition="Installed OR (VersionNT &gt;= 603)"
+        Message="本软件需要 Windows 10 20H2 或更高版本的 64 位系统。" />
+
+    <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
+
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="INSTALLFOLDER" Name="GutOralAxis Desktop" />
+    </StandardDirectory>
+
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="AppProgramMenuDir" Name="Gut-Oral Axis Desktop" />
+    </StandardDirectory>
+
+    <Feature Id="Main" Title="Gut-Oral Axis Desktop" Level="1">
+      <ComponentGroupRef Id="ApplicationFiles" />
+      <ComponentGroupRef Id="ApplicationShortcuts" />
+    </Feature>
+
+    <ui:WixUI Id="WixUI_InstallDir" InstallDirectory="INSTALLFOLDER" />
+    <WixVariable Id="WixUILicenseRtf" Value="license.rtf" />
+
+    <!-- 和应用本体、Inno 安装器共用同一个 .ico，由 make_icon.py 生成。
+         ARPPRODUCTICON 决定「应用和功能」列表里显示的图标；不设的话那里是空白。 -->
+    <Icon Id="AppIcon.ico" SourceFile="..\src\GutOralAxis.Desktop\Assets\AppIcon.ico" />
+    <Property Id="ARPPRODUCTICON" Value="AppIcon.ico" />
+  </Package>
+
+  <Fragment>
+    <!-- 整个发布目录递归收编。WiX v5 的 Files 元素会自动生成组件与 GUID。 -->
+    <ComponentGroup Id="ApplicationFiles" Directory="INSTALLFOLDER">
+      <Files Include="$(SourceDir)\**" />
+    </ComponentGroup>
+  </Fragment>
+
+  <Fragment>
+    <ComponentGroup Id="ApplicationShortcuts">
+      <Component Id="StartMenuShortcut" Directory="AppProgramMenuDir" Guid="4D8A1F53-9C26-4B7E-8F14-A70B3E9C6218">
+        <Shortcut
+            Id="StartMenuAppShortcut"
+            Name="肠-口轴分析平台"
+            Description="研究用结直肠癌无进展生存风险分析平台"
+            Target="[INSTALLFOLDER]GutOralAxis.Desktop.exe"
+            WorkingDirectory="INSTALLFOLDER"
+            Icon="AppIcon.ico" />
+        <RemoveFolder Id="RemoveAppProgramMenuDir" Directory="AppProgramMenuDir" On="uninstall" />
+        <RegistryValue
+            Root="HKCU"
+            Key="Software\GutOralAxis\Desktop"
+            Name="StartMenuShortcut"
+            Type="integer"
+            Value="1"
+            KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>

@@ -96,6 +96,8 @@ try {
         "GutOralAxis.Desktop.pri",
         "App.xbf",
         "MainWindow.xbf",
+        "Assets\AppIcon.png",
+        "Assets\AppIcon.ico",
         "WebUI\index.html",
         "WebUI\assets\app.css",
         "WebUI\assets\app.js",

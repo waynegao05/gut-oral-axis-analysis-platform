@@ -11,6 +11,7 @@ await mkdir(outputDirectoryPath, { recursive: true });
 await build({
   entryPoints: {
     api: fileURLToPath(new URL("../src/api.ts", import.meta.url)),
+    formNavigation: fileURLToPath(new URL("../src/form/navigation.ts", import.meta.url)),
     transport: fileURLToPath(new URL("../src/transport.ts", import.meta.url)),
   },
   outdir: outputDirectoryPath,
@@ -23,9 +24,21 @@ await build({
 
 const cacheKey = `?test=${Date.now()}`;
 const api = await import(`${new URL("api.mjs", outputDirectory).href}${cacheKey}`);
+const formNavigation = await import(
+  `${new URL("formNavigation.mjs", outputDirectory).href}${cacheKey}`
+);
 const transport = await import(
   `${new URL("transport.mjs", outputDirectory).href}${cacheKey}`
 );
+
+test("form tabs support standard horizontal keyboard navigation", () => {
+  assert.equal(formNavigation.getNextFormTabIndex(0, "ArrowRight", 4), 1);
+  assert.equal(formNavigation.getNextFormTabIndex(3, "ArrowRight", 4), 0);
+  assert.equal(formNavigation.getNextFormTabIndex(0, "ArrowLeft", 4), 3);
+  assert.equal(formNavigation.getNextFormTabIndex(2, "Home", 4), 0);
+  assert.equal(formNavigation.getNextFormTabIndex(1, "End", 4), 3);
+  assert.equal(formNavigation.getNextFormTabIndex(1, "Enter", 4), null);
+});
 
 test("HTTP transport preserves the current Flask routes", async () => {
   const calls = [];
@@ -46,6 +59,26 @@ test("HTTP transport preserves the current Flask routes", async () => {
   assert.equal(calls[0].init.body, JSON.stringify({ sample: 1 }));
   assert.equal(calls[1].url, "/internal/oral-adenoma/schema");
   assert.equal(calls[1].init.method, "GET");
+});
+
+test("HTTP transport preserves the browser receiver for the default fetch", async () => {
+  const originalFetch = globalThis.fetch;
+  let receiver;
+  globalThis.fetch = async function () {
+    receiver = this;
+    return new Response(JSON.stringify({ ok: true }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  };
+
+  try {
+    const client = new transport.HttpTransport();
+    await client.request("standardize", { sample: 1 });
+    assert.equal(receiver, globalThis);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
 });
 
 test("HTTP transport rejects Windows-only host operations", async () => {

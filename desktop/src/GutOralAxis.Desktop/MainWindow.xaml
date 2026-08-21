@@ -7,9 +7,50 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Title="Gut-Oral Axis Analysis Platform">
-    <Grid Background="#F5F2EA">
-        <WebView2 x:Name="WebView" />
-        <Grid x:Name="StartupOverlay" Background="#F5F2EA">
+    <!-- The transparent custom title bar exposes the system acrylic backdrop. -->
+    <Window.SystemBackdrop>
+        <DesktopAcrylicBackdrop />
+    </Window.SystemBackdrop>
+    <Grid Background="Transparent">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="48" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid
+            x:Name="AppTitleBar"
+            Grid.Row="0"
+            Height="48"
+            Background="Transparent">
+            <StackPanel
+                Margin="12,0,0,0"
+                Orientation="Horizontal"
+                VerticalAlignment="Center"
+                Spacing="10">
+                <Image
+                    Width="27"
+                    Height="27"
+                    Source="Assets/AppIcon.png"
+                    Stretch="Uniform" />
+                <TextBlock
+                    VerticalAlignment="Center"
+                    FontSize="13"
+                    FontWeight="SemiBold"
+                    Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                    Text="Gut-Oral Axis Analysis Platform" />
+            </StackPanel>
+            <Border
+                Height="1"
+                VerticalAlignment="Bottom"
+                Background="{ThemeResource DividerStrokeColorDefaultBrush}"
+                IsHitTestVisible="False" />
+        </Grid>
+
+        <WebView2 x:Name="WebView" Grid.Row="1" />
+        <Grid
+            x:Name="StartupOverlay"
+            Grid.Row="1"
+            Background="{ThemeResource LayerFillColorDefaultBrush}">
             <StackPanel
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
@@ -18,15 +59,15 @@
                 <ProgressRing x:Name="StartupProgress" IsActive="True" Width="42" Height="42" />
                 <TextBlock
                     Text="正在启动本地分析系统"
-                    FontSize="24"
-                    FontWeight="SemiBold"
+                    Style="{StaticResource TitleTextBlockStyle}"
                     HorizontalAlignment="Center" />
                 <TextBlock
                     x:Name="StartupStatus"
                     Text="正在准备数据库和 AI Engine……"
+                    Style="{StaticResource BodyTextBlockStyle}"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                     TextWrapping="Wrap"
-                    TextAlignment="Center"
-                    Foreground="#526267" />
+                    TextAlignment="Center" />
             </StackPanel>
         </Grid>
     </Grid>

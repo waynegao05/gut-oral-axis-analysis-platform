@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+import xml.etree.ElementTree as ET
 
 import pytest
 
@@ -13,6 +14,27 @@ from scripts.generate_release_manifest import write_manifest
 
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def test_desktop_sqlite_native_bundle_is_pinned_above_vulnerable_release() -> None:
+    versions_root = ET.parse(ROOT / "desktop" / "Directory.Packages.props").getroot()
+    versions = {
+        item.attrib["Include"]: item.attrib["Version"]
+        for item in versions_root.findall(".//PackageVersion")
+    }
+    assert versions["SQLitePCLRaw.bundle_e_sqlite3"] == "2.1.12"
+
+    project_root = ET.parse(
+        ROOT
+        / "desktop"
+        / "src"
+        / "GutOralAxis.Persistence"
+        / "GutOralAxis.Persistence.csproj"
+    ).getroot()
+    references = {
+        item.attrib["Include"] for item in project_root.findall(".//PackageReference")
+    }
+    assert "SQLitePCLRaw.bundle_e_sqlite3" in references
 
 
 def test_ai_engine_artifact_manifest_is_complete() -> None:

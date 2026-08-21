@@ -27,12 +27,29 @@ from config.settings import (
 
 DEFAULT_OUTPUT = ROOT / "frontend" / "dist"
 
+# 桌面 GUI 与浏览器 WebUI 共用同一份 HTML 与 JS，但刻意使用不同的视觉语言：
+# - static/app.desktop.css : Windows 11 Fluent Design，供 WebView2 桌面外壳使用
+# - static/app.css         : 浏览器端 WebUI 自身的视觉风格
+# 两份样式表的类名契约完全一致，因此可以直接互换。缺少桌面样式表时回退到 Web 样式表，
+# 保证构建不会因为样式文件缺失而中断。
+DESKTOP_STYLESHEET_NAME = "app.desktop.css"
+WEB_STYLESHEET_NAME = "app.css"
+
 
 @dataclass(frozen=True)
 class DesktopWebBuild:
     output_directory: Path
     index_file: Path
     manifest_file: Path
+    stylesheet_source: Path
+
+
+def resolve_stylesheet_source(root: Path = ROOT) -> Path:
+    """返回打包进桌面 WebUI 的样式表：优先 Fluent 桌面样式，缺失时回退 Web 样式。"""
+    desktop_stylesheet = root / "static" / DESKTOP_STYLESHEET_NAME
+    if desktop_stylesheet.is_file():
+        return desktop_stylesheet
+    return root / "static" / WEB_STYLESHEET_NAME
 
 
 def _active_release_name() -> str:
@@ -64,9 +81,10 @@ def build_desktop_web(
     app_name: str = APP_NAME,
     model_release: str | None = None,
     internal_oral_adenoma_enabled: bool = ENABLE_INTERNAL_ORAL_ADENOMA,
+    stylesheet_source: Path | None = None,
 ) -> DesktopWebBuild:
     template_file = ROOT / "templates" / "index.html"
-    css_source = ROOT / "static" / "app.css"
+    css_source = stylesheet_source or resolve_stylesheet_source()
     javascript_source = ROOT / "static" / "generated" / "app.js"
     for source in (template_file, css_source, javascript_source):
         if not source.is_file():
@@ -106,6 +124,7 @@ def build_desktop_web(
         "model_release": model_release or _active_release_name(),
         "web_model_backend": WEB_MODEL_BACKEND,
         "internal_oral_adenoma_enabled": internal_oral_adenoma_enabled,
+        "stylesheet_source": css_source.name,
         "entrypoint": "index.html",
         "files": {
             "index.html": _digest(index_file),
@@ -119,7 +138,7 @@ def build_desktop_web(
         encoding="utf-8",
         newline="\n",
     )
-    return DesktopWebBuild(output_directory, index_file, manifest_file)
+    return DesktopWebBuild(output_directory, index_file, manifest_file, css_source)
 
 
 def parse_args() -> argparse.Namespace:
@@ -129,6 +148,15 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--app-name", default=APP_NAME)
     parser.add_argument("--model-release", default=None)
+    parser.add_argument(
+        "--stylesheet",
+        type=Path,
+        default=None,
+        help=(
+            "覆盖打包进桌面 WebUI 的样式表路径；"
+            f"默认使用 static/{DESKTOP_STYLESHEET_NAME}，缺失时回退 static/{WEB_STYLESHEET_NAME}。"
+        ),
+    )
     oral_group = parser.add_mutually_exclusive_group()
     oral_group.add_argument(
         "--enable-internal-oral-adenoma",
@@ -151,8 +179,10 @@ def main() -> None:
         app_name=args.app_name,
         model_release=args.model_release,
         internal_oral_adenoma_enabled=args.oral_enabled,
+        stylesheet_source=args.stylesheet,
     )
     print(f"Desktop WebUI written to {result.output_directory}")
+    print(f"Desktop stylesheet: {result.stylesheet_source.name}")
 
 
 if __name__ == "__main__":

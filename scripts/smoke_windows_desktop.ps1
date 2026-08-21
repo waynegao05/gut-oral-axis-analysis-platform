@@ -13,13 +13,15 @@ $engineExecutable = Join-Path $applicationRoot "Runtime\Engine\goa-ai-engine.exe
 $applicationPri = Join-Path $applicationRoot "GutOralAxis.Desktop.pri"
 $applicationXbf = Join-Path $applicationRoot "App.xbf"
 $windowXbf = Join-Path $applicationRoot "MainWindow.xbf"
+$applicationIcon = Join-Path $applicationRoot "Assets\AppIcon.ico"
+$titleBarIcon = Join-Path $applicationRoot "Assets\AppIcon.png"
 if (-not (Test-Path -LiteralPath $executable -PathType Leaf)) {
     throw "Desktop executable is missing: $executable"
 }
 if (-not (Test-Path -LiteralPath $engineExecutable -PathType Leaf)) {
     throw "Bundled AI Engine is missing: $engineExecutable"
 }
-foreach ($resource in @($applicationPri, $applicationXbf, $windowXbf)) {
+foreach ($resource in @($applicationPri, $applicationXbf, $windowXbf, $applicationIcon, $titleBarIcon)) {
     if (-not (Test-Path -LiteralPath $resource -PathType Leaf)) {
         throw "Published WinUI resource is missing: $resource"
     }

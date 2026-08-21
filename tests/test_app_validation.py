@@ -364,6 +364,7 @@ def test_index_contains_drug_knowledge_and_label_evidence_panels() -> None:
     assert 'id="pfs-probability-36"' in html
     assert "项待处理" in html
     assert "ac_icam_real_outcome_pfs_v8" in html
+    assert "研究决策支持，不用于癌症筛查、诊断或替代医生制定治疗方案。" not in html
     assert "真实随访结局" in html
     assert "完整返回 JSON（供研究与审计）" in html
     assert '<details class="details-panel technical-record-panel" open>' not in html

@@ -10,8 +10,21 @@
   <body>
     <div class="page-shell">
       <header class="hero">
+        <div class="hero-decor" aria-hidden="true"></div>
         <div class="hero-copy">
-          <p class="eyebrow">Research Decision Support</p>
+          <div class="hero-brandline">
+            <span class="hero-mark" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="6" cy="7" r="2.1"></circle>
+                <circle cx="17.5" cy="5.5" r="1.7"></circle>
+                <circle cx="12" cy="12.5" r="2.4"></circle>
+                <circle cx="5.5" cy="18" r="1.7"></circle>
+                <circle cx="18" cy="17" r="2.1"></circle>
+                <path d="M7.7 8.4 10 11m5.9-4-2 3.4m-4.1 4.5L7 16.8m6.9-2 2.5 1.4"></path>
+              </svg>
+            </span>
+            <p class="eyebrow">Research Decision Support</p>
+          </div>
           <h1>{{ app_name }}</h1>
           <p class="hero-text">
             基于 AC-ICAM 真实随访结局估计结直肠癌患者的相对无进展生存风险，并整理菌群与用药安全核对事项。
@@ -20,7 +33,6 @@
         <div class="hero-stat">
           <span class="hero-stat-label">当前模型</span>
           <strong>{{ model_release }}</strong>
-          <p>研究决策支持，不用于癌症筛查、诊断或替代医生制定治疗方案。</p>
         </div>
       </header>
 
@@ -62,7 +74,67 @@
             <p>可以在导入后继续手动调整。点击“运行分析”时，系统会以表单中的当前值为准。</p>
           </div>
 
-          <div class="section-block">
+          <div class="form-workspace" id="analysis-form-workspace">
+            <div class="form-section-tabs" id="analysis-form-tabs" role="tablist" aria-label="输入表单分组">
+              <button
+                type="button"
+                class="form-section-tab"
+                id="form-tab-microbiome"
+                role="tab"
+                aria-selected="true"
+                aria-controls="form-panel-microbiome"
+                data-form-tab
+              >
+                <span class="form-section-index" aria-hidden="true">01</span>
+                <span class="form-section-label">菌群</span>
+              </button>
+              <button
+                type="button"
+                class="form-section-tab"
+                id="form-tab-clinical"
+                role="tab"
+                aria-selected="false"
+                aria-controls="form-panel-clinical"
+                tabindex="-1"
+                data-form-tab
+              >
+                <span class="form-section-index" aria-hidden="true">02</span>
+                <span class="form-section-label">基本与病理</span>
+              </button>
+              <button
+                type="button"
+                class="form-section-tab"
+                id="form-tab-health"
+                role="tab"
+                aria-selected="false"
+                aria-controls="form-panel-health"
+                tabindex="-1"
+                data-form-tab
+              >
+                <span class="form-section-index" aria-hidden="true">03</span>
+                <span class="form-section-label">健康与代谢</span>
+              </button>
+              <button
+                type="button"
+                class="form-section-tab"
+                id="form-tab-medication"
+                role="tab"
+                aria-selected="false"
+                aria-controls="form-panel-medication"
+                tabindex="-1"
+                data-form-tab
+              >
+                <span class="form-section-index" aria-hidden="true">04</span>
+                <span class="form-section-label">用药背景</span>
+              </button>
+            </div>
+
+          <section
+            class="section-block form-tab-panel"
+            id="form-panel-microbiome"
+            role="tabpanel"
+            aria-labelledby="form-tab-microbiome"
+          >
             <div class="section-title-row">
               <h3>菌群信息（可选）</h3>
               <button type="button" class="ghost-button small-button" id="add-microbe-row">添加自定义菌种</button>
@@ -93,9 +165,15 @@
               </label>
             </div>
             <div id="extra-microbe-rows" class="extra-microbes"></div>
-          </div>
+          </section>
 
-          <div class="section-block">
+          <section
+            class="section-block form-tab-panel"
+            id="form-panel-clinical"
+            role="tabpanel"
+            aria-labelledby="form-tab-clinical"
+            hidden
+          >
             <h3>基础信息与结直肠癌病理资料</h3>
             <p class="section-help">
               年龄和生物学性别必填，年龄范围为 18–75 岁。其余肿瘤病理资料均为选填：
@@ -184,9 +262,16 @@
                 <input type="number" id="clinical-icr-score" step="0.0001" min="0" max="20">
               </label>
             </div>
-          </div>
+          </section>
 
-          <div class="section-block">
+          <div
+            class="form-tab-panel form-combined-panel"
+            id="form-panel-health"
+            role="tabpanel"
+            aria-labelledby="form-tab-health"
+            hidden
+          >
+          <section class="section-block form-subsection">
             <h3>其他健康信息</h3>
             <div class="field-grid">
               <label class="input-card">
@@ -208,9 +293,9 @@
                 </select>
               </label>
             </div>
-          </div>
+          </section>
 
-          <div class="section-block">
+          <section class="section-block form-subsection">
             <h3>代谢特征</h3>
             <div class="field-grid">
               <label class="input-card">
@@ -226,9 +311,16 @@
                 <input type="number" id="metabolite-tryptophan" step="0.0001" min="0" max="1">
               </label>
             </div>
+          </section>
           </div>
 
-          <div class="section-block">
+          <section
+            class="section-block form-tab-panel"
+            id="form-panel-medication"
+            role="tabpanel"
+            aria-labelledby="form-tab-medication"
+            hidden
+          >
             <h3>用药与健康背景（建议填写）</h3>
             <p class="section-help">这些信息用来检查是否有需要优先核对的问题，不会自动开药。明确没有用药或过敏时填写“无”，不清楚可留空。</p>
             <div class="field-grid">
@@ -295,11 +387,12 @@
                 </select>
               </label>
             </div>
-          </div>
+          </section>
 
-          <div class="button-row">
+          <div class="button-row form-action-row">
             <button type="button" class="primary-button" id="analyze-form">运行分析</button>
             <button type="button" class="secondary-button" id="reset-form">重置为标准示例</button>
+          </div>
           </div>
         </section>
 

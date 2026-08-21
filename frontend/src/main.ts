@@ -1,4 +1,4 @@
-import { importMainJsonText } from "./legacy-app.js";
+import { importMainJsonText } from "./app";
 import {
   exportCurrentPagePdf,
   isDesktopHost,

@@ -52,6 +52,7 @@ public sealed partial class MainWindow : Window, IWindowSystemServices
         this.logger = logger;
         ownedLogger = logger as RollingFileLogger;
         InitializeComponent();
+        ConfigureWindowChrome();
         Closed += OnClosed;
     }
 
@@ -224,6 +225,26 @@ public sealed partial class MainWindow : Window, IWindowSystemServices
         core.DownloadStarting += (_, eventArgs) => eventArgs.Cancel = true;
         core.WebMessageReceived += OnWebMessageReceived;
         WebView.Source = new Uri(ApplicationOrigin + "index.html");
+    }
+
+    private void ConfigureWindowChrome()
+    {
+        ExtendsContentIntoTitleBar = true;
+        SetTitleBar(AppTitleBar);
+
+        var titleBar = AppWindow.TitleBar;
+        titleBar.ButtonBackgroundColor = Microsoft.UI.Colors.Transparent;
+        titleBar.ButtonInactiveBackgroundColor = Microsoft.UI.Colors.Transparent;
+
+        var iconPath = Path.Combine(AppContext.BaseDirectory, "Assets", "AppIcon.ico");
+        if (File.Exists(iconPath))
+        {
+            AppWindow.SetIcon(iconPath);
+        }
+        else
+        {
+            logger.Warning("application.icon_missing", "Desktop application icon is missing.");
+        }
     }
 
     private void OnNavigationStarting(

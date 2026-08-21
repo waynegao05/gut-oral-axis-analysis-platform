@@ -233,6 +233,17 @@ cython_debug/
 /desktop/**/obj/
 /artifacts/
 
+# Local Windows distribution artifacts. Publish vetted files as Release assets;
+# never commit generated installers, portable archives, or desktop shortcuts.
+/GutOralAxis-Desktop-Setup-*-win-x64.exe
+/GutOralAxis-Desktop-*-win-x64.msi
+/TCM-Desktop-*-win-x64-*.zip
+/SHA256SUMS-*.txt
+/GutOralAxis.Desktop.exe.lnk
+
+# Local source-refactor backup retained outside the Git history.
+/frontend/src/_to_delete/
+
 # Abstra
 # Abstra is an AI-powered process automation framework.
 # Ignore directories containing user credentials, local state, and settings.
