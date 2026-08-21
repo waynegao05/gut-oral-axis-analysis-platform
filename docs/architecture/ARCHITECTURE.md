@@ -84,7 +84,7 @@ PFS values are model estimates, not guaranteed individual outcomes.
 
 Marker cards require all five supported microbes. Missing markers are not interpreted as zero, and every card is restricted to clinician review with medication changes disabled. All seven medication-context fields must be explicitly reported for `standard` status. The drug-knowledge layer contains 46 product-specific label snapshots and a historical minimum high-priority DDI subset. It distinguishes limited screening from comprehensive review, never treats a negative result as proof of safety, and never converts label dosage text into a patient-specific dose or duration.
 
-The active engine contract and evidence governance are documented in `PHARMACY_ASSISTANCE.md`.
+The active engine contract and evidence governance are documented in [PHARMACY_ASSISTANCE.md](../clinical/PHARMACY_ASSISTANCE.md).
 
 ## Compatibility
 

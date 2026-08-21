@@ -405,7 +405,7 @@ def main() -> None:
     parser.add_argument(
         "--template-config",
         type=Path,
-        default=Path("research_config_v7_gnn_optimized.yaml"),
+        default=Path("config/research/research_config_v7_gnn_optimized.yaml"),
     )
     parser.add_argument("--candidate-data-dir", type=Path, required=True)
     parser.add_argument("--reference-data-dir", type=Path, default=Path("data/research"))

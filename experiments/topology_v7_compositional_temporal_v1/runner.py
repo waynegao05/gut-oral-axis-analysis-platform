@@ -84,7 +84,7 @@ def _json_hash(value: Any) -> str:
 
 def _load_config(data_dir: Path) -> dict[str, Any]:
     config = yaml.safe_load(
-        (ROOT / "research_config_v7_v3_gnn_locked.yaml").read_text(
+        (ROOT / "config/research/research_config_v7_v3_gnn_locked.yaml").read_text(
             encoding="utf-8"
         )
     )

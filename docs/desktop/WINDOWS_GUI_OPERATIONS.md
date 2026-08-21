@@ -20,7 +20,7 @@
 
 ## 2. 版本与关键目录
 
-版本来源是 [`version-manifest.json`](desktop/src/GutOralAxis.Desktop/version-manifest.json)，分别记录 Application、Frontend、AI Engine、Model 和 Database Schema。构建前必须核对该文件与实际模型发布一致。
+版本来源是 [`version-manifest.json`](../../desktop/src/GutOralAxis.Desktop/version-manifest.json)，分别记录 Application、Frontend、AI Engine、Model 和 Database Schema。构建前必须核对该文件与实际模型发布一致。
 
 默认运行数据根目录：
 
@@ -58,7 +58,7 @@ release-integrity.json
 推荐在专用 Windows 构建机和全新 PowerShell 进程中构建。最低要求：
 
 - Windows x64；
-- `.NET SDK 10.0.302`，由 [`desktop/global.json`](desktop/global.json) 约束；
+- `.NET SDK 10.0.302`，由 [`desktop/global.json`](../../desktop/global.json) 约束；
 - Node.js，以及通过 `npm ci` 安装的锁定依赖；
 - 能运行 `requirements-desktop-build.txt` 的 Python 构建环境；
 - 足够磁盘空间，PyTorch、NuGet 缓存、PyInstaller 工作目录和发布物会占用数 GiB；

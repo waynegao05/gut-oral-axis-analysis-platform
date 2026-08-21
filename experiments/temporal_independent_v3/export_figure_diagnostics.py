@@ -306,7 +306,7 @@ def _parse_horizons(value: str) -> list[float]:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--config", default="research_config_v2.yaml")
+    parser.add_argument("--config", default="config/research/research_config_v2.yaml")
     parser.add_argument(
         "--input-dir",
         default="outputs/current_mainline_v2/temporal_independent_v3",

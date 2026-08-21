@@ -22,7 +22,7 @@ from research.metrics import concordance_index
 
 
 ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_TEMPLATE = ROOT / "research_config_v7_v3_gnn_locked.yaml"
+DEFAULT_TEMPLATE = ROOT / "config/research/research_config_v7_v3_gnn_locked.yaml"
 DEFAULT_DATA = (
     ROOT / "outputs/topology_v7_generator_v3_pilots/covariance_compensated"
 )

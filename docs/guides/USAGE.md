@@ -87,7 +87,7 @@ Raw input can provide medication context as follows:
 }
 ```
 
-The final JSON contains a versioned `pharmacy_assessment` with `drug_knowledge.normalization`, `label_lookup`, limited `interaction_screening`, exact-ingredient `allergy_screening`, and guarded `probiotic_decision_support`. A label dosage section is evidence only; it is not a selected patient dose or duration. See `PHARMACY_ASSISTANCE.md` for field semantics and current limitations.
+The final JSON contains a versioned `pharmacy_assessment` with `drug_knowledge.normalization`, `label_lookup`, limited `interaction_screening`, exact-ingredient `allergy_screening`, and guarded `probiotic_decision_support`. A label dosage section is evidence only; it is not a selected patient dose or duration. See [PHARMACY_ASSISTANCE.md](../clinical/PHARMACY_ASSISTANCE.md) for field semantics and current limitations.
 
 ## Refresh Medication Knowledge
 
@@ -116,4 +116,4 @@ python enhanced_app.py
 
 This is a rollback/comparison mode, not the current release.
 
-See `README.md` for payload constraints, evidence, and interpretation boundaries. See `API_RESPONSE_EXAMPLE.md` for the current response schema.
+See the [project README](../../README.md) for payload constraints, evidence, and interpretation boundaries. See [API_RESPONSE_EXAMPLE.md](../api/API_RESPONSE_EXAMPLE.md) for the current response schema.

@@ -104,7 +104,7 @@ def run_main_model_meta_oof_experiment(
     feature_path = Path(feature_npz)
     if ensure_features and not feature_path.exists():
         export_main_model_structured_features(
-            config_path="research_config_v2.yaml",
+            config_path="config/research/research_config_v2.yaml",
             checkpoint_glob="outputs/current_mainline_v2/cox_fixed_split_repeat/research_seed*/best_model.pt",
             structured_feature_npz="outputs/current_mainline_v2/structured_features_v2/structured_gnn_features_v2_all_splits.npz",
             split_seed=42,

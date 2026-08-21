@@ -6,7 +6,7 @@ These checks test whether graph structure adds information beyond tabular featur
 
 ```powershell
 python -m research.graph_specific_baselines `
-  --config research_config_v2.yaml `
+  --config config/research/research_config_v2.yaml `
   --seeds 7 21 42 123 2026 `
   --device cuda
 ```
@@ -17,7 +17,7 @@ Compare `graph_summary_mlp_cox` with the structure-aware GNN and the all-tabular
 
 ```powershell
 python -m research.graph_structure_tests_v2 `
-  --config research_config_v2.yaml `
+  --config config/research/research_config_v2.yaml `
   --seeds 7 21 42 123 2026 `
   --split-seed 42 `
   --device cuda `

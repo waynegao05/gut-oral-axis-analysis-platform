@@ -2,7 +2,7 @@
 
 This directory contains the public-cohort audit and the reproducible
 `topology_v7_hybrid_generator_v2` hybrid generator. The public source files
-remain isolated and unchanged. `research_config_v2.yaml` targets v7 for new research training,
+remain isolated and unchanged. `config/research/research_config_v2.yaml` targets v7 for new research training,
 while the deployed web release remains pinned to archived v6 data until v7 is
 fully retrained and validated.
 

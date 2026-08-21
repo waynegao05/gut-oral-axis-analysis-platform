@@ -8,7 +8,7 @@ param(
     [int]$BatchSize = 8,
     [int]$Epochs = 180,
     [int]$Patience = 18,
-    [string]$Config = "research_config_v2.yaml",
+    [string]$Config = "config/research/research_config_v2.yaml",
     [switch]$DryRun
 )
 

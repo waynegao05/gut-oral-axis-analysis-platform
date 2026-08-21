@@ -55,7 +55,7 @@ foreach ($sourceFile in $sourceFiles) {
 
 $releaseFilesPath = Join-Path $archivePath "release_files"
 New-Item -ItemType Directory -Path $releaseFilesPath -Force | Out-Null
-foreach ($relativeFile in @("research_config_v2.yaml", "data/research/topology_v7_manifest.json")) {
+foreach ($relativeFile in @("config/research/research_config_v2.yaml", "data/research/topology_v7_manifest.json")) {
     $source = Join-Path $projectRoot $relativeFile
     if (-not (Test-Path -LiteralPath $source)) {
         throw "Required generator_v1 release file is missing: $relativeFile"

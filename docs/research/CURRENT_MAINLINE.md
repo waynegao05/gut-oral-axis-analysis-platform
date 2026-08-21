@@ -75,11 +75,11 @@ These values are labeled as inferred topology in every response. Fixed median ba
 - drug knowledge runtime: `src/drug_knowledge.py`
 - pharmacy knowledge base: `data/pharmacy_rules_v3.json`
 - medication label and limited DDI data: `data/pharmacy_knowledge/`
-- config: `research_config_v2.yaml`
+- config: `config/research/research_config_v2.yaml`
 
 ## topology_v7 Training Candidate
 
-The root research config now points to 3,600 unique model-generated v7 samples
+The reference research config now points to 3,600 unique model-generated v7 samples
 from `topology_v7_hybrid_generator_v2`.
 Their paired oral-gut microbiome distribution is learned from 42 real public
 patients. Clinical variables, metabolite pathways, function scores, graph
@@ -97,7 +97,7 @@ model-generated development evidence.
 
 ## Pharmacy Assistance
 
-The web and raw-clinical workflows share one versioned pharmacy-assistance engine. It gates marker interpretation, normalizes submitted medications with a local RxNorm snapshot, returns product-specific openFDA/DailyMed label evidence, screens 14 implementable rules from a 15-rule minimum high-priority DDI set, and can expose indication-gated probiotic strain options. It does not perform comprehensive interaction screening, patient-specific dose adjustment, prescribing, or clinical diagnosis. See `PHARMACY_ASSISTANCE.md` for the active contract and limitations.
+The web and raw-clinical workflows share one versioned pharmacy-assistance engine. It gates marker interpretation, normalizes submitted medications with a local RxNorm snapshot, returns product-specific openFDA/DailyMed label evidence, screens 14 implementable rules from a 15-rule minimum high-priority DDI set, and can expose indication-gated probiotic strain options. It does not perform comprehensive interaction screening, patient-specific dose adjustment, prescribing, or clinical diagnosis. See [PHARMACY_ASSISTANCE.md](../clinical/PHARMACY_ASSISTANCE.md) for the active contract and limitations.
 
 ## Required Local Artifacts
 

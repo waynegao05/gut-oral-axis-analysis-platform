@@ -10,7 +10,7 @@
     4
   ],
   "model_seed": 42,
-  "base_config": "research_config_v7_v3_gnn_locked.yaml",
+  "base_config": "config/research/research_config_v7_v3_gnn_locked.yaml",
   "training": {
     "maximum_epochs": 90,
     "early_stop_patience": 20,

@@ -13,7 +13,7 @@ from research.structured_feature_export_v2 import export_structured_gnn_features
 
 def run_mainline_split_meta_validation(
     *,
-    base_config_path: str = "research_config_v2.yaml",
+    base_config_path: str = "config/research/research_config_v2.yaml",
     split_seeds: Sequence[int] = (42, 43, 44, 45, 46),
     model_seeds: Sequence[int] = (7, 21, 42, 123, 2026),
     output_root: str | Path = "outputs/current_mainline_v2/mainline_split_meta_validation_v2",
@@ -183,7 +183,7 @@ def _parse_strings(value: str) -> list[str]:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--config", default="research_config_v2.yaml")
+    parser.add_argument("--config", default="config/research/research_config_v2.yaml")
     parser.add_argument("--split-seeds", default="42,43,44,45,46")
     parser.add_argument("--model-seeds", default="7,21,42,123,2026")
     parser.add_argument("--output-root", default="outputs/current_mainline_v2/mainline_split_meta_validation_v2")

@@ -19,7 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def test_logo_protocol_covers_each_group_once_without_outer_test_leakage() -> None:
     template = yaml.safe_load(
-        (ROOT / "research_config_v7_gnn_optimized.yaml").read_text(encoding="utf-8")
+        (ROOT / "config/research/research_config_v7_gnn_optimized.yaml").read_text(encoding="utf-8")
     )
     config = _config_for_data_dir(template, ROOT / "data" / "research")
     frame, feature_sets, _ = _feature_frame(config)
@@ -54,7 +54,7 @@ def test_logo_domain_audit_keeps_each_public_anchor_in_one_generation_group() ->
 
 def test_direct_aft_fingerprint_never_exposes_generation_group_as_a_feature() -> None:
     template = yaml.safe_load(
-        (ROOT / "research_config_v7_v3_gnn_locked.yaml").read_text(encoding="utf-8")
+        (ROOT / "config/research/research_config_v7_v3_gnn_locked.yaml").read_text(encoding="utf-8")
     )
     frame, feature_columns, _ = build_topology_fingerprint_dataframe(template)
 

@@ -45,7 +45,7 @@ def test_collect_checkpoint_specs_reads_baseline_and_diversity_rows(tmp_path) ->
     specs = collect_checkpoint_specs(
         diversity_summary_paths=[summary_path],
         baseline_checkpoint_glob=str(tmp_path / "baseline" / "*" / "best_model.pt"),
-        base_config_path="research_config_v2.yaml",
+        base_config_path="config/research/research_config_v2.yaml",
         include_baseline_checkpoints=True,
     )
 
@@ -67,7 +67,7 @@ def test_collect_checkpoint_specs_deduplicates_duplicate_checkpoints(tmp_path) -
     specs = collect_checkpoint_specs(
         diversity_summary_paths=[summary_path],
         baseline_checkpoint_glob=str(run_dir / "best_model.pt"),
-        base_config_path="research_config_v2.yaml",
+        base_config_path="config/research/research_config_v2.yaml",
         include_baseline_checkpoints=False,
     )
 
@@ -99,7 +99,7 @@ def test_collect_checkpoint_specs_filters_variants(tmp_path) -> None:
     specs = collect_checkpoint_specs(
         diversity_summary_paths=[summary_path],
         baseline_checkpoint_glob=str(keep_dir / "best_model.pt"),
-        base_config_path="research_config_v2.yaml",
+        base_config_path="config/research/research_config_v2.yaml",
         include_baseline_checkpoints=False,
         include_variants=["ranking_w0p02"],
     )
@@ -136,6 +136,6 @@ def test_collect_checkpoint_specs_rejects_missing_baseline(tmp_path) -> None:
         collect_checkpoint_specs(
             diversity_summary_paths=[],
             baseline_checkpoint_glob=str(tmp_path / "missing" / "*.pt"),
-            base_config_path="research_config_v2.yaml",
+            base_config_path="config/research/research_config_v2.yaml",
             include_baseline_checkpoints=True,
         )

@@ -2,7 +2,7 @@
 
 ## Scope
 
-The root `research_config_v2.yaml` uses topology_v7 generator_v2. All new output
+The reference configuration `config/research/research_config_v2.yaml` uses topology_v7 generator_v2. All new output
 is written below `outputs/current_mainline_v3/topology_v7_generator_v2`.
 Generator_v1 runs remain under `outputs/current_mainline_v3/topology_v7` and are
 also preserved under `archive/model_releases/topology_v7_generator_v1`.
@@ -75,14 +75,14 @@ This gives two distinct source-group tests before any ensemble or AFT fusion.
 
 ```powershell
 python -m research.baseline_compare `
-  --config research_config_v2.yaml `
+  --config config/research/research_config_v2.yaml `
   --seeds 7 21 42 123 2026 `
   --split-seed 42 `
   --device cuda `
   --output-root outputs/current_mainline_v3/topology_v7_generator_v2/baselines_split42
 
 python -m research.graph_structure_tests_v2 `
-  --config research_config_v2.yaml `
+  --config config/research/research_config_v2.yaml `
   --seeds 7 21 42 123 2026 `
   --split-seed 42 `
   --device cuda `

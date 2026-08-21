@@ -115,7 +115,7 @@ def test_node_identity_configuration_must_be_complete() -> None:
 
 
 def test_training_provenance_verifies_v7_manifest_hashes() -> None:
-    config_path = ROOT / "research_config_v7_gnn_fullrisk.yaml"
+    config_path = ROOT / "config/research/research_config_v7_gnn_fullrisk.yaml"
     config = yaml.safe_load(config_path.read_text(encoding="utf-8"))
 
     provenance = build_run_provenance(config, config_path, split_seed=42)

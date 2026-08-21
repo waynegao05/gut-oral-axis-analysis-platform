@@ -44,7 +44,7 @@ def test_colocare_is_survival_core_only_after_access() -> None:
 
 
 def test_topology_v7_is_training_mainline_and_v6_is_frozen_for_deployment() -> None:
-    config = (ROOT / "research_config_v2.yaml").read_text(encoding="utf-8")
+    config = (ROOT / "config/research/research_config_v2.yaml").read_text(encoding="utf-8")
     deployment_config = (ROOT / "config/releases/temporal_topology_v6.yaml").read_text(
         encoding="utf-8"
     )

@@ -1034,7 +1034,7 @@ def run_diagnosis(
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Diagnose topology_v7 data versus model failure.")
-    parser.add_argument("--config", type=Path, default=Path("research_config_v2.yaml"))
+    parser.add_argument("--config", type=Path, default=Path("config/research/research_config_v2.yaml"))
     parser.add_argument("--output-dir", type=Path, default=Path("outputs/topology_v7_diagnosis"))
     parser.add_argument("--split-seeds", nargs="+", type=int, default=[42, 43])
     parser.add_argument("--model-seeds", nargs="+", type=int, default=[7, 42, 2026])

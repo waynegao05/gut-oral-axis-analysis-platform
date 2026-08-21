@@ -186,7 +186,7 @@ def evaluate_ensemble(
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--config", default="research_config_v2.yaml")
+    parser.add_argument("--config", default="config/research/research_config_v2.yaml")
     parser.add_argument("--checkpoint-glob", required=True)
     parser.add_argument("--split", choices=["train", "val", "test"], default="test")
     parser.add_argument("--device", choices=["auto", "cpu", "cuda"], default="cuda")

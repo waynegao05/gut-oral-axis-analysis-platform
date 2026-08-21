@@ -26,7 +26,7 @@ from research.metrics import concordance_index
 
 
 ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_CONFIG = ROOT / "research_config_v7_v3_gnn_locked.yaml"
+DEFAULT_CONFIG = ROOT / "config/research/research_config_v7_v3_gnn_locked.yaml"
 DEFAULT_GNN_ROOT = (
     ROOT / "outputs/topology_v7_generator_v3_formal/gnn_locked_logo"
 )

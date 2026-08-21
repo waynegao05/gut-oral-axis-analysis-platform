@@ -3,7 +3,7 @@
   "current_dataset_policy": {
     "dataset_id": "topology_v7",
     "action": "hybrid_model_generated_development_mainline",
-    "config": "research_config_v2.yaml",
+    "config": "config/research/research_config_v2.yaml",
     "data_root": "data/research",
     "notes": "The training mainline is generated from the real paired oral-gut distribution with topology_v6 priors for missing modalities. It is not an external clinical cohort."
   },

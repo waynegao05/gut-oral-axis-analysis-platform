@@ -16,7 +16,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 
 def _load_frame():
-    config = yaml.safe_load((PROJECT_ROOT / "research_config_v2.yaml").read_text(encoding="utf-8"))
+    config = yaml.safe_load((PROJECT_ROOT / "config/research/research_config_v2.yaml").read_text(encoding="utf-8"))
     frame, feature_sets, _ = _feature_frame(config)
     return config, frame, feature_sets
 

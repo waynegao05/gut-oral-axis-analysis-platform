@@ -159,7 +159,7 @@ V8 PFS 模型用于已经确诊的 AJCC I-IV 期结直肠癌患者，不是一�
 - 知识库版本、复核日期和 SHA-256 摘要；
 - 明确禁止根据输出自动启停药、换药或调剂量；菌株候选也必须由临床人员核对适应证、产品、剂量和疗程。
 
-`interaction_screening_performed` 只表示是否完成最小高危子集的成对筛查；`comprehensive_interaction_screening_performed` 仍为 `false`。说明书中的用法用量可以作为证据展示，但 `patient_specific_dose_selected` 与 `treatment_duration_selected` 固定为 `false`。完整字段契约和边界见 `PHARMACY_ASSISTANCE.md`。
+`interaction_screening_performed` 只表示是否完成最小高危子集的成对筛查；`comprehensive_interaction_screening_performed` 仍为 `false`。说明书中的用法用量可以作为证据展示，但 `patient_specific_dose_selected` 与 `treatment_duration_selected` 固定为 `false`。完整字段契约和边界见 [docs/clinical/PHARMACY_ASSISTANCE.md](docs/clinical/PHARMACY_ASSISTANCE.md)。
 
 网页默认只展示通俗行动和原因；规则编号、证据等级、RxCUI、SPL SET ID、模型指标与完整 JSON 收入折叠的研究/审计详情，不占据主要阅读区域。
 
@@ -206,16 +206,16 @@ V8 PFS 模型用于已经确诊的 AJCC I-IV 期结直肠癌患者，不是一�
 基础 GNN + Cox 主干仍保留为 reference：
 
 ```powershell
-python -m research.train_v2 --config research_config_v2.yaml --split-seed 42 --device cuda
-python -m research.repeat_runs_v2 --config research_config_v2.yaml --seeds 7 21 42 123 2026 --split-seed 42 --device cuda
-python -m research.graph_structure_tests_v2 --config research_config_v2.yaml --seeds 7 21 42 123 2026 --split-seed 42 --device cuda
+python -m research.train_v2 --config config/research/research_config_v2.yaml --split-seed 42 --device cuda
+python -m research.repeat_runs_v2 --config config/research/research_config_v2.yaml --seeds 7 21 42 123 2026 --split-seed 42 --device cuda
+python -m research.graph_structure_tests_v2 --config config/research/research_config_v2.yaml --seeds 7 21 42 123 2026 --split-seed 42 --device cuda
 ```
 
 时间拓扑 AFT 独立实验入口：
 
 ```powershell
 python -m experiments.temporal_independent_v3.seed_sweep `
-  --config research_config_v2.yaml `
+  --config config/research/research_config_v2.yaml `
   --mainline-predictions <split-specific-mainline-predictions.npz> `
   --split-seed 42 `
   --seeds 7 21 42 123 2026
@@ -234,7 +234,9 @@ outputs/current_mainline_v2/temporal_independent_v3/cross_split_consensus/cross_
 ```text
 archive/                              分类保存旧后端、旧配置、旧模型和旧文档
 config/                               网页运行配置与发布指标
+config/research/                      GNN 与生存分析研究配置
 ctm_fusion_experiment/                历史 CTM 实验依赖，不是当前网页主线
+docs/                                 API、架构、桌面端、研究与发布文档
 experiments/ac_icam_real_outcome_v8/  当前真实结局评估与部署工件生成
 experiments/temporal_independent_v3/  当前时间拓扑 AFT 实验与共识工具
 research/                             GNN、Cox、基线与正式研究流水线
@@ -246,8 +248,9 @@ static/                               前端静态资源
 templates/                            Flask 页面
 tests/                                单元与接口测试
 enhanced_app.py                       当前网页入口
-research_config_v2.yaml               GNN reference 配置
-CURRENT_MAINLINE.md                   当前主线速查
+cli_analysis.py                       命令行分析入口
+clinical_workflow.py                  临床工作流入口
+docs/research/CURRENT_MAINLINE.md     当前主线速查
 ```
 
 `outputs/` 保存本地模型和实验结果，但不提交到 GitHub。归档分类和兼容状态见 `archive/README.md`。
@@ -263,7 +266,7 @@ CURRENT_MAINLINE.md                   当前主线速查
 - 输入范围提示、模型适用人群、建议与结构化报告
 - `pharmacy_assessment`：质量状态、用药背景、建议摘要、证据和禁止操作
 
-完整响应示例见 `API_RESPONSE_EXAMPLE.md`。
+完整响应示例见 [docs/api/API_RESPONSE_EXAMPLE.md](docs/api/API_RESPONSE_EXAMPLE.md)。
 
 ## Reproducibility Rules | 可复现性约束
 

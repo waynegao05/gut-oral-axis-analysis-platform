@@ -15,7 +15,7 @@
 
 ```powershell
 python -m experiments.temporal_independent_v3.topology_aft_fusion `
-  --config research_config_v2.yaml `
+  --config config/research/research_config_v2.yaml `
   --mainline-predictions outputs/current_mainline_v2/full_risk_head_refiner_v2/split42_three_seed_summary_selected_predictions.npz `
   --split-seed 42 `
   --seed 7 `

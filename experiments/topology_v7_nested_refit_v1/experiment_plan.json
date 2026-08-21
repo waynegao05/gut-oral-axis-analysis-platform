@@ -20,7 +20,7 @@
     123,
     2026
   ],
-  "base_config": "research_config_v7_v3_gnn_locked.yaml",
+  "base_config": "config/research/research_config_v7_v3_gnn_locked.yaml",
   "development_training": {
     "maximum_epochs": 160,
     "early_stop_patience": 30,

@@ -322,7 +322,7 @@ def evaluate(
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--config", default="research_config_v2.yaml")
+    parser.add_argument("--config", default="config/research/research_config_v2.yaml")
     parser.add_argument("--device", choices=["auto", "cpu", "cuda"], default="cuda")
     parser.add_argument("--split-seed", type=int, default=None)
     parser.add_argument("--validation-group", default=None)

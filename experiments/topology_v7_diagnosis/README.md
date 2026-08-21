@@ -22,7 +22,7 @@ residual; it does not rewrite v7.
 
 ```powershell
 python -m experiments.topology_v7_diagnosis.diagnose `
-  --config research_config_v2.yaml `
+  --config config/research/research_config_v2.yaml `
   --split-seeds 42 43 `
   --model-seeds 7 42 2026 `
   --device cuda `

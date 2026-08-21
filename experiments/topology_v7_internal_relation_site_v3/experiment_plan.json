@@ -9,7 +9,7 @@
   "inner_validation_group_rule": "(outer_test_group + 1) modulo 5",
   "development_model_seeds": [42],
   "audit_model_seeds": [7, 21, 42, 123, 2026],
-  "base_config": "research_config_v7_v3_gnn_locked.yaml",
+  "base_config": "config/research/research_config_v7_v3_gnn_locked.yaml",
   "metrics": {
     "report_horizons": [36, 60, 84],
     "integration_grid": [24, 36, 48, 60, 72, 84, 96],

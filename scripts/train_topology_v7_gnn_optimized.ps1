@@ -8,7 +8,7 @@ param(
     [int]$BatchSize = 256,
     [int]$Epochs = 140,
     [int]$Patience = 24,
-    [string]$Config = "research_config_v7_gnn_optimized.yaml",
+    [string]$Config = "config/research/research_config_v7_gnn_optimized.yaml",
     [switch]$DryRun
 )
 

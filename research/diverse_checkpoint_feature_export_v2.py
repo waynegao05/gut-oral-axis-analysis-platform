@@ -46,7 +46,7 @@ def export_diverse_main_model_structured_features(
     *,
     diversity_summary_paths: Sequence[str | Path],
     baseline_checkpoint_glob: str = DEFAULT_BASELINE_CHECKPOINT_GLOB,
-    base_config_path: str = "research_config_v2.yaml",
+    base_config_path: str = "config/research/research_config_v2.yaml",
     main_model_feature_npz: str | Path = DEFAULT_MAIN_MODEL_FEATURE_NPZ,
     split_seed: int = 42,
     top_k: int = 3,
@@ -388,7 +388,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--diversity-summaries", required=True)
     parser.add_argument("--baseline-checkpoint-glob", default=DEFAULT_BASELINE_CHECKPOINT_GLOB)
-    parser.add_argument("--base-config", default="research_config_v2.yaml")
+    parser.add_argument("--base-config", default="config/research/research_config_v2.yaml")
     parser.add_argument("--main-model-feature-npz", default=DEFAULT_MAIN_MODEL_FEATURE_NPZ)
     parser.add_argument("--split-seed", type=int, default=42)
     parser.add_argument("--top-k", type=int, default=3)

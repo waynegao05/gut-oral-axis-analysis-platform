@@ -17,7 +17,7 @@ from research.metrics import concordance_index
 
 ROOT = Path(__file__).resolve().parents[2]
 LOCK_PATH = ROOT / "experiments/topology_v7_generator_v3/fusion_lock.json"
-CONFIG_PATH = ROOT / "research_config_v7_v3_gnn_locked.yaml"
+CONFIG_PATH = ROOT / "config/research/research_config_v7_v3_gnn_locked.yaml"
 GNN_ROOT = ROOT / "outputs/topology_v7_generator_v3_formal/gnn_locked_logo"
 OUTPUT_ROOT = ROOT / "outputs/topology_v7_generator_v3_formal/aft_fusion_logo"
 SEEDS = [7, 21, 42, 123, 2026]

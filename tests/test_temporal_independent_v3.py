@@ -13,7 +13,7 @@ from experiments.temporal_independent_v3.cross_split_consensus import select_con
 
 
 def test_topology_fingerprint_keeps_edge_identity_without_label_features() -> None:
-    with open("research_config_v2.yaml", encoding="utf-8") as handle:
+    with open("config/research/research_config_v2.yaml", encoding="utf-8") as handle:
         config = yaml.safe_load(handle)
     frame, feature_columns, metadata = build_topology_fingerprint_dataframe(config)
 

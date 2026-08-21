@@ -151,7 +151,7 @@ def run_graph_specific_baselines(
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--config", default="research_config_v2.yaml")
+    parser.add_argument("--config", default="config/research/research_config_v2.yaml")
     parser.add_argument("--seeds", nargs="+", type=int, default=[7, 21, 42, 123, 2026])
     parser.add_argument("--split-seed", type=int, default=None)
     parser.add_argument("--only", nargs="+", default=None)

@@ -44,15 +44,15 @@ C# 宿主
 
 ### 3.1 Windows 宿主与进程生命周期
 
-- [`App.xaml.cs`](desktop/src/GutOralAxis.Desktop/App.xaml.cs) 使用本地命名互斥量限制同一用户会话中的重复实例，降低两个进程同时操作本地数据库的概率。
+- [`App.xaml.cs`](../../desktop/src/GutOralAxis.Desktop/App.xaml.cs) 使用本地命名互斥量限制同一用户会话中的重复实例，降低两个进程同时操作本地数据库的概率。
 - 应用初始化失败会写入技术日志，并在窗口已建立时显示日志目录。
-- [`MainWindow.xaml.cs`](desktop/src/GutOralAxis.Desktop/MainWindow.xaml.cs) 在正常关闭时取消生命周期令牌，并只结束本应用创建的 Python Engine 进程树。
+- [`MainWindow.xaml.cs`](../../desktop/src/GutOralAxis.Desktop/MainWindow.xaml.cs) 在正常关闭时取消生命周期令牌，并只结束本应用创建的 Python Engine 进程树。
 - Python Engine 使用隐藏窗口启动，标准输出和错误输出由宿主管理。
 - 单实例控制是数据一致性辅助措施，不是用户身份认证或访问控制。
 
 ### 3.2 WebView2
 
-当前 [`MainWindow.xaml.cs`](desktop/src/GutOralAxis.Desktop/MainWindow.xaml.cs) 已实现：
+当前 [`MainWindow.xaml.cs`](../../desktop/src/GutOralAxis.Desktop/MainWindow.xaml.cs) 已实现：
 
 - 将本地 `WebUI` 映射为 `https://app.gutoralaxis.local/`，资源访问模式为 `DenyCors`。
 - 主窗口导航只允许应用虚拟域。
@@ -68,7 +68,7 @@ C# 宿主
 
 ### 3.3 WebView2 消息桥接
 
-[`BridgeRequestParser.cs`](desktop/src/GutOralAxis.Core/Messaging/BridgeRequestParser.cs)、[`BridgeOperationCatalog.cs`](desktop/src/GutOralAxis.Core/Messaging/BridgeOperationCatalog.cs) 和 [`BridgeRouter.cs`](desktop/src/GutOralAxis.Core/Messaging/BridgeRouter.cs) 已实现：
+[`BridgeRequestParser.cs`](../../desktop/src/GutOralAxis.Core/Messaging/BridgeRequestParser.cs)、[`BridgeOperationCatalog.cs`](../../desktop/src/GutOralAxis.Core/Messaging/BridgeOperationCatalog.cs) 和 [`BridgeRouter.cs`](../../desktop/src/GutOralAxis.Core/Messaging/BridgeRouter.cs) 已实现：
 
 - 固定消息类型 `goa.request` / `goa.response` 和协议版本 `1`。
 - 请求 ID 最长 128 字符，只允许 ASCII 字母、数字、`-`、`_`、`.`。
@@ -89,7 +89,7 @@ C# 宿主
 
 ### 3.4 Python AI Engine
 
-[`PythonEngineManager.cs`](desktop/src/GutOralAxis.Infrastructure/Engine/PythonEngineManager.cs)、[`ai_engine/__main__.py`](ai_engine/__main__.py) 和 [`ai_engine/api/app.py`](ai_engine/api/app.py) 已实现：
+[`PythonEngineManager.cs`](../../desktop/src/GutOralAxis.Infrastructure/Engine/PythonEngineManager.cs)、[`ai_engine/__main__.py`](../../ai_engine/__main__.py) 和 [`ai_engine/api/app.py`](../../ai_engine/api/app.py) 已实现：
 
 - C# 固定使用 `127.0.0.1`，Python 入口拒绝非 loopback 地址和 `0.0.0.0`。
 - 每次启动由 C# 生成 32 个随机字节，再编码为 64 位十六进制 token。
@@ -109,7 +109,7 @@ token 是本机进程间的临时认证，不是面向多用户、恶意本地�
 
 ### 3.5 SQLite 与报告
 
-[`SqliteDatabase.cs`](desktop/src/GutOralAxis.Infrastructure/Database/SqliteDatabase.cs)、[`DatabaseSchema.cs`](desktop/src/GutOralAxis.Infrastructure/Database/DatabaseSchema.cs) 和各 Repository 已实现：
+[`SqliteDatabase.cs`](../../desktop/src/GutOralAxis.Infrastructure/Database/SqliteDatabase.cs)、[`DatabaseSchema.cs`](../../desktop/src/GutOralAxis.Infrastructure/Database/DatabaseSchema.cs) 和各 Repository 已实现：
 
 - 数据默认写入 `%LOCALAPPDATA%\GutOralAxis\Desktop`，不写入安装目录。
 - SQLite 开启外键、WAL、5 秒 busy timeout，并使用 `synchronous=NORMAL`。
@@ -123,7 +123,7 @@ token 是本机进程间的临时认证，不是面向多用户、恶意本地�
 
 ### 3.6 日志
 
-[`RollingFileLogger.cs`](desktop/src/GutOralAxis.Infrastructure/Logging/RollingFileLogger.cs) 已实现：
+[`RollingFileLogger.cs`](../../desktop/src/GutOralAxis.Infrastructure/Logging/RollingFileLogger.cs) 已实现：
 
 - 日志按 UTC 日期写入 `desktop-YYYYMMDD.log`。
 - 默认保留 30 天，启动时尝试删除过期日志。
@@ -134,12 +134,12 @@ token 是本机进程间的临时认证，不是面向多用户、恶意本地�
 
 ### 3.7 构建与发布物
 
-[`build_windows_desktop.ps1`](scripts/build_windows_desktop.ps1)、[`build_ai_engine_bundle.py`](scripts/build_ai_engine_bundle.py) 和相关脚本已实现：
+[`build_windows_desktop.ps1`](../../scripts/build_windows_desktop.ps1)、[`build_ai_engine_bundle.py`](../../scripts/build_ai_engine_bundle.py) 和相关脚本已实现：
 
 - Node 依赖由 `package-lock.json` 固定；.NET 直接依赖版本集中固定；Python 桌面构建直接依赖有版本约束。
 - 可通过经过 NuGet 目录 SHA-512 校验的本地包源恢复 .NET 依赖。
 - Python Engine 使用 PyInstaller one-directory 方式打包，终端用户不需要单独安装 Python。
-- 只有 [`ai-engine-artifacts.json`](desktop/packaging/ai-engine-artifacts.json) 白名单中的模型、配置、药学知识和运行工件进入 Engine 包。
+- 只有 [`ai-engine-artifacts.json`](../../desktop/packaging/ai-engine-artifacts.json) 白名单中的模型、配置、药学知识和运行工件进入 Engine 包。
 - Engine 包生成 Python 运行时依赖与许可证清单，以及运行时 SHA-256 清单。
 - Windows 发布目录生成包含版本、路径、大小和 SHA-256 的 `release-integrity.json`。
 - 构建脚本可运行打包后的桌面启动冒烟测试。

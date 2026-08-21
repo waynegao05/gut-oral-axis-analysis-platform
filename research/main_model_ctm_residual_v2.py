@@ -27,7 +27,7 @@ from research.structured_feature_export_v2 import _risk_disagreement_matrix
 from research.train_v2 import resolve_device
 
 
-DEFAULT_CONFIG = "research_config_v2.yaml"
+DEFAULT_CONFIG = "config/research/research_config_v2.yaml"
 DEFAULT_CHECKPOINT_GLOB = "outputs/current_mainline_v2/cox_fixed_split_repeat/research_seed*/best_model.pt"
 DEFAULT_STRUCTURED_FEATURES = (
     "outputs/current_mainline_v2/structured_features_v2/structured_gnn_features_v2_all_splits.npz"

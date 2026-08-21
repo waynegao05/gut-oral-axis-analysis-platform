@@ -111,7 +111,7 @@ DEFAULT_VARIANTS = ["baseline", "ranking_w0p02", "topk8", "minw03", "aux_light"]
 
 def run_base_gnn_diversity_sweep(
     *,
-    base_config_path: str = "research_config_v2.yaml",
+    base_config_path: str = "config/research/research_config_v2.yaml",
     variants: Sequence[str] = tuple(DEFAULT_VARIANTS),
     seeds: Sequence[int] = (7, 21, 42, 123, 2026),
     split_seed: int = 42,
@@ -347,7 +347,7 @@ def _parse_strings(value: str) -> list[str]:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--config", default="research_config_v2.yaml")
+    parser.add_argument("--config", default="config/research/research_config_v2.yaml")
     parser.add_argument("--variants", default=",".join(DEFAULT_VARIANTS))
     parser.add_argument("--seeds", default="7,21,42,123,2026")
     parser.add_argument("--split-seed", type=int, default=42)
